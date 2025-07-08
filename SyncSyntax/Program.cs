@@ -1,8 +1,10 @@
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
+using System.Diagnostics.Eventing.Reader;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,21 @@ builder.Services.Configure<FormOptions>(options =>
 {
     options.MultipartBodyLengthLimit = 5 * 1024 * 1024; // 5 MB
 });
+
+Log.Logger = new LoggerConfiguration()
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    options.User.AllowedUserNameCharacters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_ ";
+});
+
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

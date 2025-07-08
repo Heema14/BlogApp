@@ -1,45 +1,77 @@
 ﻿@model EditProfileViewModel
 
-<form asp-action="EditProfile" enctype="multipart/form-data" method="post">
+<style>
+    #ProfilePicture {
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid #0d6efd; /* bootstrap primary color */
+    cursor: pointer;
+    transition: box-shadow 0.3s ease;
+    }
 
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" readonly class="form-control" />
+    #ProfilePicture:hover {
+    box-shadow: 0 0 15px #0d6efdaa;
+    }
+</style>
+
+
+<div class="container mt-5">
+    <div class="card shadow-lg rounded-4">
+        <div class="card-header bg-primary text-white text-center py-3 rounded-top-4">
+            <h3 class="mb-0">Edit Your Profile</h3>
+        </div>
+        <div class="card-body p-4">
+            <form asp-action="EditProfile" enctype="multipart/form-data" method="post" novalidate>
+
+                <div class="text-center mb-3 d-flex justify-content-center align-items-center flex-column">
+                    <input asp-for="NewProfilePicture" type="file" id="profilePicInput" class="d-none" accept=".png,.jpg,.jpeg" />
+
+                    <label for="profilePicInput">
+                        @if (Model.ProfilePicture != null)
+                        {
+                            <img id="ProfilePicture" src="data:image/*;base64,@(Convert.ToBase64String(Model.ProfilePicture))"
+                                 class="mb-3" width="200" height="200" />
+                        }
+                        else
+                        {
+                            <img id="ProfilePicture" src="~/images/default-image.jpg"
+                                 class="mb-3" width="200" height="200" />
+                        }
+                    </label>
+                    <small class="text-muted">Click the image to upload your profile picture (max 2MB)</small>
+                    <span asp-validation-for="NewProfilePicture" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Email" class="form-label"></label>
+                    <input asp-for="Email" readonly class="form-control-plaintext border-bottom" />
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="nameUser" class="form-label">Username</label>
+                    <input asp-for="nameUser" class="form-control" placeholder="Enter username..." />
+                    <span asp-validation-for="nameUser" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Major" class="form-label">Major</label>
+                    <input asp-for="Major" class="form-control" placeholder="Enter your major..." />
+                    <span asp-validation-for="Major" class="text-danger"></span>
+                </div>
+
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="form-group mt-3">
-        <label asp-for="nameUser"></label>
-        <input asp-for="nameUser" class="form-control" placeholder="user name.." />
-    </div>
-
-    <div class="form-group my-3">
-        <label asp-for="Major"></label>
-        <input asp-for="Major" class="form-control" placeholder="major.." />
-        <span asp-validation-for="Major" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        @if (Model.ProfilePicture != null)
-        {
-            <img id="ProfilePicture" src="data:image/*;base64,@(Convert.ToBase64String(Model.ProfilePicture))" width="200" height="200" />
-        }
-        else
-        {
-            <img id="ProfilePicture" src="~/images/default-image.jpg" width="200" height="200" />
-        }
-        <input asp-for="NewProfilePicture" type="file" class="form-control imageShow" accept=".png,.jpg,.jpeg" />
-        <span asp-validation-for="NewProfilePicture" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
-</form>
-
-
+</div>
 
 <partial name="_ValidationScriptsPartial" />
 
 <script>
-    document.querySelector(".imageShow").onchange = function(){
-        document.getElementById('ProfilePicture').src = window.URL.createObjectURL(this.files[0])
+    document.querySelector(".imageShow").onchange = function () {
+        document.getElementById('ProfilePicture').src = window.URL.createObjectURL(this.files[0]);
     }
 </script>

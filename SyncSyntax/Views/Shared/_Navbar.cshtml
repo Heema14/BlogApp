@@ -39,7 +39,7 @@
                                 @currentUser.UserName!
                             </p>
                             <p class="m-0 text-white-50" style="font-size: 14px;">
-                                @currentUser.MajorName
+                                @(currentUser.MajorName != null ? currentUser.MajorName : "Guest..")
                             </p>
                         </div>
                     </a>
