@@ -1,0 +1,65 @@
+﻿@using System.Text.RegularExpressions
+@using SyncSyntax.Helpers
+@model IEnumerable<Post>
+@{
+    ViewData["Title"] = "Blog Posts";
+}
+
+<!-- Header with Title and Create Button -->
+<div class="text-center m-3">
+    @if (ViewBag.Categories != null)
+    {
+        @foreach (var category in ViewBag.Categories)
+        {
+            <a asp-controller="Post" asp-action="Index" asp-route-categoryId="@category.Id" class="badge bg-warning text-decoration-none  ms-2">
+                @category.Name
+            </a>
+        }
+    }
+</div>
+
+<div class="text-end my-2">
+    <a asp-action="Create" class="btn btn-primary rounded ">+ Create New Post</a>
+</div>
+
+
+<!-- Displaying Blog Posts in Cards -->
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    @foreach (var post in Model)
+    {
+        <div class="col">
+            <div class="card h-100 border-0 shadow-lg rounded-1">
+
+                <!-- Display Image or Default Image -->
+                <img src="@(!string.IsNullOrEmpty(post.FeatureImagePath) ? post.FeatureImagePath : "/images/default-image.jpg")"
+                     class="card-img-top"
+                     alt="@post.Title"
+                     style="height: 300px; object-fit: cover;" />
+
+                <div class="card-body">
+
+                    <h5 class="card-title">@post.Title</h5>
+                    <p class="text-muted mb-2">Published on @post.PublishedDate.ToString("MMMM dd, yyyy")</p>
+                    <p class="card-text">
+
+                        @{
+                            var contentTag = HtmlTagHelper.RemoveHtmlTags(post.Content);
+                        }
+
+                        @(contentTag.Length > 100 ? contentTag.Substring(0, 100) + "..." : contentTag)
+                    </p>
+                    <span class="badge bg-secondary">@post.Category?.Name</span>
+                </div>
+
+                <div class="card-footer d-flex justify-content-between align-items-center">
+                    <a asp-action="Detail" asp-route-id="@post.Id" class="btn btn-primary btn-sm">Read More</a>
+                    <div class="text-end">
+                        <small class="text-muted">By @post.Author</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+

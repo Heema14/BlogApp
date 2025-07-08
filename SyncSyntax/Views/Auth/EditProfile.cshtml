@@ -1,0 +1,45 @@
+﻿@model EditProfileViewModel
+
+<form asp-action="EditProfile" enctype="multipart/form-data" method="post">
+
+    <div class="form-group">
+        <label asp-for="Email"></label>
+        <input asp-for="Email" readonly class="form-control" />
+    </div>
+
+    <div class="form-group mt-3">
+        <label asp-for="nameUser"></label>
+        <input asp-for="nameUser" class="form-control" placeholder="user name.." />
+    </div>
+
+    <div class="form-group my-3">
+        <label asp-for="Major"></label>
+        <input asp-for="Major" class="form-control" placeholder="major.." />
+        <span asp-validation-for="Major" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        @if (Model.ProfilePicture != null)
+        {
+            <img id="ProfilePicture" src="data:image/*;base64,@(Convert.ToBase64String(Model.ProfilePicture))" width="200" height="200" />
+        }
+        else
+        {
+            <img id="ProfilePicture" src="~/images/default-image.jpg" width="200" height="200" />
+        }
+        <input asp-for="NewProfilePicture" type="file" class="form-control imageShow" accept=".png,.jpg,.jpeg" />
+        <span asp-validation-for="NewProfilePicture" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
+</form>
+
+
+
+<partial name="_ValidationScriptsPartial" />
+
+<script>
+    document.querySelector(".imageShow").onchange = function(){
+        document.getElementById('ProfilePicture').src = window.URL.createObjectURL(this.files[0])
+    }
+</script>

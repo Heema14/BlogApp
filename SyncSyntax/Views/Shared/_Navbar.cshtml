@@ -1,0 +1,63 @@
+﻿@inject UserManager<AppDbContext> UserManager
+@inject SignInManager<AppUser> SignInManager
+@inject UserManager<AppUser> UserManager
+
+@{
+    var currentUser = await UserManager.GetUserAsync(User);
+}
+
+<nav class="navbar navbar-expand-lg bg-primary" data-bs-theme="dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" asp-action="Index">BlogApp</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarColor01">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item">
+                    <a asp-action="Index" asp-controller="Post" class="nav-link">Home</a>
+                </li>
+                @if (User.IsInRole("Admin"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" asp-action="Index" asp-controller="Category">Category</a>
+                    </li>
+                }
+            </ul>
+
+            @if (currentUser != null && SignInManager.IsSignedIn(User))
+            {
+                <div class="d-flex align-items-center gap-3">
+                        
+                    <a asp-action="EditProfile" asp-controller="Auth" class="d-flex align-items-center gap-2 text-decoration-none">
+                        <img class="rounded-circle" alt="Profile Image" loading="lazy" width="40" height="40" style="object-fit: cover;"
+                             src="@(currentUser.ProfilePicture != null ? $"data:image/*;base64,{Convert.ToBase64String(currentUser.ProfilePicture)}" : Url.Content("~/images/default-image.jpg"))" />
+
+                        <div class="d-flex align-items-start flex-column justify-content-start">
+                            <p class="nav-link text-white fw-bold m-0">
+                                @currentUser.UserName!
+                            </p>
+                            <p class="m-0 text-white-50" style="font-size: 14px;">
+                                @currentUser.MajorName
+                            </p>
+                        </div>
+                    </a>
+
+                    <a asp-controller="Auth" asp-action="SignOut" class="btn btn-outline-light">SignOut</a>
+                </div>
+            }
+            else
+            {
+                <div class="d-flex ms-auto gap-2 me-5">
+                    <a asp-controller="Auth" asp-action="SignIn" class="btn btn-outline-light">SignIn</a>
+                    <a asp-controller="Auth" asp-action="SignUp" class="btn btn-outline-light">SignUp</a>
+                </div>
+            }
+
+
+            </ul>
+        </div>
+
+    </div>
+</nav>
