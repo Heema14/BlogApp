@@ -14,7 +14,7 @@ namespace SyncSyntax.Models.ViewModels
         [MinLength(2)]
         public string? Major { get; set; }
 
-        public byte[]? ProfilePicture { get; set; } // just to show image (img src) 
+        public string? ProfilePicturePath { get; set; } // to use in <img src="...">
 
         // New image
         public IFormFile? NewProfilePicture { get; set; } // to edit image in page <input type="file"> 

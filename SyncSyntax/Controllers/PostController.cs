@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
+using SyncSyntax.Models.IServices;
 using SyncSyntax.Models.ViewModels;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -17,13 +18,16 @@ namespace SyncSyntax.Controllers
         private readonly AppDbContext _context;
         private readonly ILogger<PostController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        private readonly string[] _allowedExtension = { ".jpg", ".jpeg", ".png" };
+        private readonly IConfiguration _config;
+        private readonly IUploadFileService _uploadFile;
 
-        public PostController(AppDbContext context, IWebHostEnvironment webHostEnvironment, ILogger<PostController> logger)
+        public PostController(AppDbContext context, IWebHostEnvironment webHostEnvironment, ILogger<PostController> logger, IUploadFileService uploadFile, IConfiguration config)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
             _logger = logger;
+            _uploadFile = uploadFile;
+            _config = config;
         }
 
         [HttpGet]
@@ -38,38 +42,48 @@ namespace SyncSyntax.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [RequestSizeLimit(5 * 1024 * 1024)]
+        [RequestSizeLimit(10 * 1024 * 1024)]
         public async Task<IActionResult> Create(PostViewModel postViewModel)
         {
             _logger.LogInformation("Create(PostViewModel) called.");
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var inputFileExtension = Path.GetExtension(postViewModel.FeatureImage.FileName).ToLower();
-                bool isAllowed = _allowedExtension.Contains(inputFileExtension);
-                if (!isAllowed)
-                {
-                    _logger.LogWarning("Invalid image format: {Extension}. Allowed: {@AllowedExtensions}",
-                   inputFileExtension, _allowedExtension);
-
-                    ModelState.AddModelError("Image", "Invalid image format. Allowed formats are .jpg, .jpeg, .png");
-                    return View(postViewModel);
-                }
-                postViewModel.Post.FeatureImagePath = await UploadFileToFolder(postViewModel.FeatureImage);
-                _context.Posts.Add(postViewModel.Post);
-                _context.SaveChanges();
-
-                _logger.LogInformation("Post created successfully: {@Post}", postViewModel.Post);
-
-                return RedirectToAction(nameof(Index));
-            }
-            else
-            {
-                _logger.LogWarning("Create(PostViewModel) called with invalid model state: {@ModelState}", ModelState);
+                _logger.LogWarning("Create(PostViewModel) called with invalid model state.");
+                return View(postViewModel);
             }
 
-            return View(postViewModel);
+            var allowedExtensions = _config.GetSection("uploading:allowedFileExtension").Get<List<string>>();
+            var maxSizeMb = _config.GetValue<int>("uploading:allowedFileSize");
+            var maxSizeBytes = maxSizeMb * 1024 * 1024;
+
+            var ext = Path.GetExtension(postViewModel.FeatureImage.FileName).ToLower();
+            if (!allowedExtensions.Contains(ext))
+            {
+                _logger.LogWarning("Invalid image format: {Extension}. Allowed: {@AllowedExtensions}", ext, allowedExtensions);
+                ModelState.AddModelError("Image", $"Invalid image format. Allowed formats: {string.Join(", ", allowedExtensions)}");
+
+                return View(postViewModel);
+            }
+
+            if (postViewModel.FeatureImage.Length > maxSizeBytes)
+            {
+                _logger.LogWarning("Image too large: {Size} bytes. Max allowed: {MaxSizeBytes}", postViewModel.FeatureImage.Length, maxSizeBytes);
+
+                ModelState.AddModelError("Image", $"Image size cannot exceed {maxSizeMb}MB.");
+                return View(postViewModel);
+            }
+
+            postViewModel.Post.FeatureImagePath = await _uploadFile.UploadFileToFolderAsync(postViewModel.FeatureImage);
+
+            _context.Posts.Add(postViewModel.Post);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation("Post created successfully: {@Post}", postViewModel.Post);
+
+            return RedirectToAction(nameof(Index));
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
@@ -77,7 +91,7 @@ namespace SyncSyntax.Controllers
             var postViewModel = new PostViewModel
             {
                 Categories = new SelectList(_context.Categories, "Id", "Name"),
-                Post = await _context.Posts.FirstOrDefaultAsync(p => p.Id == id),
+                Post = await _context.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id),
             };
             return View(postViewModel);
         }
@@ -91,6 +105,7 @@ namespace SyncSyntax.Controllers
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("Edit(PostViewModel): ModelState is invalid for Post ID = {PostId}", postViewModel.Post.Id);
+
                 return View(postViewModel);
             }
 
@@ -103,29 +118,50 @@ namespace SyncSyntax.Controllers
                 return NotFound();
             }
 
+            // when add new image
             if (postViewModel.FeatureImage != null)
             {
-                var inputFileExtension = Path.GetExtension(postViewModel.FeatureImage.FileName).ToLower();
-                bool isAllowed = _allowedExtension.Contains(inputFileExtension);
+                var allowedExtensions = _config.GetSection("uploading:allowedFileExtension").Get<List<string>>();
+                var maxSizeMb = _config.GetValue<int>("uploading:allowedFileSize");
+                var maxSizeBytes = maxSizeMb * 1024 * 1024;
 
-                if (!isAllowed)
+                var ext = Path.GetExtension(postViewModel.FeatureImage.FileName).ToLower();
+
+                if (!allowedExtensions.Contains(ext))
                 {
                     _logger.LogWarning("Edit(PostViewModel): Invalid image format: {Extension}. Allowed: {@AllowedExtensions}",
-                 inputFileExtension, _allowedExtension);
+                        ext, allowedExtensions);
 
-                    ModelState.AddModelError("Image", "Invalid image format. Allowed formats are .jpg, .jpeg, .png");
+                    ModelState.AddModelError("Image", $"Invalid image format. Allowed formats: {string.Join(", ", allowedExtensions)}");
+
                     return View(postViewModel);
                 }
 
-                var existingFilePath = Path.Combine(_webHostEnvironment.WebRootPath, "images",
-                    Path.GetFileName(postFromDb.FeatureImagePath));
-                if (System.IO.File.Exists(existingFilePath))
+                if (postViewModel.FeatureImage.Length > maxSizeBytes)
                 {
-                    System.IO.File.Delete(existingFilePath);
-                    _logger.LogInformation("Old image deleted: {FilePath}", existingFilePath);
+                    _logger.LogWarning("Edit(PostViewModel): Image too large: {Size} bytes. Max allowed: {MaxSizeBytes}",
+                        postViewModel.FeatureImage.Length, maxSizeBytes);
+
+                    ModelState.AddModelError("Image", $"Image size cannot exceed {maxSizeMb}MB.");
+                    return View(postViewModel);
                 }
 
-                postViewModel.Post.FeatureImagePath = await UploadFileToFolder(postViewModel.FeatureImage);
+                // delete old image if it exist
+                if (!string.IsNullOrEmpty(postFromDb.FeatureImagePath))
+                {
+                    var existingFilePath = Path.Combine(_webHostEnvironment.WebRootPath, "images",
+                        Path.GetFileName(postFromDb.FeatureImagePath));
+
+                    if (System.IO.File.Exists(existingFilePath))
+                    {
+                        System.IO.File.Delete(existingFilePath);
+                        _logger.LogInformation("Old image deleted: {FilePath}", existingFilePath);
+                    }
+                }
+
+                // add new image
+                postViewModel.Post.FeatureImagePath = await _uploadFile.UploadFileToFolderAsync(postViewModel.FeatureImage);
+
                 _logger.LogInformation("New image uploaded for Post ID = {PostId}", postViewModel.Post.Id);
             }
             else
@@ -153,7 +189,7 @@ namespace SyncSyntax.Controllers
                 postQuery = postQuery.Where(p => p.CategoryId == categoryId);
                 _logger.LogInformation("Filtering posts by CategoryId = {CategoryId}", categoryId);
             }
-            var posts = postQuery.ToList();
+            var posts = postQuery.AsNoTracking().ToList();
 
             ViewData["Categories"] = _context.Categories.ToList();
 
@@ -218,13 +254,16 @@ namespace SyncSyntax.Controllers
         {
             _logger.LogInformation("Detail called with Post ID = {PostId}", id);
 
-            if (id == null)
+            if (id == 0)
             {
                 _logger.LogWarning("Detail: Invalid Post ID = {PostId}", id);
                 return NotFound();
             }
 
-            var post = _context.Posts.Include(p => p.Category).Include(p => p.Comments)
+            var post = _context.Posts
+                .Include(p => p.Category)
+                .Include(p => p.Comments)
+                .AsNoTracking()
                 .FirstOrDefault(p => p.Id == id);
 
             if (post == null)
@@ -265,36 +304,6 @@ namespace SyncSyntax.Controllers
             return Json(new { success = false, message = "Invalid data" });
         }
 
-
-        private async Task<string> UploadFileToFolder(IFormFile file)
-        {
-            var inputFileExtension = Path.GetExtension(file.FileName);
-            var fileName = Guid.NewGuid().ToString() + inputFileExtension;
-            var wwwRootPath = _webHostEnvironment.WebRootPath;
-            var imagesFolderPath = Path.Combine(wwwRootPath, "images");
-
-            if (!Directory.Exists(imagesFolderPath))
-            {
-                Directory.CreateDirectory(imagesFolderPath);
-            }
-
-            var filePath = Path.Combine(imagesFolderPath, fileName);
-
-            try
-            {
-                await using (var fileStream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(fileStream);
-                }
-            }
-            catch (Exception ex)
-            {
-                // Log the exception if needed.
-                return "Error Uploading Image: " + ex.Message;
-            }
-
-            return "/images/" + fileName;
-        }
     }
 }
 

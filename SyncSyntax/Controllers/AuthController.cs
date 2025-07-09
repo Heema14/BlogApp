@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using SyncSyntax.Models;
+using SyncSyntax.Models.IServices;
 using SyncSyntax.Models.ViewModels;
 
 namespace SyncSyntax.Controllers
@@ -10,18 +12,27 @@ namespace SyncSyntax.Controllers
     {
         private readonly UserManager<AppUser> _userManager;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IConfiguration _config;
+        private readonly IUploadFileService _uploadFile;
         private readonly ILogger<AuthController> _logger;
 
         public AuthController(SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            ILogger<AuthController> logger)
+            ILogger<AuthController> logger,
+            IWebHostEnvironment webHostEnvironment,
+            IConfiguration config,
+            IUploadFileService uploadFile)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
             _logger = logger;
+            _webHostEnvironment = webHostEnvironment;
+            _config = config;
+            _uploadFile = uploadFile;
         }
 
         [HttpGet]
@@ -46,28 +57,29 @@ namespace SyncSyntax.Controllers
 
                 if (model.ProfilePicture != null && model.ProfilePicture.Length > 0)
                 {
-                    if (model.ProfilePicture.Length > 2 * 1024 * 1024)
+                    var allowedExtensions = _config.GetSection("uploading:allowedFileExtension").Get<List<string>>();
+                    var maxSizeMb = _config.GetValue<int>("uploading:allowedFileSize");
+                    var maxSizeBytes = maxSizeMb * 1024 * 1024;
+
+                    if (model.ProfilePicture.Length > maxSizeBytes)
                     {
-                        _logger.LogWarning("User attempted to upload a profile picture larger than 2MB.");
-                        ModelState.AddModelError("ProfilePicture", "File size must be less than 2MB.");
+                        _logger.LogWarning("User attempted to upload a profile picture larger than {MaxMB}MB.", maxSizeMb);
+                        ModelState.AddModelError("ProfilePicture", $"File size must be less than {maxSizeMb}MB.");
                         return View(model);
                     }
 
-                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
                     var ext = Path.GetExtension(model.ProfilePicture.FileName).ToLower();
 
                     if (!allowedExtensions.Contains(ext))
                     {
                         _logger.LogWarning("User attempted to upload an unsupported file type: {Extension}", ext);
-                        ModelState.AddModelError("ProfilePicture", "Only image files (.jpg, .jpeg, .png) are allowed.");
+                        ModelState.AddModelError("ProfilePicture", $"Only these formats are allowed: {string.Join(", ", allowedExtensions)}");
                         return View(model);
                     }
 
-                    using var ms = new MemoryStream();
-                    await model.ProfilePicture.CopyToAsync(ms);
-                    user.ProfilePicture = ms.ToArray();
+                    user.ProfilePicture = await _uploadFile.UploadFileToFolderAsync(model.ProfilePicture);
 
-                    _logger.LogInformation("Profile picture uploaded successfully for user: {Email}", model.Email);
+                    _logger.LogInformation("Profile picture saved at path: {Path} for user: {Email}", user.ProfilePicture, model.Email);
                 }
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -147,7 +159,7 @@ namespace SyncSyntax.Controllers
                 Email = user.Email,
                 Major = user.MajorName,
                 nameUser = user.UserName,
-                ProfilePicture = user.ProfilePicture
+                ProfilePicturePath = user.ProfilePicture
             };
             return View(model);
         }
@@ -164,7 +176,7 @@ namespace SyncSyntax.Controllers
             if (!ModelState.IsValid)
             {
                 _logger.LogWarning("EditProfile: Invalid model state for user {Email}.", user.Email);
-                model.ProfilePicture = user.ProfilePicture;
+                model.ProfilePicturePath = user.ProfilePicture;
                 return View(model);
             }
 
@@ -176,7 +188,7 @@ namespace SyncSyntax.Controllers
                 {
                     _logger.LogWarning("EditProfile: Username {Username} is already taken.", model.nameUser);
                     ModelState.AddModelError(nameof(model.nameUser), "This username is already taken.");
-                    model.ProfilePicture = user.ProfilePicture;
+                    model.ProfilePicturePath = user.ProfilePicture;
                     return View(model);
                 }
 
@@ -188,9 +200,10 @@ namespace SyncSyntax.Controllers
                         _logger.LogWarning("EditProfile: Failed to update username for {Email} - {Error}", user.Email, error.Description);
                         ModelState.AddModelError(nameof(model.nameUser), error.Description);
                     }
-                    model.ProfilePicture = user.ProfilePicture;
+                    model.ProfilePicturePath = user.ProfilePicture;
                     return View(model);
                 }
+
                 _logger.LogInformation("EditProfile: Username updated successfully for user {Email}.", user.Email);
             }
 
@@ -204,17 +217,39 @@ namespace SyncSyntax.Controllers
             // Update profile picture if provided
             if (model.NewProfilePicture != null && model.NewProfilePicture.Length > 0)
             {
-                if (model.NewProfilePicture.Length > 2 * 1024 * 1024)
+                var allowedExtensions = _config.GetSection("uploading:allowedFileExtension").Get<List<string>>();
+                var maxSizeMb = _config.GetValue<int>("uploading:allowedFileSize");
+                var maxSizeBytes = maxSizeMb * 1024 * 1024;
+
+                var ext = Path.GetExtension(model.NewProfilePicture.FileName).ToLower();
+                if (!allowedExtensions.Contains(ext))
                 {
-                    _logger.LogWarning("EditProfile: Image too large for user {Email}.", user.Email);
-                    ModelState.AddModelError("NewProfilePicture", "Image size cannot exceed 2MB.");
-                    model.ProfilePicture = user.ProfilePicture;
+                    _logger.LogWarning("EditProfile: Unsupported file type: {Extension}", ext);
+                    ModelState.AddModelError("NewProfilePicture", $"Only formats allowed: {string.Join(", ", allowedExtensions)}");
+                    model.ProfilePicturePath = user.ProfilePicture;
                     return View(model);
                 }
 
-                using var ms = new MemoryStream();
-                await model.NewProfilePicture.CopyToAsync(ms);
-                user.ProfilePicture = ms.ToArray();
+                // delete old image
+                if (!string.IsNullOrEmpty(user.ProfilePicture))
+                {
+                    var oldFilePath = Path.Combine(_webHostEnvironment.WebRootPath, "images", Path.GetFileName(user.ProfilePicture));
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        System.IO.File.Delete(oldFilePath);
+                        _logger.LogInformation("EditProfile: Old profile picture deleted at {Path}", oldFilePath);
+                    }
+                }
+
+                if (model.NewProfilePicture.Length > maxSizeBytes)
+                {
+                    _logger.LogWarning("EditProfile: Image too large for user {Email}.", user.Email);
+                    ModelState.AddModelError("NewProfilePicture", $"Image size cannot exceed {maxSizeMb}MB.");
+                    model.ProfilePicturePath = user.ProfilePicture;
+                    return View(model);
+                }
+
+                user.ProfilePicture = await _uploadFile.UploadFileToFolderAsync(model.NewProfilePicture);
                 _logger.LogInformation("EditProfile: Profile picture updated for user {Email}.", user.Email);
             }
 
@@ -227,6 +262,7 @@ namespace SyncSyntax.Controllers
                     _logger.LogError("EditProfile: Failed to update user {Email} - {Error}", user.Email, error.Description);
                     ModelState.AddModelError("", error.Description);
                 }
+                model.ProfilePicturePath = user.ProfilePicture;
                 return View(model);
             }
 

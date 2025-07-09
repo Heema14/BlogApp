@@ -28,9 +28,9 @@
                     <input asp-for="NewProfilePicture" type="file" id="profilePicInput" class="d-none" accept=".png,.jpg,.jpeg" />
 
                     <label for="profilePicInput">
-                        @if (Model.ProfilePicture != null)
+                        @if (!string.IsNullOrEmpty(Model.ProfilePicturePath))
                         {
-                            <img id="ProfilePicture" src="data:image/*;base64,@(Convert.ToBase64String(Model.ProfilePicture))"
+                            <img id="ProfilePicture" src="@Model.ProfilePicturePath"
                                  class="mb-3" width="200" height="200" />
                         }
                         else

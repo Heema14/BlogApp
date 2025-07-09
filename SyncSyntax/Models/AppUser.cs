@@ -6,6 +6,6 @@ namespace SyncSyntax.Models
     {
         public string? MajorName { get; set; }
 
-        public byte[]? ProfilePicture { get; set; }
+        public string? ProfilePicture { get; set; }
     }
 }

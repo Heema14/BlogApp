@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
+using SyncSyntax.Models.IServices;
 using System.Diagnostics.Eventing.Reader;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -51,6 +52,9 @@ builder.Services.ConfigureApplicationCookie(options =>
     options.SlidingExpiration = true;
 });
 
+
+builder.Services.AddScoped<IUploadFileService, UploadFileService>();
+
 builder.Services.AddTransient<DatabaseSeeder>();
 
 var app = builder.Build();
@@ -72,6 +76,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Post}/{action=Index}/{id?}")
     .WithStaticAssets();
+
+
 
 using (var scope = app.Services.CreateScope())
 {

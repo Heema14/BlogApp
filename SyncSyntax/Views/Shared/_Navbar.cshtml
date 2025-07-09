@@ -29,10 +29,11 @@
             @if (currentUser != null && SignInManager.IsSignedIn(User))
             {
                 <div class="d-flex align-items-center gap-3">
-                        
+
                     <a asp-action="EditProfile" asp-controller="Auth" class="d-flex align-items-center gap-2 text-decoration-none">
+
                         <img class="rounded-circle" alt="Profile Image" loading="lazy" width="40" height="40" style="object-fit: cover;"
-                             src="@(currentUser.ProfilePicture != null ? $"data:image/*;base64,{Convert.ToBase64String(currentUser.ProfilePicture)}" : Url.Content("~/images/default-image.jpg"))" />
+                             src="@(!string.IsNullOrEmpty(currentUser.ProfilePicture) ? currentUser.ProfilePicture : Url.Content("~/images/default-image.jpg"))" />
 
                         <div class="d-flex align-items-start flex-column justify-content-start">
                             <p class="nav-link text-white fw-bold m-0">
