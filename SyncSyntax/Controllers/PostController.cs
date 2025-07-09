@@ -15,13 +15,15 @@ namespace SyncSyntax.Controllers
     public class PostController : Controller
     {
         private readonly AppDbContext _context;
+        private readonly ILogger<PostController> _logger;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly string[] _allowedExtension = { ".jpg", ".jpeg", ".png" };
 
-        public PostController(AppDbContext context, IWebHostEnvironment webHostEnvironment)
+        public PostController(AppDbContext context, IWebHostEnvironment webHostEnvironment, ILogger<PostController> logger)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -39,12 +41,17 @@ namespace SyncSyntax.Controllers
         [RequestSizeLimit(5 * 1024 * 1024)]
         public async Task<IActionResult> Create(PostViewModel postViewModel)
         {
+            _logger.LogInformation("Create(PostViewModel) called.");
+
             if (ModelState.IsValid)
             {
                 var inputFileExtension = Path.GetExtension(postViewModel.FeatureImage.FileName).ToLower();
                 bool isAllowed = _allowedExtension.Contains(inputFileExtension);
                 if (!isAllowed)
                 {
+                    _logger.LogWarning("Invalid image format: {Extension}. Allowed: {@AllowedExtensions}",
+                   inputFileExtension, _allowedExtension);
+
                     ModelState.AddModelError("Image", "Invalid image format. Allowed formats are .jpg, .jpeg, .png");
                     return View(postViewModel);
                 }
@@ -52,8 +59,15 @@ namespace SyncSyntax.Controllers
                 _context.Posts.Add(postViewModel.Post);
                 _context.SaveChanges();
 
-                return RedirectToAction("Index");
+                _logger.LogInformation("Post created successfully: {@Post}", postViewModel.Post);
+
+                return RedirectToAction(nameof(Index));
             }
+            else
+            {
+                _logger.LogWarning("Create(PostViewModel) called with invalid model state: {@ModelState}", ModelState);
+            }
+
             return View(postViewModel);
         }
 
@@ -72,8 +86,11 @@ namespace SyncSyntax.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(PostViewModel postViewModel)
         {
+            _logger.LogInformation("Edit(PostViewModel) called for Post ID = {PostId}", postViewModel.Post.Id);
+
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Edit(PostViewModel): ModelState is invalid for Post ID = {PostId}", postViewModel.Post.Id);
                 return View(postViewModel);
             }
 
@@ -82,6 +99,7 @@ namespace SyncSyntax.Controllers
 
             if (postFromDb == null)
             {
+                _logger.LogWarning("Edit(PostViewModel): Post not found with ID = {PostId}", postViewModel.Post.Id);
                 return NotFound();
             }
 
@@ -89,8 +107,12 @@ namespace SyncSyntax.Controllers
             {
                 var inputFileExtension = Path.GetExtension(postViewModel.FeatureImage.FileName).ToLower();
                 bool isAllowed = _allowedExtension.Contains(inputFileExtension);
+
                 if (!isAllowed)
                 {
+                    _logger.LogWarning("Edit(PostViewModel): Invalid image format: {Extension}. Allowed: {@AllowedExtensions}",
+                 inputFileExtension, _allowedExtension);
+
                     ModelState.AddModelError("Image", "Invalid image format. Allowed formats are .jpg, .jpeg, .png");
                     return View(postViewModel);
                 }
@@ -100,8 +122,11 @@ namespace SyncSyntax.Controllers
                 if (System.IO.File.Exists(existingFilePath))
                 {
                     System.IO.File.Delete(existingFilePath);
+                    _logger.LogInformation("Old image deleted: {FilePath}", existingFilePath);
                 }
+
                 postViewModel.Post.FeatureImagePath = await UploadFileToFolder(postViewModel.FeatureImage);
+                _logger.LogInformation("New image uploaded for Post ID = {PostId}", postViewModel.Post.Id);
             }
             else
             {
@@ -110,22 +135,29 @@ namespace SyncSyntax.Controllers
 
             _context.Posts.Update(postViewModel.Post);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+
+            _logger.LogInformation("Post updated successfully: {@Post}", postViewModel.Post);
+            return RedirectToAction(nameof(Index));
         }
+
 
         [HttpGet]
         [AllowAnonymous]
         public IActionResult Index(int? categoryId)
         {
+            _logger.LogInformation("Index called. CategoryId = {CategoryId}", categoryId);
+
             var postQuery = _context.Posts.Include(p => p.Category).AsQueryable();
             if (categoryId.HasValue)
             {
                 postQuery = postQuery.Where(p => p.CategoryId == categoryId);
+                _logger.LogInformation("Filtering posts by CategoryId = {CategoryId}", categoryId);
             }
             var posts = postQuery.ToList();
 
             ViewData["Categories"] = _context.Categories.ToList();
 
+            _logger.LogInformation("Index loaded successfully with {PostCount} posts.", posts.Count);
             return View(posts);
         }
 
@@ -133,45 +165,62 @@ namespace SyncSyntax.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            _logger.LogInformation("Delete(GET) called with ID = {PostId}", id);
+
             var postFromDb = await _context.Posts.FindAsync(id);
             if (postFromDb == null)
             {
+                _logger.LogWarning("Delete(GET): Post not found with ID = {PostId}", id);
                 return NotFound();
             }
+
+            _logger.LogInformation("Delete(GET): Post found with ID = {PostId}", id);
             return View(postFromDb);
         }
 
         [HttpPost]
         public async Task<IActionResult> DeleteConfirm(int id)
         {
+            _logger.LogInformation("DeleteConfirm(POST) called with ID = {PostId}", id);
+
             if (id < 0)
             {
+                _logger.LogWarning("DeleteConfirm(POST): Invalid post ID = {PostId}", id);
                 return BadRequest();
             }
 
             var postFromDb = await _context.Posts.FindAsync(id);
             if (postFromDb == null)
             {
+                _logger.LogWarning("DeleteConfirm(POST): Post not found with ID = {PostId}", id);
                 return NotFound();
             }
+
             if (!string.IsNullOrEmpty(postFromDb.FeatureImagePath))
             {
                 var imagePath = Path.Combine(_webHostEnvironment.WebRootPath, "images", Path.GetFileName(postFromDb.FeatureImagePath));
                 if (System.IO.File.Exists(imagePath))
                 {
                     System.IO.File.Delete(imagePath);
+                    _logger.LogInformation("Deleted image file: {ImagePath}", imagePath);
                 }
             }
             _context.Posts.Remove(postFromDb);
             await _context.SaveChangesAsync();
-            return RedirectToAction("Index");
+
+            _logger.LogInformation("Post deleted successfully with ID = {PostId}", id);
+            return RedirectToAction(nameof(Index));
         }
+
 
         [AllowAnonymous]
         public IActionResult Detail(int id)
         {
+            _logger.LogInformation("Detail called with Post ID = {PostId}", id);
+
             if (id == null)
             {
+                _logger.LogWarning("Detail: Invalid Post ID = {PostId}", id);
                 return NotFound();
             }
 
@@ -180,10 +229,12 @@ namespace SyncSyntax.Controllers
 
             if (post == null)
             {
+                _logger.LogWarning("Detail: Post not found with ID = {PostId}", id);
                 return NotFound();
             }
-            return View(post);
 
+            _logger.LogInformation("Detail: Post loaded successfully with ID = {PostId}", id);
+            return View(post);
         }
 
 
@@ -191,11 +242,16 @@ namespace SyncSyntax.Controllers
         [Authorize(Roles = "Admin,User")]
         public JsonResult AddComment([FromBody] Comment comment)
         {
+            _logger.LogInformation("AddComment called by user = {UserName}", comment?.UserName);
+
             if (ModelState.IsValid)
             {
                 comment.CommentDate = DateTime.Now;
                 _context.Comments.Add(comment);
                 _context.SaveChanges();
+
+                _logger.LogInformation("Comment added successfully to Post ID = {PostId} by {UserName}",
+              comment.PostId, comment.UserName);
 
                 return Json(new
                 {
@@ -205,6 +261,7 @@ namespace SyncSyntax.Controllers
                 });
             }
 
+            _logger.LogError("Error while adding comment to Post ID = {PostId}", comment.PostId);
             return Json(new { success = false, message = "Invalid data" });
         }
 

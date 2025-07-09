@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Http.Features;
+Ôªøusing Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -30,11 +30,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
-    options.Password.RequireDigit = false;              // „‘ ·«“„ —ﬁ„
-    options.Password.RequireLowercase = true;          // ·«“„ Õ—› ’€Ì—
-    options.Password.RequireUppercase = true;          // ·«“„ Õ—› ﬂ»Ì—
-    options.Password.RequireNonAlphanumeric = false;    // „‘ ·«“„ —„“
-    options.Password.RequiredLength = 6;                // √ﬁ· ÿÊ· = 6
+    options.Password.RequireDigit = false;              // ŸÖÿ¥ ŸÑÿßÿ≤ŸÖ ÿ±ŸÇŸÖ
+    options.Password.RequireLowercase = true;          // ŸÑÿßÿ≤ŸÖ ÿ≠ÿ±ŸÅ ÿµÿ∫Ÿäÿ±
+    options.Password.RequireUppercase = true;          // ŸÑÿßÿ≤ŸÖ ÿ≠ÿ±ŸÅ ŸÉÿ®Ÿäÿ±
+    options.Password.RequireNonAlphanumeric = false;    // ŸÖÿ¥ ŸÑÿßÿ≤ŸÖ ÿ±ŸÖÿ≤
+    options.Password.RequiredLength = 6;                // ÿ£ŸÇŸÑ ÿ∑ŸàŸÑ = 6
     options.Password.RequiredUniqueChars = 2;
 
     options.User.AllowedUserNameCharacters =
@@ -45,9 +45,10 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Auth/SignIn";  // Redirect path for unauthorized users
-    options.AccessDeniedPath = "/Auth/AccessDenied";
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+    options.LoginPath = "/Auth/SignIn";  // Redirect path for unauthorized users üîê
+    options.AccessDeniedPath = "/Auth/AccessDenied"; // ‚õî
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(20); // ‚è∞
+    options.SlidingExpiration = true;
 });
 
 builder.Services.AddTransient<DatabaseSeeder>();
