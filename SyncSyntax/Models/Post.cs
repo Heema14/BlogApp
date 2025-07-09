@@ -23,7 +23,7 @@ public class Post
 
     [ValidateNever]
     public string FeatureImagePath { get; set; }
-  
+
     [DataType(DataType.Date)]
     public DateTime PublishedDate { get; set; } = DateTime.Now;
 
@@ -35,5 +35,5 @@ public class Post
 
     [ValidateNever]
     public ICollection<Comment> Comments { get; set; } = new List<Comment>();
-    
+
 }

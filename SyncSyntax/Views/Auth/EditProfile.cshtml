@@ -71,7 +71,7 @@
 <partial name="_ValidationScriptsPartial" />
 
 <script>
-    document.querySelector(".imageShow").onchange = function () {
+    document.querySelector("#profilePicInput").onchange = function () {
         document.getElementById('ProfilePicture').src = window.URL.createObjectURL(this.files[0]);
     }
 </script>

@@ -21,13 +21,6 @@ Log.Logger = new LoggerConfiguration()
 builder.Host.UseSerilog();
 
 
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    options.User.AllowedUserNameCharacters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_ ";
-});
-
-
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -38,11 +31,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
     options.Password.RequireDigit = false;              // „‘ ·«“„ —ﬁ„
-    options.Password.RequireLowercase = true;          // „‘ ·«“„ Õ—› ’€Ì—
-    options.Password.RequireUppercase = true;          // „‘ ·«“„ Õ—› ﬂ»Ì—
+    options.Password.RequireLowercase = true;          // ·«“„ Õ—› ’€Ì—
+    options.Password.RequireUppercase = true;          // ·«“„ Õ—› ﬂ»Ì—
     options.Password.RequireNonAlphanumeric = false;    // „‘ ·«“„ —„“
     options.Password.RequiredLength = 6;                // √ﬁ· ÿÊ· = 6
-    options.Password.RequiredUniqueChars = 0;           // „‘ ·«“„ ÌﬂÊ‰ ›ÌÂ« √Õ—› „Œ ·›…
+    options.Password.RequiredUniqueChars = 2;
+
+    options.User.AllowedUserNameCharacters =
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_@ ";
 })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();

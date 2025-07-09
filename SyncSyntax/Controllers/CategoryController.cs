@@ -11,9 +11,12 @@ namespace SyncSyntax.Controllers
     public class CategoryController : Controller
     {
         private readonly AppDbContext _context;
-        public CategoryController(AppDbContext context)
+        private readonly ILogger<CategoryController> _logger;
+
+        public CategoryController(AppDbContext context, ILogger<CategoryController> logger)
         {
             _context = context;
+            _logger = logger;
         }
 
 

@@ -36,7 +36,7 @@ namespace SyncSyntax.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [RequestSizeLimit(10485760)]
+        [RequestSizeLimit(5 * 1024 * 1024)]
         public async Task<IActionResult> Create(PostViewModel postViewModel)
         {
             if (ModelState.IsValid)

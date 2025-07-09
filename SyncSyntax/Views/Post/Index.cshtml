@@ -60,7 +60,7 @@
                         var preview = contentTag.Length > 100 ? contentTag.Substring(0, 100) + "..." : contentTag;
                     }
 
-                    <p class="card-text text-secondary">@preview</p>
+                    <p class="card-text text-white-50">@preview</p>
 
                     @if (post.Category != null)
                     {
@@ -70,20 +70,15 @@
                     }
                 </div>
 
-                <div class="card-footer bg-light d-flex justify-content-between align-items-center">
-                    <a asp-action="Detail" asp-route-id="@post.Id" class="btn btn-outline-primary btn-sm px-3">
+                <div class="card-footer bg-secondary d-flex justify-content-between align-items-center">
+                    <a asp-action="Detail" asp-route-id="@post.Id" class="btn btn-primary btn-sm px-3">
                         <i class="bi bi-book me-1"></i> Read More
                     </a>
 
                     <div class="d-flex align-items-center">
-                        @{
-                            var imgSrc = post.FeatureImagePath != null
-                            ? $"data:image/png;base64,{Convert.ToBase64String(post.FeatureImagePath)}"
-                            : Url.Content("~/images/default-user.png");
-                        }
-
-                        <img src="@imgSrc" alt="Author"
-                             class="rounded-circle me-2" style="width: 35px; height: 35px; object-fit: cover;" />
+                        <span class="badge bg-secondary me-2">
+                            <i class="bi bi-person-fill"></i>
+                        </span>
 
                         <small class="text-muted fw-semibold">@post.Author</small>
                     </div>
