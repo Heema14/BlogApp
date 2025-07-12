@@ -263,6 +263,7 @@ namespace SyncSyntax.Controllers
             var post = _context.Posts
                 .Include(p => p.Category)
                 .Include(p => p.Comments)
+                    .ThenInclude(un => un.User)
                 .AsNoTracking()
                 .FirstOrDefault(p => p.Id == id);
 

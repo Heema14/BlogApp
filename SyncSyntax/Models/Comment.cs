@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SyncSyntax.Models
 {
@@ -8,8 +9,8 @@ namespace SyncSyntax.Models
         [Key]
         public int Id { get; set; }
 
-        [MaxLength(100, ErrorMessage = "User name cannot exceed 100 characters.")]
-        public string? UserName { get; set; }
+        //[MaxLength(100, ErrorMessage = "User name cannot exceed 100 characters.")]
+        //public string? UserName { get; set; }
 
         [DataType(DataType.Date)]
         [ValidateNever]
@@ -22,5 +23,11 @@ namespace SyncSyntax.Models
 
         [ValidateNever]
         public Post? Post { get; set; }
+
+        [Required]
+        public string UserId { get; set; }
+        [ForeignKey(nameof(UserId))]
+        [ValidateNever]
+        public AppUser? User { get; set; }
     }
 }

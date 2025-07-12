@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using SyncSyntax.Data;
+using System.Security.Claims;
 
 namespace SyncSyntax.Models.CommentHub
 {
-    [Authorize] // SignalR hub will require authentication
+    [Authorize] // SignalR => make sure that exist user in website
     public class CommentHub : Hub
     {
         private readonly AppDbContext _context;
@@ -16,26 +17,27 @@ namespace SyncSyntax.Models.CommentHub
 
         public async Task BroadcastComment(string content, int postId)
         {
-            var userName = Context.User?.Identity?.Name ?? "Anonymous";
-            var commentDate = DateTime.Now;
+            var userIdName = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
             var comment = new Comment
             {
                 Content = content,
-                CommentDate = commentDate,
-                UserName = userName,
+                CommentDate = DateTime.Now,
+                UserId = userIdName,
                 PostId = postId
             };
 
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
 
-            // إرسال التعليق للمجموعة حسب رقم المنشور
+            var user = await _context.Users.FindAsync(userIdName);
+            var userName = user?.UserName ?? "Unknown";
+
             await Clients.Group(postId.ToString()).SendAsync(
                 "ReceiveComment",
                 userName,
                 content,
-                commentDate.ToString("M/dd/yyyy, h:mm")
+                comment.CommentDate.ToString("M/dd/yyyy, h:mm")
             );
         }
 

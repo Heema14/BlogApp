@@ -63,7 +63,7 @@
             {
                 <div class="card mb-3 shadow-sm">
                     <div class="card-body">
-                        <h5 class="card-title">@comment.UserName</h5>
+                        <h5 class="card-title">@comment.User?.UserName</h5>
                         <p class="comment-date"><small>@comment.CommentDate.ToString("M/dd/yyyy, h:m")</small></p>
                         <p class="card-text">@comment.Content</p>
                     </div>
