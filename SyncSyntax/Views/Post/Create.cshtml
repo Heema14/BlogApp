@@ -1,72 +1,78 @@
-﻿<style>
-    .content-wrapper {
-        padding: 20px;
-        max-width: 1000px;
-        margin: 0 auto;
-        font-family: Arial, sans-serif;
-    }
-</style>
-
-@model PostViewModel;
+﻿@model PostViewModel
 
 @{
     ViewData["Title"] = "Create Post";
 }
 
+<style>
+    .profile-picture {
+        height: 250px;
+        width: 250px;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid #0d6efd; /* bootstrap primary color */
+        cursor: pointer;
+        transition: box-shadow 0.3s ease;
+    }
 
-<div class="content-wrapper">
+        .profile-picture:hover {
+            box-shadow: 0 0 15px #0d6efdaa;
+        }
+</style>
 
-    <div class="row">
-        <div class="col-12 col-md-6">
-            <h2>@ViewData["Title"]</h2>
-        </div>
-        <div class="col-12 col-md-6 text-end">
-            <a asp-action="Index" asp-controller="Post" class="btn btn-primary rounded ">Back to List</a>
-        </div>
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="text-primary fw-bold">@ViewData["Title"]</h2>
+        <a asp-action="Index" asp-controller="Post" class="btn btn-outline-primary rounded shadow-sm">
+            <i class="fas fa-arrow-left me-2"></i> Back to List
+        </a>
     </div>
 
-    <hr />
+    <form asp-action="Create" method="post" enctype="multipart/form-data" novalidate>
 
-    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <div class="mb-4 d-flex flex-column align-items-center justify-content-center">
+            <!-- صورة المعاينة التي تعمل كزر لاختيار الملف -->
+            <img id="imgPreview" src="~/images/default-image.jpg"
+                 alt="Click to upload image"
+                 class="img-fluid profile-picture"
+                 style="object-fit: cover; cursor: pointer;border-radius:50%;" />
 
-        <div class="form-group">
-            <label asp-for="Post.Title"></label>
-            <input asp-for="Post.Title" class="form-control" />
+            <!-- حقل الملف مخفي -->
+            <input asp-for="FeatureImage" type="file" accept="image/png, image/jpg, image/jpeg" id="imageInput" style="display: none;" />
+
+            <small class="text-muted mt-2">Click the image to upload your profile picture (max 2MB)</small>
+            <span asp-validation-for="FeatureImage" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Post.Title" class="form-label"></label>
+            <input asp-for="Post.Title" class="form-control form-control" placeholder="Enter post title" />
             <span asp-validation-for="Post.Title" class="text-danger"></span>
         </div>
 
-        <div class="form-group my-2">
-            <label asp-for="Post.CategoryId"></label>
-            <select asp-for="Post.CategoryId" asp-items="Model.Categories" class="form-control">
+        <div class="mb-3">
+            <label asp-for="Post.CategoryId" class="form-label"></label>
+            <select asp-for="Post.CategoryId" asp-items="Model.Categories" class="form-select">
                 <option value="">Select Category</option>
             </select>
             <span asp-validation-for="Post.CategoryId" class="text-danger"></span>
         </div>
 
-        <div class="form-group">
-            <label asp-for="Post.Author"></label>
-            <input asp-for="Post.Author" class="form-control" />
+        <div class="mb-3">
+            <label asp-for="Post.Author" class="form-label"></label>
+            <input asp-for="Post.Author" class="form-control" placeholder="Author name" />
             <span asp-validation-for="Post.Author" class="text-danger"></span>
         </div>
 
-        <div class="for-group my-2">
-            <label asp-for="Post.Content"></label>
-            <textarea asp-for="Post.Content" class="form-control" rows="5"></textarea>
+        <div class="mb-4">
+            <label asp-for="Post.Content" class="form-label"></label>
+            <textarea asp-for="Post.Content" class="form-control" rows="7" placeholder="Write your post content here..."></textarea>
             <span asp-validation-for="Post.Content" class="text-danger"></span>
         </div>
 
-        <div class="form-group my-2">
-            <label asp-for="FeatureImage"></label>
-            <input asp-for="FeatureImage" class="form-control" />
-            <span asp-validation-for="FeatureImage" class="text-danger"></span>
-        </div>
-
-        <button type="submit" class="btn btn-primary">Create</button>
-        <a asp-action="Index" class="btn btn-secondary ms-2">Back to List</a>
+        <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">Create Post</button>
     </form>
-
-    <hr />
-
 </div>
 
 <partial name="_ValidationScriptsPartial" />
@@ -74,9 +80,29 @@
 @section Scripts {
     <script src="https://cdn.tiny.cloud/1/8v7ap9no879e3vf48t9bipzno7dfbo8dgefvm9kgcttuz3nu/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
-          tinymce.init({
-          selector: 'textarea'
+        tinymce.init({
+            selector: 'textarea'
         });
+
+               const imgPreview = document.getElementById('imgPreview');
+        const imageInput = document.getElementById('imageInput');
+
+        // عند الضغط على الصورة تفتح نافذة اختيار الملف
+        imgPreview.addEventListener('click', () => {
+            imageInput.click();
+        });
+
+        // عند اختيار ملف، نعرضه كصورة المعاينة
+        imageInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    imgPreview.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
     </script>
 }
-

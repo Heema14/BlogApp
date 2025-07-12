@@ -277,32 +277,36 @@ namespace SyncSyntax.Controllers
         }
 
 
-        [HttpPost]
-        [Authorize(Roles = "Admin,User")]
-        public JsonResult AddComment([FromBody] Comment comment)
-        {
-            _logger.LogInformation("AddComment called by user = {UserName}", comment?.UserName);
+        //[HttpPost]
+        //[Authorize(Roles = "Admin,User")]
+        //public JsonResult AddComment([FromBody] Comment comment)
+        //{
+        //    var currentUserName = User.Identity?.Name ?? "Anonymous..";
 
-            if (ModelState.IsValid)
-            {
-                comment.CommentDate = DateTime.Now;
-                _context.Comments.Add(comment);
-                _context.SaveChanges();
+        //    _logger.LogInformation("AddComment called by user = {UserName}", currentUserName);
 
-                _logger.LogInformation("Comment added successfully to Post ID = {PostId} by {UserName}",
-              comment.PostId, comment.UserName);
+        //    if (ModelState.IsValid)
+        //    {
+        //        comment.UserName = currentUserName; // User in system
+        //        comment.CommentDate = DateTime.Now;
 
-                return Json(new
-                {
-                    userName = comment.UserName,
-                    commentDate = comment.CommentDate.ToString("MMMM dd, yyyy"),
-                    content = comment.Content
-                });
-            }
+        //        _context.Comments.Add(comment);
+        //        _context.SaveChanges();
 
-            _logger.LogError("Error while adding comment to Post ID = {PostId}", comment.PostId);
-            return Json(new { success = false, message = "Invalid data" });
-        }
+        //        _logger.LogInformation("Comment added successfully to Post ID = {PostId} by {UserName}",
+        //      comment.PostId, comment.UserName);
+
+        //        return Json(new
+        //        {
+        //            userName = comment.UserName,
+        //            commentDate = comment.CommentDate.ToString("M/dd/yyyy, h:m"),
+        //            content = comment.Content
+        //        });
+        //    }
+
+        //    _logger.LogError("Error while adding comment to Post ID = {PostId}", comment.PostId);
+        //    return Json(new { success = false, message = "Invalid data" });
+        //}
 
     }
 }

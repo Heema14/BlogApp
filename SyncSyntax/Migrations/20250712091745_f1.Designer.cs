@@ -12,7 +12,7 @@ using SyncSyntax.Data;
 namespace SyncSyntax.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250709130541_f1")]
+    [Migration("20250712091745_f1")]
     partial class f1
     {
         /// <inheritdoc />
@@ -357,7 +357,6 @@ namespace SyncSyntax.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("UserName")
-                        .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 

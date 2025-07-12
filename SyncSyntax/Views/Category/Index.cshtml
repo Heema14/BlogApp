@@ -5,9 +5,8 @@
 }
 <h1>Blog Categories</h1>
 
-<p>
-    <a asp-controller="Category" asp-action="Create" class="btn btn-primary ">Create new Category</a>
-</p>
+<button type="button" class="btn btn-primary my-3" id="btnAddCategory">Create new Category</button>
+
 <Table class="table table-hover">
     <thead>
         <tr class="table-secondary">
@@ -21,18 +20,30 @@
         {
             <tr>
                 <td>@category.Name</td>
-                <td>@category.Description</td>
                 <td>
-
-                    <a asp-controller="Category" asp-action="Edit" asp-route-id="@category.Id" class="btn btn-warning btn-sm" title="Edit">
+                    @(string.IsNullOrWhiteSpace(category.Description) ? "..." : category.Description)
+                </td>
+                <td>
+                    <button class="btn btn-warning btn-sm btn-edit" data-id="@category.Id" title="Edit">
                         <i class="fas fa-edit"></i>
-                    </a>
-                    <a asp-controller="Category" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-danger btn-sm" title="Delete">
-                        <i class="fas fa-trash"></i>
-                    </a>
+                    </button>
+
+                    <button class="btn btn-danger btn-sm btn-delete" data-id="@category.Id" title="Delete">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
                 </td>
 
             </tr>
         }
     </tbody>
 </Table>
+
+
+<!-- Modal for Edit -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content" id="editModalContent">
+            <!-- المحتوى سيتم تحميله ديناميكيًا -->
+        </div>
+    </div>
+</div>

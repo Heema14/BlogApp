@@ -4,8 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
+using SyncSyntax.Models.CommentHub;
 using SyncSyntax.Models.IServices;
-using System.Diagnostics.Eventing.Reader;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -57,6 +57,8 @@ builder.Services.AddScoped<IUploadFileService, UploadFileService>();
 
 builder.Services.AddTransient<DatabaseSeeder>();
 
+builder.Services.AddSignalR();
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -69,8 +71,11 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapStaticAssets();
+
+
+app.MapHub<CommentHub>("/commentHub");
+
 
 app.MapControllerRoute(
     name: "default",

@@ -58,13 +58,13 @@
 
     @if (Model.Comments?.Any() ?? false)
     {
-        <div class="comments-section">
+        <div class="comments-section mb-5">
             @foreach (var comment in Model.Comments)
             {
                 <div class="card mb-3 shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title">@comment.UserName</h5>
-                        <p class="card-text text-muted"><small>@comment.CommentDate.ToString("MMMM dd, yyyy")</small></p>
+                        <p class="comment-date"><small>@comment.CommentDate.ToString("M/dd/yyyy, h:m")</small></p>
                         <p class="card-text">@comment.Content</p>
                     </div>
                 </div>
@@ -73,71 +73,77 @@
     }
     else
     {
-        <p class="text-muted fst-italic">No comments yet. Be the first to comment!</p>
+        <p class="no-comments text-muted fst-italic">No comments yet. Be the first to comment!</p>
+        <div class="comments-section mb-5"><!-- سيتم ملؤه عند أول تعليق --></div>
     }
+
 
     @if (User.Identity.IsAuthenticated)
     {
         <h4>Add a Comment</h4>
 
         <form id="commentForm">
-
-            <div class="form-group">
-                <label for="UserName">Name</label>
-                <input for="UserName" id="UserName" name="UserName" required class="form-control" />
-            </div>
-
             <div class="form-group my-2">
                 <label for="Content">Content</label>
                 <textarea for="Content" id="Content" name="Content" rows="3" required class="form-control"></textarea>
             </div>
 
-            <button type="submit" class="btn btn-primary mt-2 p-2 rounded">Submit Comment</button>
-       
+            <button type="submit" class="btn btn-primary mt-2 p-2 rounded">Share comment</button>
+            <a asp-action="Index" asp-controller="Post" class="btn btn-outline-secondary mt-2 p-2 rounded">Back to list</a>
         </form>
     }
 </div>
 
 
-<partial name="_ValidationScriptsPartial" />
-
 @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+
     <script>
-        $(document).ready(function() {
-            $('#commentForm').on('submit', function(event) {
-                event.preventDefault(); // Prevent traditional form submission
+        const postId = @Model.Id;
 
-                // Read form data into variables
-                var userName = $('#UserName').val();
-                var content = $('#Content').val();
-                var postId = @Model.Id; // Assuming you want to associate the comment with a specific post
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl(`/commentHub?postId=${postId}`)
+            .build();
 
-                // Send the data via AJAX
-                $.ajax({
-                    url: '@Url.Action("AddComment", "Post")',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify({
-                        UserName: userName,
-                        Content: content,
-                        PostId: postId // Include the post ID if needed
-                    }),
-                    success: function(response) {
-                        $('#commentForm')[0].reset(); // Reset the form
+        connection.on("ReceiveComment", function (userName, content, commentDate) {
+            $('.no-comments').remove();
 
-                        // Append the new comment to the comments section
-                        $('.comments-section').append(`
-                            <div class="card mb-3 shadow-sm">
-                                <div class="card-body">
-                                    <h5 class="card-title">${response.userName}</h5>
-                                    <p class="card-text text-muted"><small>${response.commentDate}</small></p>
-                                    <p class="card-text">${response.content}</p>
-                                </div>
-                            </div>
-                        `);
-                    }
-                });
+            if ($('.comments-section').length === 0) {
+                $('.post-content').after('<div class="comments-section mb-5"></div>');
+            }
+
+            $('.comments-section').append(`
+                <div class="card mb-3 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">${userName}</h5>
+                        <p class="comment-date"><small>${commentDate}</small></p>
+                        <p class="card-text">${content}</p>
+                    </div>
+                </div>
+            `);
+        });
+
+        connection.start().catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        $(document).ready(function () {
+            $('#commentForm').on('submit', function (event) {
+                event.preventDefault();
+
+                const content = $('#Content').val();
+
+                connection.invoke("BroadcastComment", content, postId)
+                    .then(() => {
+                        $('#commentForm')[0].reset();
+                    })
+                    .catch(function (err) {
+                        return console.error(err.toString());
+                    });
             });
         });
     </script>
 }
+

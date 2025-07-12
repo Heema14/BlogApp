@@ -23,111 +23,84 @@ namespace SyncSyntax.Controllers
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            var categories = await _context.Categories.ToListAsync();
+            var categories = await _context.Categories.AsNoTracking().ToListAsync();
             return View(categories);
         }
-        [HttpGet]
-        public IActionResult Create()
-        {
-            return View();
-        }
+
 
         [HttpPost]
-        public async Task<IActionResult> Create(Category category)
+        public async Task<IActionResult> Create([FromBody] Category category)
         {
-            _logger.LogInformation("Create(Category) called.");
+            _logger.LogInformation("Create(Category) via Fetch called.");
 
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    await _context.Categories.AddAsync(category);
-                    await _context.SaveChangesAsync();
+                _logger.LogWarning("Invalid model: {@ModelState}", ModelState);
+                return BadRequest(new { success = false, message = "Invalid data." });
+            }
 
-                    _logger.LogInformation("Category created successfully: {@Category}", category);
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "An error occurred while creating the category: {@Category}", category);
-                    ModelState.AddModelError("", "Unexpected error while saving data.");
-                }
-            }
-            else
+            try
             {
-                _logger.LogWarning("Create(Category) called with invalid model state: {@ModelState}", ModelState);
+                await _context.Categories.AddAsync(category);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("Category created successfully: {@Category}", category);
+                return Json(new { success = true });
             }
-            return View(category);
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error creating category.");
+                return StatusCode(500, new { success = false, message = "Server error." });
+            }
         }
+
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var category = _context.Categories.Find(id);
+            var category = await _context.Categories.FindAsync(id);
             if (category == null)
                 return NotFound();
 
-            return View(category);
+            return PartialView("~/Views/Shared/_EditPartial.cshtml", category);
         }
 
-        public async Task<IActionResult> Edit(Category category)
+        [HttpPost]
+        public async Task<IActionResult> Edit([FromForm] Category category)
         {
-            _logger.LogInformation("Edit(Category) called.");
+            if (!ModelState.IsValid)
+                return BadRequest(new { success = false, message = "Invalid data." });
 
-            if (ModelState.IsValid)
+            try
             {
-                try
-                {
-                    _context.Categories.Update(category);
-                    await _context.SaveChangesAsync();
-
-                    _logger.LogInformation("Category updated successfully: {@Category}", category);
-                    return RedirectToAction(nameof(Index));
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError(ex, "An error occurred while updating the category: {@Category}", category);
-                    ModelState.AddModelError("", "Unexpected error while updating the data.");
-                }
+                _context.Categories.Update(category);
+                await _context.SaveChangesAsync();
+                return Json(new { success = true });
             }
-            else
+            catch (Exception ex)
             {
-                _logger.LogWarning("Edit(Category) called with invalid model state: {@ModelState}", ModelState);
+                _logger.LogError(ex, "Error updating category");
+                return StatusCode(500, new { success = false, message = "Server error." });
             }
-
-            return View(category);
         }
 
-        public async Task<IActionResult> Delete(int id)
-        {
-            _logger.LogInformation("Delete(int) called with ID = {CategoryId}", id);
-
-            var category = await _context.Categories.FirstOrDefaultAsync(x => x.Id == id);
-            if (category == null)
-            {
-                _logger.LogWarning("Delete(int): Category not found with ID = {CategoryId}", id);
-                return NotFound();
-            }
-            _logger.LogInformation("Delete(int): Category found. Displaying delete confirmation.");
-            return View(category);
-        }
 
         [HttpPost]
         public async Task<IActionResult> DeleteConfirm(int id)
         {
-            _logger.LogInformation("DeleteConfirm(int) called with ID = {CategoryId}", id);
+            _logger.LogInformation("DeleteConfirm(Category) called with invalid model state: {@CategoryID}", id);
 
-            var categoryFromDb = await _context.Categories.FindAsync(id);
-            if (categoryFromDb == null)
-            {
-                _logger.LogWarning("DeleteConfirm(int): Category not found with ID = {CategoryId}", id);
-                return NotFound();
-            }
-            _context.Categories.Remove(categoryFromDb);
+            var category = await _context.Categories.FindAsync(id);
+            if (category == null)
+                return Json(new { success = false, message = "Category not found." });
+
+            _context.Categories.Remove(category);
+            _logger.LogInformation("DeleteConfirm(Category) called with Remove: {@CategoryID}", id);
+
             await _context.SaveChangesAsync();
 
-            _logger.LogInformation("Category deleted successfully with ID = {CategoryId}", id);
-            return RedirectToAction(nameof(Index));
+            return Json(new { success = true });
         }
+
     }
 }
