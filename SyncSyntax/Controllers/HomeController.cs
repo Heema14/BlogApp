@@ -18,6 +18,7 @@ namespace SyncSyntax.Controllers
         public IActionResult Index()
         {
             var posts = _context.Posts;
+            _logger.LogInformation("Show Index Page!!");
             return View(posts);
            
         }

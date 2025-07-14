@@ -40,7 +40,7 @@
 
                 <!-- Post Image -->
                 <div class="overflow-hidden" style="height: 220px;">
-                    <img src="@(!string.IsNullOrEmpty(post.FeatureImagePath) ? post.FeatureImagePath : "/images/default-image.jpg")"
+                    <img src="@(!string.IsNullOrEmpty(post.FeatureImagePath) ? post.FeatureImagePath : "/images/uploadImgs/default-image.jpg")"
                          class="card-img-top h-100 w-100 object-fit-cover transition"
                          alt="@post.Title"
                          style="transition: transform 0.3s ease;"
@@ -51,10 +51,10 @@
                 <div class="card-body">
                     <!-- User Info (Above Title) -->
                     <div class="d-flex align-items-center mb-3">
-                        <span>@post.UserName</span>
-                        <span class="badge bg-secondary ms-2">
-                            <img src="@post.UserImageUrl" alt="User Image" class="rounded-circle" style="width: 30px; height: 30px;">
+                        <span class="badge bg-white rounded-circle d-flex justify-content-center align-items-center" style="margin-right:8px;padding:2px;">
+                            <img src="@post.UserImageUrl" alt="User Image" class="rounded-circle" style="width: 30px; height: 30px;object-fit:cover;">
                         </span>
+                        <span>@post.UserName</span>
                     </div>
 
                     <!-- Post Title and Likes -->

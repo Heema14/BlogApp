@@ -5,8 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
 
-namespace SyncSyntax.Controllers
+namespace SyncSyntax.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     [Authorize(Roles = "Admin")]
     public class CategoryController : Controller
     {

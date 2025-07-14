@@ -26,6 +26,10 @@ bin/
 obj/
 Debug/
 Release/
+bin\
+obj\
+Debug\
+Release\
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

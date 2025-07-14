@@ -36,11 +36,11 @@ namespace SyncSyntax.Data
             }
 
             string EmailAdmin = "admin@admin.com";
-            string adminPassword = "Admin123/";
+            string adminPassword = "Admin@123";
             var admin = await userManager.FindByEmailAsync(EmailAdmin).ConfigureAwait(false);
 
-            string ContentCreatorEmail = "creator@blog.com";
-            string ContentCreatorPass = "Creator123/";
+            string ContentCreatorEmail = "user@user.com";
+            string ContentCreatorPass = "User@123";
             var contentCreator = await userManager.FindByEmailAsync(ContentCreatorEmail).ConfigureAwait(false);
 
             // إنشاء مستخدم "Admin" إذا لم يكن موجودًا

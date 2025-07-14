@@ -119,7 +119,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 if (currentUser != null)
                 {
                     post.UserName = currentUser.UserName;
-                    post.UserImageUrl = currentUser.ProfilePicture ?? "/assets/images/default-profile.jpg";
+                    post.UserImageUrl = currentUser.ProfilePicture ?? "/images/uploadImgs/default-profile.jpg";
                 }
 
                 // التحقق من وجود عنوان ومحتوى للمقال
@@ -129,32 +129,24 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                     return View(post);
                 }
 
-                // إذا تم رفع صورة جديدة
                 if (ImageUrl != null && ImageUrl.Length > 0)
                 {
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", ImageUrl.FileName);
-                    using (var stream = new FileStream(filePath, FileMode.Create))
-                    {
-                        await ImageUrl.CopyToAsync(stream);
-                    }
-                    post.FeatureImagePath = "/images/" + ImageUrl.FileName;
+                    var uploadedPath = await _uploadFile.UploadFileToFolderAsync(ImageUrl);
+                    post.FeatureImagePath = uploadedPath;
                 }
                 else if (post.Id != 0 && string.IsNullOrEmpty(post.FeatureImagePath))
                 {
                     var existingPost = await _context.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == post.Id);
                     if (existingPost != null && !string.IsNullOrEmpty(existingPost.FeatureImagePath))
                     {
-                        post.FeatureImagePath = existingPost.FeatureImagePath; // احتفظ بالصورة القديمة
+                        post.FeatureImagePath = existingPost.FeatureImagePath;
                     }
                 }
-
                 else if (post.Id == 0 && string.IsNullOrEmpty(post.FeatureImagePath))
                 {
-                    // تعيين صورة افتراضية فقط إذا كان المقال جديدًا ولا توجد صورة
-                    post.FeatureImagePath = "/assets/images/default-image.jpg";
+                    post.FeatureImagePath = "/images/uploadImgs/default-image.jpg";
                 }
 
-                // حفظ أو تحديث المقال
                 if (post.Id == 0)
                 {
                     post.CreatedAt = DateTime.Now;
@@ -185,7 +177,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         {
             _logger.LogInformation("Index called. CategoryId = {CategoryId}", categoryId);
 
-            var postQuery = _context.Posts.Include(p => p.Category).AsQueryable();
+            var postQuery = _context.Posts.AsNoTracking().Include(p => p.Category).AsQueryable();
             if (categoryId.HasValue)
             {
                 postQuery = postQuery.Where(p => p.CategoryId == categoryId);
@@ -247,8 +239,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             _context.Posts.Remove(post);
             _context.SaveChanges();
 
-
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpPost]
