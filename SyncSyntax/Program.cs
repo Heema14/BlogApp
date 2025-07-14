@@ -55,12 +55,22 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddScoped<IUploadFileService, UploadFileService>();
 
-builder.Services.AddTransient<DatabaseSeeder>();
+//builder.Services.AddTransient<DatabaseSeeder>();
 
 builder.Services.AddSignalR();
 
 var app = builder.Build();
-
+try
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        await DatabaseSeeder.Initialize(scope.ServiceProvider);
+    }
+}
+catch (Exception ex)
+{
+    Console.WriteLine("An error occurred while seeding the database.");
+}
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -77,17 +87,34 @@ app.MapStaticAssets();
 app.MapHub<CommentHub>("/commentHub");
 
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Post}/{action=Index}/{id?}")
-    .WithStaticAssets();
+//app.MapControllerRoute(
+//    name: "default",
+//    pattern: "{controller=Post}/{action=Index}/{id?}")
+//    .WithStaticAssets();
 
-
-
-using (var scope = app.Services.CreateScope())
+app.UseEndpoints(endpoints =>
 {
-    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
-    await seeder.SeedAsync();
-}
+
+    endpoints.MapAreaControllerRoute(
+        name: "admin",
+        areaName: "Admin",
+        pattern: "admin/{controller=Home}/{action=Index}/{id?}");
+
+    endpoints.MapAreaControllerRoute(
+        name: "contentcreator",
+        areaName: "ContentCreator",
+        pattern: "ContentCreator/{controller=Post}/{action=Index}/{id?}");
+
+
+    endpoints.MapControllerRoute(
+        name: "default",
+        pattern: "{controller=Home}/{action=Index}/{id?}");
+});
+
+//using (var scope = app.Services.CreateScope())
+//{
+//    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
+//    await seeder.SeedAsync();
+//}
 
 app.Run();

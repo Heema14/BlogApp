@@ -163,29 +163,55 @@ namespace SyncSyntax.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Author")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
                     b.Property<int>("CategoryId")
                         .HasColumnType("int");
 
                     b.Property<string>("Content")
                         .IsRequired()
+                        .HasMaxLength(2500)
+                        .HasColumnType("nvarchar(2500)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(5000)
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FeatureImagePath")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("LikesCount")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("PublishedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("Tags")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasMaxLength(100)
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Views")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -197,33 +223,62 @@ namespace SyncSyntax.Migrations
                         new
                         {
                             Id = 1,
-                            Author = "John Doe",
                             CategoryId = 1,
-                            Content = "Content of Tech Post 1",
-                            FeatureImagePath = "tech_image.jpg",
-                            PublishedDate = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Tech Post 1"
+                            Content = "Content of the first post",
+                            CreatedAt = new DateTime(2023, 7, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "This is a description for post one.",
+                            FeatureImagePath = "/images/p03.jpg",
+                            IsPublished = true,
+                            LikesCount = 0,
+                            PublishedDate = new DateTime(2023, 7, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Post One",
+                            UserImageUrl = "/images/p09.jpg",
+                            UserName = "user1",
+                            Views = 0
                         },
                         new
                         {
                             Id = 2,
-                            Author = "Jane Doe",
                             CategoryId = 2,
-                            Content = "Content of Health Post 1",
-                            FeatureImagePath = "health_image.jpg",
-                            PublishedDate = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Health Post 1"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Author = "Alex Smith",
-                            CategoryId = 3,
-                            Content = "Content of Lifestyle Post 1",
-                            FeatureImagePath = "lifestyle_image.jpg",
-                            PublishedDate = new DateTime(2023, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Lifestyle Post 1"
+                            Content = "Content of the second post",
+                            CreatedAt = new DateTime(2023, 7, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "This is a description for post two.",
+                            FeatureImagePath = "/images/p01.jpg",
+                            IsPublished = true,
+                            LikesCount = 0,
+                            PublishedDate = new DateTime(2023, 7, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Title = "Post Two",
+                            UserImageUrl = "/images/p08.jpg",
+                            UserName = "user2",
+                            Views = 0
                         });
+                });
+
+            modelBuilder.Entity("PostLike", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("LikedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PostLikes");
                 });
 
             modelBuilder.Entity("SyncSyntax.Models.AppUser", b =>
@@ -238,12 +293,32 @@ namespace SyncSyntax.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("DateOfBirth")
+                        .HasColumnType("datetime2");
+
                     b.Property<string>("Email")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Gender")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -321,17 +396,27 @@ namespace SyncSyntax.Migrations
                         new
                         {
                             Id = 1,
-                            Name = "Technology"
-                        },
-                        new
-                        {
-                            Id = 2,
                             Name = "Health"
                         },
                         new
                         {
+                            Id = 2,
+                            Name = "Technology"
+                        },
+                        new
+                        {
                             Id = 3,
-                            Name = "Lifestyle"
+                            Name = "Programming"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Fashion"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Design"
                         });
                 });
 
@@ -428,6 +513,25 @@ namespace SyncSyntax.Migrations
                     b.Navigation("Category");
                 });
 
+            modelBuilder.Entity("PostLike", b =>
+                {
+                    b.HasOne("Post", "Post")
+                        .WithMany("PostLikes")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.HasOne("SyncSyntax.Models.AppUser", "User")
+                        .WithMany("PostLikes")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SyncSyntax.Models.Comment", b =>
                 {
                     b.HasOne("Post", "Post")
@@ -450,6 +554,13 @@ namespace SyncSyntax.Migrations
             modelBuilder.Entity("Post", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("PostLikes");
+                });
+
+            modelBuilder.Entity("SyncSyntax.Models.AppUser", b =>
+                {
+                    b.Navigation("PostLikes");
                 });
 
             modelBuilder.Entity("SyncSyntax.Models.Category", b =>

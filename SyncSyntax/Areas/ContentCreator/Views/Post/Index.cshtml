@@ -1,0 +1,121 @@
+﻿@using System.Text.RegularExpressions
+@using SyncSyntax.Helpers
+@model IEnumerable<Post>
+
+@{
+    ViewData["Title"] = "Blog Posts";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+
+<!-- Category Filter -->
+<div class="text-center my-4">
+    @if (ViewBag.Categories != null)
+    {
+        <div class="d-flex justify-content-center flex-wrap gap-2">
+            @foreach (var category in ViewBag.Categories)
+            {
+                <a asp-controller="Post" asp-action="Index" asp-route-categoryId="@category.Id"
+                   class="badge bg-warning text-dark text-decoration-none px-3 py-2 fs-6 rounded-pill shadow-sm">
+                    @category.Name
+                </a>
+            }
+        </div>
+    }
+</div>
+
+<!-- Create Post Button -->
+<div class="text-end mb-4">
+    <a asp-action="Create" class="btn btn-success rounded-pill px-4 py-2 shadow">
+        <i class="bi bi-plus-circle me-1"></i> Create New Post
+    </a>
+</div>
+
+<!-- Posts Grid -->
+<!-- Posts Grid -->
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    @foreach (var post in Model)
+    {
+        <div class="col">
+            <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
+
+                <!-- Post Image -->
+                <div class="overflow-hidden" style="height: 220px;">
+                    <img src="@(!string.IsNullOrEmpty(post.FeatureImagePath) ? post.FeatureImagePath : "/images/default-image.jpg")"
+                         class="card-img-top h-100 w-100 object-fit-cover transition"
+                         alt="@post.Title"
+                         style="transition: transform 0.3s ease;"
+                         onmouseover="this.style.transform='scale(1.05)';"
+                         onmouseout="this.style.transform='scale(1)';" />
+                </div>
+
+                <div class="card-body">
+                    <!-- User Info (Above Title) -->
+                    <div class="d-flex align-items-center mb-3">
+                        <span>@post.UserName</span>
+                        <span class="badge bg-secondary ms-2">
+                            <img src="@post.UserImageUrl" alt="User Image" class="rounded-circle" style="width: 30px; height: 30px;">
+                        </span>
+                    </div>
+
+                    <!-- Post Title and Likes -->
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="card-title fw-bold">@post.Title</h5>
+                        <div class="d-flex align-items-center">
+                            <!-- Heart icon, changes color based on LikesCount -->
+                            <i class="fa fa-heart me-2" style="color: @(post.LikesCount > 0 ? "red" : "gray")"></i>
+                            <span>@post.LikesCount</span>
+                        </div>
+                    </div>
+
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-calendar-event me-1"></i>
+                        @post.PublishedDate.ToString("MMMM dd, yyyy")
+                    </p>
+
+                    @{
+                        var contentTag = HtmlTagHelper.RemoveHtmlTags(post.Content);
+                        var preview = contentTag.Length > 100 ? contentTag.Substring(0, 100) + "..." : contentTag;
+                    }
+
+                    <p class="card-text text-white-50">@preview</p>
+
+                    @if (post.Category != null)
+                    {
+                        <span class="badge bg-info text-dark mt-2">
+                            <i class="bi bi-tag me-1"></i> @post.Category.Name
+                        </span>
+                    }
+                </div>
+
+                <div class="card-footer bg-secondary d-flex justify-content-between align-items-center">
+                    <a asp-action="Detail" asp-route-id="@post.Id" class="btn btn-primary btn-sm px-3">
+                        <i class="bi bi-book me-1"></i> Read More
+                    </a>
+                    <a href="@Url.Action("Edit", "Post", new { id = post.Id })" class="btn btn-primary btn-sm">Edit</a>
+                    <button class="btn btn-danger btn-sm" onclick="confirmDelete(@post.Id)">Delete</button>
+                </div>
+
+            </div>
+        </div>
+    }
+</div>
+
+<script>
+    function confirmDelete(postId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This post will be deleted permanently!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // إرسال طلب الحذف إلى الـ Controller
+                window.location.href = '@Url.Action("Delete", "Post", new { id = "__POST_ID__" })'.replace('__POST_ID__', postId);
+            }
+        });
+    }
+</script>

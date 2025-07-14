@@ -1,0 +1,6 @@
+[Information] 11:39 >> Role 'Admin' created successfully. {"SourceContext":"SyncSyntax.Data.DatabaseSeeder"}
+[Information] 11:39 >> Role 'ContentCreator' created successfully. {"SourceContext":"SyncSyntax.Data.DatabaseSeeder"}
+[Information] 11:39 >> Admin user created successfully. {"SourceContext":"SyncSyntax.Data.DatabaseSeeder"}
+[Information] 11:39 >> ContentCreator user created successfully. {"SourceContext":"SyncSyntax.Data.DatabaseSeeder"}
+[Warning] 11:41 >> Sign-in failed: incorrect password for email "admin@admin.com". {"SourceContext":"SyncSyntax.Controllers.AuthController","ActionId":"6f9a81a5-ef72-443d-984c-fc22fa53dca6","ActionName":"SyncSyntax.Controllers.AuthController.SignIn (SyncSyntax)","RequestId":"0HNE2M7RDUBAQ:00000049","RequestPath":"/Auth/SignIn","ConnectionId":"0HNE2M7RDUBAQ"}
+[Warning] 11:41 >> Sign-in failed: incorrect password for email "admin@admin.com". {"SourceContext":"SyncSyntax.Controllers.AuthController","ActionId":"6f9a81a5-ef72-443d-984c-fc22fa53dca6","ActionName":"SyncSyntax.Controllers.AuthController.SignIn (SyncSyntax)","RequestId":"0HNE2M7RDUBAQ:0000005D","RequestPath":"/Auth/SignIn","ConnectionId":"0HNE2M7RDUBAQ"}

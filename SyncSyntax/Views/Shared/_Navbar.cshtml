@@ -45,14 +45,14 @@
                         </div>
                     </a>
 
-                    <a asp-controller="Auth" asp-action="SignOut" class="btn btn-outline-light">SignOut</a>
+                    <a asp-controller="Auth" asp-action="SignOut" asp-area="" class="btn btn-outline-light">SignOut</a>
                 </div>
             }
             else
             {
                 <div class="d-flex ms-auto gap-2 me-5">
-                    <a asp-controller="Auth" asp-action="SignIn" class="btn btn-outline-light">SignIn</a>
-                    <a asp-controller="Auth" asp-action="SignUp" class="btn btn-outline-light">SignUp</a>
+                    <a asp-controller="Auth" asp-action="SignIn" asp-area="" class="btn btn-outline-light">SignIn</a>
+                    <a asp-controller="Auth" asp-action="SignUp" asp-area="" class="btn btn-outline-light">SignUp</a>
                 </div>
             }
 
