@@ -86,10 +86,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
         public IActionResult Create()
         {
-
             var categories = _context.Categories.ToList();
-
-
             ViewBag.Categories = categories;
 
             return View(new Post());
@@ -111,6 +108,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [RequestSizeLimit(10 * 1024 * 1024)]
         public async Task<IActionResult> Save(Post post, IFormFile? ImageUrl)
         {
             try
@@ -201,7 +199,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             return View(posts);
         }
 
-     
+
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
@@ -243,12 +241,8 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         public IActionResult Delete(int id)
         {
             var post = _context.Posts.FirstOrDefault(p => p.Id == id);
-
             if (post == null)
-            {
                 return NotFound();
-            }
-
 
             _context.Posts.Remove(post);
             _context.SaveChanges();
@@ -256,6 +250,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             return RedirectToAction("Index");
         }
+
         [HttpPost]
         public async Task<IActionResult> Like(int postId)
         {

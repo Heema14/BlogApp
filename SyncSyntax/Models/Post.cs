@@ -28,11 +28,17 @@ public class Post
 
     [MaxLength(100, ErrorMessage = "Author's name cannot exceed 100 characters.")]
     public DateTime? UpdatedAt { get; set; } = null;
+
     public int Views { get; set; } = 0;
+
     public string UserName { get; set; }
+
     public string? UserImageUrl { get; set; }
+
     public string? Tags { get; set; }
+
     public bool IsPublished { get; set; } = false;
+
     public int LikesCount { get; set; } = 0;
 
     [ValidateNever]
@@ -49,6 +55,7 @@ public class Post
 
     [ValidateNever]
     public ICollection<Comment> Comments { get; set; } = new List<Comment>();
+
     public ICollection<PostLike> PostLikes { get; set; }
 
 }

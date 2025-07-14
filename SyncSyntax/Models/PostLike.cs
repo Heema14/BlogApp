@@ -11,6 +11,7 @@ public class PostLike
     public int PostId { get; set; }
 
     [Required(ErrorMessage = "UserId is required.")]
+    [ForeignKey("AppUser")]
     public string UserId { get; set; }
 
     [DataType(DataType.DateTime)]

@@ -1,6 +1,8 @@
 ﻿@model Post
+
 @{
     ViewData["Title"] = Model.Title;
+    var UserLike = ViewData["UserLikedPost"];
 }
 
 <style>
@@ -28,7 +30,6 @@
     {
         <div class="col-12 col-md-6 text-end">
             <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-secondary rounded  ">Edit Post</a>
-            <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger rounded mx-3 ">Delete Post</a>
         </div>
     }
 </div>
@@ -37,7 +38,7 @@
 
     <h1>@Model.Title</h1>
 
-@*     <p><strong class="badge bg-primary">By:</strong> @Model.Author | <strong class="badge bg-primary">Published on:</strong> @Model.PublishedDate.ToString("MMMM dd, yyyy")</p>
+    @*     <p><strong class="badge bg-primary">By:</strong> @Model.Author | <strong class="badge bg-primary">Published on:</strong> @Model.PublishedDate.ToString("MMMM dd, yyyy")</p>
  *@
     <p><strong class="badge bg-secondary">Category:</strong> @Model.Category?.Name</p>
 
@@ -55,12 +56,12 @@
 
     <hr>
     <!-- Likes Section -->
-    <div>
-        <span id="likesCount">@Model.LikesCount</span> Likes
-    </div>
 
     <button id="likeButton" class="btn btn-light" onclick="toggleLike(@Model.Id)">
-        <i class="fa fa-heart" id="likeIcon" style="color: @(Model.LikesCount > 0 ? "red" : (ViewData["UserLikedPost"] != null && (bool)ViewData["UserLikedPost"] ? "red" : "gray"))"></i> Like
+        <i class="fa fa-heart" id="likeIcon"
+           style="color: @(Model.LikesCount > 0 ? "red" : (UserLike != null && (bool)UserLike ? "red" : "gray"))"></i>
+            Likes
+        <span id="likesCount">@Model.LikesCount</span>
     </button>
 
     <h3>Comments</h3>
@@ -155,7 +156,7 @@
         });
 
 
-         
+
                function toggleLike(postId) {
             $.ajax({
                 url: '@Url.Action("Like", "Post")',

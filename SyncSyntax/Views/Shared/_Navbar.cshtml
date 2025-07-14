@@ -30,7 +30,7 @@
             {
                 <div class="d-flex align-items-center gap-3">
 
-                    <a asp-action="EditProfile" asp-controller="Auth" class="d-flex align-items-center gap-2 text-decoration-none">
+                    <a asp-action="EditProfile" asp-controller="Auth" asp-area="" class="d-flex align-items-center gap-2 text-decoration-none">
 
                         <img class="rounded-circle" alt="Profile Image" loading="lazy" width="40" height="40" style="object-fit: cover;"
                              src="@(!string.IsNullOrEmpty(currentUser.ProfilePicture) ? currentUser.ProfilePicture : Url.Content("~/images/default-image.jpg"))" />

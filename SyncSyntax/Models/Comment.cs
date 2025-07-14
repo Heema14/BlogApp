@@ -9,9 +9,6 @@ namespace SyncSyntax.Models
         [Key]
         public int Id { get; set; }
 
-        //[MaxLength(100, ErrorMessage = "User name cannot exceed 100 characters.")]
-        //public string? UserName { get; set; }
-
         [DataType(DataType.Date)]
         [ValidateNever]
         public DateTime CommentDate { get; set; } = DateTime.Now;
