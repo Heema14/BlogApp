@@ -1,19 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
 using SyncSyntax.Models.IServices;
-using SyncSyntax.Models.ViewModels;
-using System.Net;
-using System.Text.RegularExpressions;
 
 namespace SyncSyntax.Areas.ContentCreator.Controllers
 {
-    [Authorize(Roles = "ContentCreator")]
+    [Authorize(Roles = "ContentCreator, Admin")]
     [Area("ContentCreator")]
     public class PostController : Controller
     {
@@ -188,7 +183,6 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
 
         [HttpGet]
-      
         public IActionResult Index(int? categoryId)
         {
             _logger.LogInformation("Index called. CategoryId = {CategoryId}", categoryId);
@@ -206,7 +200,6 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             _logger.LogInformation("Index loaded successfully with {PostCount} posts.", posts.Count);
             return View(posts);
         }
-
 
      
         public async Task<IActionResult> Detail(int id)

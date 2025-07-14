@@ -16,7 +16,7 @@
         <div class="collapse navbar-collapse" id="navbarColor01">
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
-                    <a asp-action="Index" asp-controller="Post" class="nav-link">Home</a>
+                    <a asp-area="ContentCreator" asp-controller="Post" asp-action="Index" class="nav-link">Home</a>
                 </li>
                 @if (User.IsInRole("Admin"))
                 {

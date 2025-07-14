@@ -39,7 +39,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     options.Password.RequiredUniqueChars = 2;
 
     options.User.AllowedUserNameCharacters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_@ ";
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_ ";
 })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
@@ -55,8 +55,6 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddScoped<IUploadFileService, UploadFileService>();
 
-//builder.Services.AddTransient<DatabaseSeeder>();
-
 builder.Services.AddSignalR();
 
 var app = builder.Build();
@@ -71,6 +69,8 @@ catch (Exception ex)
 {
     Console.WriteLine("An error occurred while seeding the database.");
 }
+
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -111,10 +111,5 @@ app.UseEndpoints(endpoints =>
         pattern: "{controller=Home}/{action=Index}/{id?}");
 });
 
-//using (var scope = app.Services.CreateScope())
-//{
-//    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
-//    await seeder.SeedAsync();
-//}
 
 app.Run();
