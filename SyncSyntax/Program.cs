@@ -31,7 +31,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
-    options.Password.RequireDigit = false;              // مش لازم رقم
+    options.Password.RequireDigit = true;              // مش لازم رقم
     options.Password.RequireLowercase = true;          // لازم حرف صغير
     options.Password.RequireUppercase = true;          // لازم حرف كبير
     options.Password.RequireNonAlphanumeric = false;    // مش لازم رمز
@@ -39,7 +39,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     options.Password.RequiredUniqueChars = 2;
 
     options.User.AllowedUserNameCharacters =
-        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_@ ";
+        "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_ ";
 })
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
@@ -55,11 +55,10 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddScoped<IUploadFileService, UploadFileService>();
 
-//builder.Services.AddTransient<DatabaseSeeder>();
-
 builder.Services.AddSignalR();
 
 var app = builder.Build();
+
 try
 {
     using (var scope = app.Services.CreateScope())
@@ -67,10 +66,12 @@ try
         await DatabaseSeeder.Initialize(scope.ServiceProvider);
     }
 }
-catch (Exception ex)
+catch (Exception)
 {
     Console.WriteLine("An error occurred while seeding the database.");
 }
+
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
@@ -87,34 +88,22 @@ app.MapStaticAssets();
 app.MapHub<CommentHub>("/commentHub");
 
 
-//app.MapControllerRoute(
-//    name: "default",
-//    pattern: "{controller=Post}/{action=Index}/{id?}")
-//    .WithStaticAssets();
+app.MapAreaControllerRoute(
+    name: "admin",
+    areaName: "Admin",
+    pattern: "admin/{controller=Home}/{action=Index}/{id?}"
+    );
 
-app.UseEndpoints(endpoints =>
-{
+app.MapAreaControllerRoute(
+    name: "contentcreator",
+    areaName: "ContentCreator",
+    pattern: "ContentCreator/{controller=Post}/{action=Index}/{id?}"
+    );
 
-    endpoints.MapAreaControllerRoute(
-        name: "admin",
-        areaName: "Admin",
-        pattern: "admin/{controller=Home}/{action=Index}/{id?}");
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+    );
 
-    endpoints.MapAreaControllerRoute(
-        name: "contentcreator",
-        areaName: "ContentCreator",
-        pattern: "ContentCreator/{controller=Post}/{action=Index}/{id?}");
-
-
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
-});
-
-//using (var scope = app.Services.CreateScope())
-//{
-//    var seeder = scope.ServiceProvider.GetRequiredService<DatabaseSeeder>();
-//    await seeder.SeedAsync();
-//}
 
 app.Run();

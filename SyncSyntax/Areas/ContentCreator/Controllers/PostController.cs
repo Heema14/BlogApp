@@ -1,19 +1,14 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
 using SyncSyntax.Models.IServices;
-using SyncSyntax.Models.ViewModels;
-using System.Net;
-using System.Text.RegularExpressions;
 
 namespace SyncSyntax.Areas.ContentCreator.Controllers
 {
-    [Authorize(Roles = "ContentCreator")]
+    [Authorize(Roles = "ContentCreator, Admin")]
     [Area("ContentCreator")]
     public class PostController : Controller
     {
@@ -188,7 +183,6 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
 
         [HttpGet]
-      
         public IActionResult Index(int? categoryId)
         {
             _logger.LogInformation("Index called. CategoryId = {CategoryId}", categoryId);
@@ -206,7 +200,6 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             _logger.LogInformation("Index loaded successfully with {PostCount} posts.", posts.Count);
             return View(posts);
         }
-
 
      
         public async Task<IActionResult> Detail(int id)
@@ -330,37 +323,6 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 return Json(new { success = false, message = "An unexpected error occurred." });
             }
         }
-
-        //[HttpPost]
-        //[Authorize(Roles = "Admin,User")]
-        //public JsonResult AddComment([FromBody] Comment comment)
-        //{
-        //    var currentUserName = User.Identity?.Name ?? "Anonymous..";
-
-        //    _logger.LogInformation("AddComment called by user = {UserName}", currentUserName);
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        comment.UserName = currentUserName; // User in system
-        //        comment.CommentDate = DateTime.Now;
-
-        //        _context.Comments.Add(comment);
-        //        _context.SaveChanges();
-
-        //        _logger.LogInformation("Comment added successfully to Post ID = {PostId} by {UserName}",
-        //      comment.PostId, comment.UserName);
-
-        //        return Json(new
-        //        {
-        //            userName = comment.UserName,
-        //            commentDate = comment.CommentDate.ToString("M/dd/yyyy, h:m"),
-        //            content = comment.Content
-        //        });
-        //    }
-
-        //    _logger.LogError("Error while adding comment to Post ID = {PostId}", comment.PostId);
-        //    return Json(new { success = false, message = "Invalid data" });
-        //}
 
     }
 }
