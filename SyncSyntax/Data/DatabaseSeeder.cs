@@ -48,7 +48,7 @@ namespace SyncSyntax.Data
             {
                 var adminUser = new AppUser
                 {
-                    UserName = EmailAdmin,
+                    UserName = "admin_admincom",
                     Email = EmailAdmin,
                     EmailConfirmed = true,
                     FirstName = "Admin",
@@ -75,7 +75,7 @@ namespace SyncSyntax.Data
             {
                 var contentCreatorUser = new AppUser
                 {
-                    UserName = ContentCreatorEmail,
+                    UserName = "creator_blogcom",
                     Email = ContentCreatorEmail,
                     EmailConfirmed = true,
                     FirstName = "Content",
@@ -95,6 +95,38 @@ namespace SyncSyntax.Data
                 else
                 {
                     logger.LogError("Failed to create ContentCreator user: " + string.Join(", ", createContentCreator.Errors.Select(e => e.Description)));
+                }
+            }
+            // إضافة مستخدم ContentCreator جديد
+            string newContentCreatorEmail = "newcreator@blog.com";
+            string newContentCreatorPassword = "NewCreator123/";
+            var newContentCreator = await userManager.FindByEmailAsync(newContentCreatorEmail).ConfigureAwait(false);
+
+            // إنشاء محتوى Creator إضافي
+            if (newContentCreator == null)
+            {
+                var newContentCreatorUser = new AppUser
+                {
+                    UserName = "newcreator_blogcom",
+                    Email = newContentCreatorEmail,
+                    EmailConfirmed = true,
+                    FirstName = "New",
+                    LastName = "Creator",
+                    Gender = "Male",
+                    DateOfBirth = new DateTime(1995, 4, 22),
+                    PhoneNumber = "555123456",
+                    ProfilePicture = "/images/a3.jpg"
+                };
+
+                var createNewContentCreator = await userManager.CreateAsync(newContentCreatorUser, newContentCreatorPassword).ConfigureAwait(false);
+                if (createNewContentCreator.Succeeded)
+                {
+                    await userManager.AddToRoleAsync(newContentCreatorUser, "ContentCreator").ConfigureAwait(false);
+                    logger.LogInformation("New ContentCreator user created successfully.");
+                }
+                else
+                {
+                    logger.LogError("Failed to create New ContentCreator user: " + string.Join(", ", createNewContentCreator.Errors.Select(e => e.Description)));
                 }
             }
         }
