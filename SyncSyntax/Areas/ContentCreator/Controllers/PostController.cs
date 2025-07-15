@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
 using SyncSyntax.Models.IServices;
+using System.Security.Claims;
 
 namespace SyncSyntax.Areas.ContentCreator.Controllers
 {
@@ -142,6 +143,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 {
                     post.UserName = currentUser.UserName;
                     post.UserImageUrl = currentUser.ProfilePicture ?? "/assets/images/default-profile.jpg";
+                    post.UserId = currentUser.Id;  // تعيين UserId من المستخدم الحالي
                 }
 
                 // التحقق من وجود عنوان ومحتوى للمقال
@@ -169,7 +171,6 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                         post.FeatureImagePath = existingPost.FeatureImagePath; // احتفظ بالصورة القديمة
                     }
                 }
-
                 else if (post.Id == 0 && string.IsNullOrEmpty(post.FeatureImagePath))
                 {
                     // تعيين صورة افتراضية فقط إذا كان المقال جديدًا ولا توجد صورة
@@ -322,7 +323,12 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             {
                 return PartialView("PostDetail", post); // إعادة الـ Partial View
             }
+            var currentUserName = User.Identity.Name;  // الحصول على الـ UserName الحالي
+            var isFollowing = _context.Followings
+                .Any(f => f.FollowerId == currentUserName && f.FollowingId == post.UserName);  // التحقق باستخدام الـ UserName بدلاً من UserId
 
+            // تخزين حالة المتابعة في ViewData
+            ViewData["IsFollowing"] = isFollowing;
             return View(post); // عرض الـ View العادي
         }
 
@@ -411,7 +417,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 return Json(new { success = false, message = "An unexpected error occurred." });
             }
         }
-
+     
     }
 }
 

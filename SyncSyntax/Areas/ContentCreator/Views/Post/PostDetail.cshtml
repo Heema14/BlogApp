@@ -101,6 +101,29 @@
             <a asp-action="Index" asp-controller="Post" class="btn btn-outline-secondary mt-2 p-2 rounded">Back to list</a>
         </form>
     }
+    <hr>
+    <div class="d-flex justify-content-between align-items-center">
+        @if (ViewData["IsFollowing"] != null && (bool)ViewData["IsFollowing"])
+        {
+            <form asp-controller="Following" asp-action="Unfollow" asp-route-userId="@Model.UserId" method="post">
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="bi bi-person-dash me-1"></i> Unfollow
+                </button>
+            </form>
+        }
+        else
+        {
+            <form asp-controller="Following" asp-action="Follow" asp-route-userId="@Model.UserId" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="btn btn-success btn-sm">
+                    <i class="bi bi-person-plus me-1"></i> Follow
+                </button>
+            </form>
+
+        }
+    </div>
+
+
 </div>
 
 

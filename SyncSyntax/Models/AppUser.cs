@@ -37,5 +37,12 @@ namespace SyncSyntax.Models
         //public string? ProfilePictureUrl { get; set; } // رابط الصورة
 
         public ICollection<PostLike> PostLikes { get; set; }
+        // العلاقة بين المستخدمين الذين يتابعهم هذا المستخدم
+        public ICollection<Following> FollowedUsers { get; set; }
+
+        // العلاقة بين المتابعين لهذا المستخدم
+        public ICollection<Following> Followers { get; set; }
+
+
     }
 }

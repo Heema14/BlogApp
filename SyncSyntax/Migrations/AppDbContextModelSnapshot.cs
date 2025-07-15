@@ -22,6 +22,41 @@ namespace SyncSyntax.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Following", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("AppUserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AppUserId1")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FollowerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FollowingId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AppUserId");
+
+                    b.HasIndex("AppUserId1");
+
+                    b.HasIndex("FollowerId");
+
+                    b.HasIndex("FollowingId");
+
+                    b.ToTable("Followings");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -203,6 +238,10 @@ namespace SyncSyntax.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("UserImageUrl")
                         .HasColumnType("nvarchar(max)");
 
@@ -232,6 +271,7 @@ namespace SyncSyntax.Migrations
                             LikesCount = 0,
                             PublishedDate = new DateTime(2023, 7, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Post One",
+                            UserId = "1",
                             UserImageUrl = "/images/p09.jpg",
                             UserName = "user1",
                             Views = 0
@@ -248,6 +288,7 @@ namespace SyncSyntax.Migrations
                             LikesCount = 0,
                             PublishedDate = new DateTime(2023, 7, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             Title = "Post Two",
+                            UserId = "1",
                             UserImageUrl = "/images/p08.jpg",
                             UserName = "user2",
                             Views = 0
@@ -451,6 +492,33 @@ namespace SyncSyntax.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("Following", b =>
+                {
+                    b.HasOne("SyncSyntax.Models.AppUser", null)
+                        .WithMany("FollowedUsers")
+                        .HasForeignKey("AppUserId");
+
+                    b.HasOne("SyncSyntax.Models.AppUser", null)
+                        .WithMany("Followers")
+                        .HasForeignKey("AppUserId1");
+
+                    b.HasOne("SyncSyntax.Models.AppUser", "Follower")
+                        .WithMany()
+                        .HasForeignKey("FollowerId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SyncSyntax.Models.AppUser", "FollowedUser")
+                        .WithMany()
+                        .HasForeignKey("FollowingId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("FollowedUser");
+
+                    b.Navigation("Follower");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -560,6 +628,10 @@ namespace SyncSyntax.Migrations
 
             modelBuilder.Entity("SyncSyntax.Models.AppUser", b =>
                 {
+                    b.Navigation("FollowedUsers");
+
+                    b.Navigation("Followers");
+
                     b.Navigation("PostLikes");
                 });
 
