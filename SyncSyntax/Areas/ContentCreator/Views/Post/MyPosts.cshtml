@@ -137,7 +137,7 @@
                         <div class="col">
                             <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
 
-                                <!-- Post Image -->
+                               @*  <!-- Post Image -->
                                 <div class="overflow-hidden" style="height: 220px;">
                                     <img src="@(!string.IsNullOrEmpty(post.FeatureImagePath) ? post.FeatureImagePath : "/images/default-image.jpg")"
                                          class="card-img-top h-100 w-100 object-fit-cover transition"
@@ -145,8 +145,32 @@
                                          style="transition: transform 0.3s ease;"
                                          onmouseover="this.style.transform='scale(1.05)';"
                                          onmouseout="this.style.transform='scale(1)';" />
-                                </div>
+                                </div> *@
+                                <!-- Post Image -->
+                                <div class="overflow-hidden position-relative" style="height: 220px;">
+                                    <img src="@(!string.IsNullOrEmpty(post.FeatureImagePath) ? post.FeatureImagePath : "/images/default-image.jpg")"
+                                         class="card-img-top h-100 w-100 object-fit-cover transition"
+                                         alt="@post.Title"
+                                         style="transition: transform 0.3s ease;"
+                                         onmouseover="this.style.transform='scale(1.05)';"
+                                         onmouseout="this.style.transform='scale(1)';" />
 
+                                    <!-- On/Off Toggle Button -->
+                                    <button class="btn position-absolute top-0 end-0 m-3"
+                                            style="background-color: rgba(0,0,0,0.5); color: white; border-radius: 50%;"
+                                            data-id="@post.Id"
+                                            onclick="togglePublishStatus(@post.Id, '@post.IsPublished.ToString().ToLower()')">
+                                        @if (post.IsPublished)
+                                        {
+                                            <i class="bi bi-check-circle"></i>  <!-- Published Icon -->
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-x-circle"></i>  <!-- Unpublished Icon -->
+                                        }
+                                    </button>
+
+                                </div>
                                 <div class="card-body">
                                     <!-- User Info (Above Title) -->
                                     <div class="d-flex align-items-center mb-3">
@@ -268,4 +292,38 @@
             });
         });
     });
+</script>
+<script>
+        function togglePublishStatus(postId, currentStatus) {
+        // تحويل currentStatus إلى قيمة منطقية (Boolean)
+        var isPublished = JSON.parse(currentStatus);
+
+        // إرسال طلب إلى الخادم لتغيير حالة النشر
+        $.ajax({
+            url: '@Url.Action("TogglePublishStatus", "Post")', // تأكد من أن هذا هو رابط الـ Action في الـ Controller
+            type: 'POST',
+            data: { postId: postId },
+            success: function(response) {
+                if (response.success) {
+                    // تغيير أيقونة الزر بناءً على الحالة الجديدة
+                    var iconElement = $("button[data-id='" + postId + "'] i");
+
+                    if (response.isPublished) {
+                        // إذا تم نشر البوست
+                        iconElement.removeClass('bi-x-circle').addClass('bi-check-circle');
+                    } else {
+                        // إذا تم إلغاء نشر البوست
+                        iconElement.removeClass('bi-check-circle').addClass('bi-x-circle');
+                    }
+                } else {
+                    alert("حدث خطأ أثناء تغيير حالة النشر.");
+                }
+            },
+            error: function() {
+                alert("حدث خطأ في الاتصال بالخادم.");
+            }
+        });
+    }
+
+
 </script>

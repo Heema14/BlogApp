@@ -17,9 +17,9 @@ namespace SyncSyntax.Controllers
         }
         public IActionResult Index()
         {
-            var posts = _context.Posts;
+            var posts = _context.Posts.Where(p => p.IsPublished).ToList(); // فلترة البوستات المنشورة فقط
             return View(posts);
-           
         }
+
     }
 }

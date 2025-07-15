@@ -83,6 +83,26 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         //    return RedirectToAction(nameof(Index));
         //}
 
+        [HttpPost]
+        public IActionResult TogglePublishStatus(int postId)
+        {
+            // جلب البوست من قاعدة البيانات
+            var post = _context.Posts.FirstOrDefault(p => p.Id == postId);
+
+            if (post == null)
+            {
+                return NotFound();
+            }
+
+            // تغيير حالة النشر
+            post.IsPublished = !post.IsPublished;
+
+            // حفظ التغييرات في قاعدة البيانات
+            _context.SaveChanges();
+
+            // إرجاع النتيجة (يمكنك تعديلها حسب الحاجة)
+            return Json(new { success = true, isPublished = post.IsPublished });
+        }
 
         public IActionResult Create()
         {
@@ -181,18 +201,21 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             }
         }
 
-
         [HttpGet]
         public IActionResult Index(int? categoryId)
         {
             _logger.LogInformation("Index called. CategoryId = {CategoryId}", categoryId);
 
-            var postQuery = _context.Posts.Include(p => p.Category).AsQueryable();
+            var postQuery = _context.Posts.Include(p => p.Category)
+                                          .Where(p => p.IsPublished)  // إضافة الفلترة فقط للبوستات المنشورة
+                                          .AsQueryable();
+
             if (categoryId.HasValue)
             {
                 postQuery = postQuery.Where(p => p.CategoryId == categoryId);
                 _logger.LogInformation("Filtering posts by CategoryId = {CategoryId}", categoryId);
             }
+
             var posts = postQuery.AsNoTracking().ToList();
 
             ViewData["Categories"] = _context.Categories.ToList();
