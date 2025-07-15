@@ -200,8 +200,39 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             _logger.LogInformation("Index loaded successfully with {PostCount} posts.", posts.Count);
             return View(posts);
         }
+        [HttpGet]
+        public IActionResult MyPosts(int? categoryId)
+        {
+            // الحصول على اسم المستخدم من المصادقة
+            var userName = User.Identity.Name; // استخدم User.Identity.Name للحصول على الـ UserName من الـ Claims
 
-     
+            if (string.IsNullOrEmpty(userName))
+            {
+                // إذا لم يكن المستخدم مسجل دخول
+                _logger.LogWarning("User is not authenticated.");
+                return RedirectToAction("Login", "Account"); // إعادة التوجيه إلى صفحة تسجيل الدخول
+            }
+
+            // استعلام البوستات الخاصة بالمستخدم بناءً على UserName
+            var postQuery = _context.Posts
+                                    .Where(p => p.UserName == userName) // تصفية البوستات بناءً على الـ UserName
+                                    .Include(p => p.Category) // إذا كنت بحاجة لعرض الفئة
+                                    .AsQueryable();
+
+            if (categoryId.HasValue)
+            {
+                // تصفية إضافية حسب الـ CategoryId
+                postQuery = postQuery.Where(p => p.CategoryId == categoryId);
+            }
+
+            var posts = postQuery.AsNoTracking().ToList(); // جلب البوستات دون تتبع التغييرات
+
+            // إرسال الفئات إلى الـ View (إذا كنت بحاجة إليها لعرضها في قائمة الفئات مثلاً)
+            ViewData["Categories"] = _context.Categories.ToList();
+
+            return View(posts); // عرض البوستات في الـ View
+        }
+
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)

@@ -1,0 +1,169 @@
+﻿@* <div class="col-6 col-sm-auto">
+    <button class="CustimBtn w-100 px-3 py-2" data-bs-toggle="modal" data-bs-target="#addQuestionDiv">
+        <i class="fas fa-plus"></i> Add Question
+    </button>
+</div>
+
+
+<div id="overlay" class="overlay" style="display:none;"></div>
+<div id="addQuestionDiv" class="modal fade" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true" style="display:none;">
+    <div class="modal-dialog modal-lg w-100 h-100 m-0">
+        <div class="modal-content" style="max-width:900px;">
+            <!-- Modal Header -->
+            <div class="modal-header">
+                <h5 class="modal-title" id="addQuestionModalLabel">Add New Question</h5>
+                <button type="button" class="close btn xicon" style="margin-left:auto;font-size: 25px;padding: 0;" data-bs-dismiss="modal" aria-label="Close">
+                    <i class="bi bi-x"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+ *@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Explore Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: white;
+        }
+
+        .sidebar {
+            width: 180px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            background: white;
+            border-right: 1px solid #ddd;
+            padding-top: 1rem;
+        }
+
+            .sidebar a {
+                display: block;
+                padding: 10px 20px;
+                color: #000;
+                text-decoration: none;
+            }
+
+                .sidebar a:hover {
+                    background-color: #f0f0f0;
+                }
+
+        .explore-grid {
+            margin-left: 100px; /* Adjust for sidebar width */
+            padding: 20px;
+        }
+
+        .image-tile {
+            aspect-ratio: 1 / 1;
+            overflow: hidden;
+        }
+
+            .image-tile img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+            }
+
+        .card {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h4 class="text-center mb-4">Blog App</h4>
+        <a asp-action="MyPosts" asp-controller="Post" class="fw-bold">🏠 My Posts</a>
+        <a href="#">🔍 Search</a>
+        <a asp-action="Create" asp-controller="Index">🔄 Explore</a>
+        <a href="#">🎬 Reels</a>
+        <a href="#">📨 Messages</a>
+        <a href="#">❤️ Notifications</a>
+        <a asp-action="Create" asp-controller="Post" class="btn btn-link">
+            ➕ Create
+        </a>
+        <a href="#">👤 Profile</a>
+    </div>
+
+    <!-- Explore Content -->
+    <div class="explore-grid container-fluid">
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var post in Model)
+            {
+                <div class="col">
+                    <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
+
+                        <!-- Post Image -->
+                        <div class="overflow-hidden" style="height: 220px;">
+                            <img src="@(!string.IsNullOrEmpty(post.FeatureImagePath) ? post.FeatureImagePath : "/images/default-image.jpg")"
+                                 class="card-img-top h-100 w-100 object-fit-cover transition"
+                                 alt="@post.Title"
+                                 style="transition: transform 0.3s ease;"
+                                 onmouseover="this.style.transform='scale(1.05)';"
+                                 onmouseout="this.style.transform='scale(1)';" />
+                        </div>
+
+                        <div class="card-body">
+                            <!-- User Info (Above Title) -->
+                            <div class="d-flex align-items-center mb-3">
+                                <span>@post.UserName</span>
+                                <span class="badge bg-secondary ms-2">
+                                    <img src="@post.UserImageUrl" alt="User Image" class="rounded-circle" style="width: 30px; height: 30px;">
+                                </span>
+                            </div>
+
+                            <!-- Post Title and Likes -->
+                            <div class="d-flex justify-content-between align-items-center">
+                                <h5 class="card-title fw-bold">@post.Title</h5>
+                                <div class="d-flex align-items-center">
+                                    <!-- Heart icon, changes color based on LikesCount -->
+                                    <i class="fa fa-heart me-2" style="color: @(post.LikesCount > 0 ? "red" : "gray")"></i>
+                                    <span>@post.LikesCount</span>
+                                </div>
+                            </div>
+
+                            <p class="text-muted mb-2">
+                                <i class="bi bi-calendar-event me-1"></i>
+                                @post.PublishedDate.ToString("MMMM dd, yyyy")
+                            </p>
+
+                            @{
+                                var contentTag = HtmlTagHelper.RemoveHtmlTags(post.Content);
+                                var preview = contentTag.Length > 100 ? contentTag.Substring(0, 100) + "..." : contentTag;
+                            }
+
+                            <p class="card-text text-white-50">@preview</p>
+
+                            @if (post.Category != null)
+                            {
+                                <span class="badge bg-info text-dark mt-2">
+                                    <i class="bi bi-tag me-1"></i> @post.Category.Name
+                                </span>
+                            }
+                        </div>
+
+                        <div class="card-footer bg-secondary d-flex justify-content-between align-items-center">
+                            <a asp-action="Detail" asp-route-id="@post.Id" class="btn btn-primary btn-sm px-3">
+                                <i class="bi bi-book me-1"></i> Read More
+                            </a>
+                            <a href="@Url.Action("Edit", "Post", new { id = post.Id })" class="btn btn-primary btn-sm">Edit</a>
+                            <button class="btn btn-danger btn-sm" onclick="confirmDelete(@post.Id)">Delete</button>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+</body>
+</html>
