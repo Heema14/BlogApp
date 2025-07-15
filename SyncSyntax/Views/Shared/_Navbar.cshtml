@@ -17,6 +17,8 @@
             <ul class="navbar-nav me-auto">
                 <li class="nav-item">
                     <a asp-area="ContentCreator" asp-controller="Post" asp-action="Index" class="nav-link">Home</a>
+                    <a asp-area="ContentCreator" asp-controller="Post" asp-action="MyPosts" class="nav-link">My Posts</a>
+
                 </li>
                 @if (User.IsInRole("Admin"))
                 {

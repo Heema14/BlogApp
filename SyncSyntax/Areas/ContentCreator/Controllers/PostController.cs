@@ -233,6 +233,42 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             return View(posts); // عرض البوستات في الـ View
         }
 
+        //public async Task<IActionResult> Detail(int id)
+        //{
+        //    if (id <= 0)
+        //    {
+        //        _logger.LogWarning("Detail: Invalid Post ID = {PostId}", id);
+        //        return NotFound();
+        //    }
+        //    _logger.LogInformation("Detail called with Post ID = {PostId}", id);
+
+        //    if (id == 0)
+        //    {
+        //        _logger.LogWarning("Detail: Invalid Post ID = {PostId}", id);
+        //        return NotFound();
+        //    }
+
+        //    var post = _context.Posts
+        //        .Include(p => p.Category)
+        //        .Include(p => p.Comments)
+        //        .Include(p => p.PostLikes)
+        //            .ThenInclude(un => un.User)
+        //        .AsNoTracking()
+        //        .FirstOrDefault(p => p.Id == id);
+
+        //    if (post == null)
+        //    {
+        //        _logger.LogWarning("Detail: Post not found with ID = {PostId}", id);
+        //        return NotFound();
+        //    }
+
+        //    _logger.LogInformation("Detail: Post loaded successfully with ID = {PostId}", id);
+        //    var currentUser = await _userManager.GetUserAsync(User);
+        //    bool userLikedPost = post.PostLikes.Any(l => l.UserId == currentUser.Id);
+        //    ViewData["UserLikedPost"] = userLikedPost;
+        //    ViewData["LikesCount"] = post.PostLikes.Count;
+        //    return View(post);
+        //}
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
@@ -240,21 +276,14 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 _logger.LogWarning("Detail: Invalid Post ID = {PostId}", id);
                 return NotFound();
             }
-            _logger.LogInformation("Detail called with Post ID = {PostId}", id);
 
-            if (id == 0)
-            {
-                _logger.LogWarning("Detail: Invalid Post ID = {PostId}", id);
-                return NotFound();
-            }
-
-            var post = _context.Posts
+            var post = await _context.Posts
                 .Include(p => p.Category)
                 .Include(p => p.Comments)
                 .Include(p => p.PostLikes)
                     .ThenInclude(un => un.User)
                 .AsNoTracking()
-                .FirstOrDefault(p => p.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
 
             if (post == null)
             {
@@ -262,13 +291,18 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 return NotFound();
             }
 
-            _logger.LogInformation("Detail: Post loaded successfully with ID = {PostId}", id);
             var currentUser = await _userManager.GetUserAsync(User);
             bool userLikedPost = post.PostLikes.Any(l => l.UserId == currentUser.Id);
-            ViewData["UserLikedPost"] = userLikedPost;
-            ViewData["LikesCount"] = post.PostLikes.Count;
-            return View(post);
+
+            // إذا كان الطلب من المودال (Ajax)
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+            {
+                return PartialView("PostDetail", post); // إعادة الـ Partial View
+            }
+
+            return View(post); // عرض الـ View العادي
         }
+
 
         [HttpGet]
         public IActionResult Delete(int id)

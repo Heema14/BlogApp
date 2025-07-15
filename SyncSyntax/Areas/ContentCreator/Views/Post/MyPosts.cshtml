@@ -1,27 +1,4 @@
-﻿@* <div class="col-6 col-sm-auto">
-    <button class="CustimBtn w-100 px-3 py-2" data-bs-toggle="modal" data-bs-target="#addQuestionDiv">
-        <i class="fas fa-plus"></i> Add Question
-    </button>
-</div>
-
-
-<div id="overlay" class="overlay" style="display:none;"></div>
-<div id="addQuestionDiv" class="modal fade" tabindex="-1" aria-labelledby="addQuestionModalLabel" aria-hidden="true" style="display:none;">
-    <div class="modal-dialog modal-lg w-100 h-100 m-0">
-        <div class="modal-content" style="max-width:900px;">
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h5 class="modal-title" id="addQuestionModalLabel">Add New Question</h5>
-                <button type="button" class="close btn xicon" style="margin-left:auto;font-size: 25px;padding: 0;" data-bs-dismiss="modal" aria-label="Close">
-                    <i class="bi bi-x"></i>
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
- *@
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -56,7 +33,7 @@
                 }
 
         .explore-grid {
-            margin-left: 100px; /* Adjust for sidebar width */
+            margin-left: 100px;  
             padding: 20px;
         }
 
@@ -84,11 +61,10 @@
         <h4 class="text-center mb-4">Blog App</h4>
         <a asp-action="MyPosts" asp-controller="Post" class="fw-bold">🏠 My Posts</a>
         <a href="#">🔍 Search</a>
-        <a asp-action="Create" asp-controller="Index">🔄 Explore</a>
-        <a href="#">🎬 Reels</a>
+        <a asp-action="Index" asp-controller="Post">🔄 Explore</a>
         <a href="#">📨 Messages</a>
         <a href="#">❤️ Notifications</a>
-        <a asp-action="Create" asp-controller="Post" class="btn btn-link">
+        <a asp-action="Create" asp-controller="Post"  >
             ➕ Create
         </a>
         <a href="#">👤 Profile</a>
@@ -152,9 +128,14 @@
                         </div>
 
                         <div class="card-footer bg-secondary d-flex justify-content-between align-items-center">
-                            <a asp-action="Detail" asp-route-id="@post.Id" class="btn btn-primary btn-sm px-3">
+                           @*  <a asp-action="Detail" asp-route-id="@post.Id" class="btn btn-primary btn-sm px-3">
                                 <i class="bi bi-book me-1"></i> Read More
-                            </a>
+                            </a> *@
+                            <!-- Add this button inside your card's footer or anywhere you want -->
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#postModal" data-id="@post.Id">
+                                Read More
+                            </button>
+
                             <a href="@Url.Action("Edit", "Post", new { id = post.Id })" class="btn btn-primary btn-sm">Edit</a>
                             <button class="btn btn-danger btn-sm" onclick="confirmDelete(@post.Id)">Delete</button>
                         </div>
@@ -164,6 +145,45 @@
             }
         </div>
     </div>
+    <!-- Modal -->
+    <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="postModalLabel">Post Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <!-- سيتم تحميل التفاصيل هنا -->
+                </div>
+            </div>
+        </div>
+    </div>
+
 
 </body>
 </html>
+<script>
+    $(document).ready(function () {
+        $('#postModal').on('show.bs.modal', function (e) {
+            var button = $(e.relatedTarget);  
+            var postId = button.data('id');  
+            var modalBody = $(this).find('.modal-body');
+            modalBody.html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</div>');
+
+            // AJAX request to fetch post details
+            $.ajax({
+                url: '@Url.Action("Detail", "Post")/' + postId,
+                type: 'GET',
+                success: function (response) {
+                    modalBody.html(response);  
+                },
+                error: function () {
+                    modalBody.html('<p class="text-danger">Failed to load post details.</p>');
+                }
+            });
+        });
+    });
+</script>
