@@ -363,8 +363,6 @@ F:\MyASPCore\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\ahud5y9gpm-b804xvqo1
 F:\MyASPCore\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\ac63znhi33-khhs5umk4w.gz
 F:\MyASPCore\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\x2x0vt2p43-dcowqscbhr.gz
 F:\MyASPCore\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\b227vorgrh-hiqumc4mhz.gz
-F:\MyASPCore\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\xbgb78aoub-t0c1jl2atc.gz
-F:\MyASPCore\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\se1b29u40y-t0c1jl2atc.gz
 F:\MyASPCore\BlogApp\SyncSyntax\obj\Debug\net9.0\staticwebassets.build.json
 F:\MyASPCore\BlogApp\SyncSyntax\obj\Debug\net9.0\staticwebassets.build.json.cache
 F:\MyASPCore\BlogApp\SyncSyntax\obj\Debug\net9.0\staticwebassets.development.json
@@ -757,3 +755,6 @@ C:\Users\awadallah\Downloads\BlogApp\SyncSyntax\obj\Debug\net9.0\refint\SyncSynt
 C:\Users\awadallah\Downloads\BlogApp\SyncSyntax\obj\Debug\net9.0\SyncSyntax.pdb
 C:\Users\awadallah\Downloads\BlogApp\SyncSyntax\obj\Debug\net9.0\SyncSyntax.genruntimeconfig.cache
 C:\Users\awadallah\Downloads\BlogApp\SyncSyntax\obj\Debug\net9.0\ref\SyncSyntax.dll
+F:\MyASPCore\BlogApp\SyncSyntax\obj\Debug\net9.0\scopedcss\Areas\ContentCreator\Views\Shared\_Layout.cshtml.rz.scp.css
+F:\MyASPCore\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\xbgb78aoub-s4i0avyzy6.gz
+F:\MyASPCore\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\se1b29u40y-s4i0avyzy6.gz

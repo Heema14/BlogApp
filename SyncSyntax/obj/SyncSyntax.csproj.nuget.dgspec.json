@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\awadallah\\Downloads\\BlogApp\\SyncSyntax\\SyncSyntax.csproj": {}
+    "F:\\MyASPCore\\BlogApp\\SyncSyntax\\SyncSyntax.csproj": {}
   },
   "projects": {
-    "C:\\Users\\awadallah\\Downloads\\BlogApp\\SyncSyntax\\SyncSyntax.csproj": {
+    "F:\\MyASPCore\\BlogApp\\SyncSyntax\\SyncSyntax.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\awadallah\\Downloads\\BlogApp\\SyncSyntax\\SyncSyntax.csproj",
+        "projectUniqueName": "F:\\MyASPCore\\BlogApp\\SyncSyntax\\SyncSyntax.csproj",
         "projectName": "SyncSyntax",
-        "projectPath": "C:\\Users\\awadallah\\Downloads\\BlogApp\\SyncSyntax\\SyncSyntax.csproj",
-        "packagesPath": "C:\\Users\\awadallah\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\awadallah\\Downloads\\BlogApp\\SyncSyntax\\obj\\",
+        "projectPath": "F:\\MyASPCore\\BlogApp\\SyncSyntax\\SyncSyntax.csproj",
+        "packagesPath": "C:\\Users\\hp\\.nuget\\packages\\",
+        "outputPath": "F:\\MyASPCore\\BlogApp\\SyncSyntax\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\awadallah\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\hp\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -42,9 +42,9 @@
         "restoreAuditProperties": {
           "enableAudit": "true",
           "auditLevel": "low",
-          "auditMode": "all"
+          "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0": {
@@ -108,7 +108,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.100/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
