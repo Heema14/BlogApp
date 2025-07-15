@@ -1,36 +1,139 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - BlogApp</title>
-    <script type="importmap"></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Blog App</title>
 
-    <link rel="stylesheet" href="~/lib/bootswatch/bootstrap.min.css" />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Bootstrap & Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
+    <link href="~/css/site.css" rel="stylesheet" />
 
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  
+    <style>
+        body {
+            background-color: #fff;
+            margin: 0;
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            background: #ffffff;
+            border-right: 1px solid #ddd;
+            padding-top: 1rem;
+            height: 100vh;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+        }
+
+            .sidebar a {
+                display: flex;
+                align-items: center;
+                padding: 12px 20px;
+                color: #333;
+                text-decoration: none;
+                font-weight: 500;
+                transition: 0.2s ease-in-out;
+                border-radius: 10px;
+            }
+
+                .sidebar a:hover {
+                    background-color: #f7f7f7;
+                }
+
+                .sidebar a i {
+                    font-size: 20px;
+                    margin-right: 10px;
+                }
+
+        /* Mobile Bottom Navigation */
+        .sidebar-bottom {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: #ffffff;
+            border-top: 1px solid #ddd;
+            z-index: 1050;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+            .sidebar-bottom a {
+                font-size: 22px;
+                color: #333;
+                text-decoration: none;
+                transition: color 0.3s;
+            }
+
+                .sidebar-bottom a:hover {
+                    color: #007bff;
+                }
+
+        /* Main Content */
+        main {
+            min-height: 100vh;
+            background-color: #fdfdfd;
+        }
+
+        /* Responsive behavior */
+        @media (max-width: 767px) {
+            .sidebar
+
+        {
+            display: none;
+        }
+
+        }
+
+        @media (min-width: 768px) {
+            .sidebar-bottom
+
+        {
+            display: none;
+        }
+
+        }
+    </style>
 </head>
 <body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar for desktop -->
+            <nav class="col-md-3 col-lg-2 sidebar d-none d-md-block">
+                <h4 class="text-center mb-4">Blog App</h4>
+                <a asp-action="MyPosts" asp-controller="Post"><i class="bi bi-house-door"></i><span> My Posts</span></a>
+                <a href="#"><i class="bi bi-search"></i><span> Search</span></a>
+                <a asp-action="Index" asp-controller="Post"><i class="bi bi-arrow-repeat"></i><span> Explore</span></a>
+                <a href="#"><i class="bi bi-envelope"></i><span> Messages</span></a>
+                <a href="#"><i class="bi bi-bell"></i><span> Notifications</span></a>
+                <a asp-action="Create" asp-controller="Post"><i class="bi bi-plus-circle"></i><span> Create</span></a>
+                <a href="#"><i class="bi bi-person"></i><span> Profile</span></a>
+            </nav>
 
-
-    <!-- Page Content -->
-    <div class="explore-grid container-fluid">
-            @RenderBody()
-         
+            <!-- Main content -->
+            <main class="col-12 col-md-9 col-lg-10 px-4 py-4">
+                @RenderBody()
+            </main>
+        </div>
     </div>
 
- 
+    <!-- Bottom nav for mobile -->
+    <div class="sidebar-bottom d-flex d-md-none">
+        <a asp-action="MyPosts" asp-controller="Post"><i class="bi bi-house-door"></i></a>
+        <a href="#"><i class="bi bi-search"></i></a>
+        <a asp-action="Index" asp-controller="Post"><i class="bi bi-arrow-repeat"></i></a>
+        <a href="#"><i class="bi bi-envelope"></i></a>
+        <a href="#"><i class="bi bi-bell"></i></a>
+        <a asp-action="Create" asp-controller="Post"><i class="bi bi-plus-circle"></i></a>
+        <a href="#"><i class="bi bi-person"></i></a>
+    </div>
 
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://kit.fontawesome.com/40ad9b3b9c.js" crossorigin="anonymous"></script>
-
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

@@ -22,10 +22,11 @@ Migrations/
 *.tmp
 
 # Build output
-bin/
-obj/
-Debug/
-Release/
+bin
+obj
+Debug
+Release
+packages
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
