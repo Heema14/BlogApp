@@ -1,0 +1,56 @@
+﻿@model ProfileViewModel
+<style>
+    .profile-header {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .profile-picture {
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    .profile-stats {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .posts-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+    }
+
+    .post img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+    }
+
+    .post p {
+        text-align: center;
+        font-size: 14px;
+    }
+
+</style>
+<div class="profile-header">
+    <img src="@Model.User.ProfilePicture" alt="Profile Picture" class="profile-picture">
+    <h2>@Model.User.UserName</h2>
+    <div class="profile-stats">
+        <span>@Model.FollowersCount متابعين</span>
+        <span>@Model.PostsCount بوستات</span>
+    </div>
+</div>
+
+<div class="posts-container">
+    @foreach (var post in Model.Posts)
+    {
+        <div class="post">
+            <img src="@post.FeatureImagePath" alt="Post Image">
+            <p>@post.Content</p>
+        </div>
+    }
+</div>

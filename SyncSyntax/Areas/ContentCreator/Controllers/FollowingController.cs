@@ -85,6 +85,7 @@ public class FollowingController : Controller
 
 
         return RedirectToAction("Profile", new { userId = userId });
+
     }
 
 
@@ -110,6 +111,42 @@ public class FollowingController : Controller
         }
 
         return RedirectToAction("Profile", new { userId = userId });
+
+    }
+    public IActionResult Profile(string userId)
+    {
+        // التأكد من أن المستخدم الذي نحاول عرض بروفايله موجود في قاعدة البيانات
+        var user = _context.Users.FirstOrDefault(u => u.Id == userId);
+        if (user == null)
+        {
+            return NotFound("User not found");
+        }
+
+        // جلب عدد المتابعين للمستخدم
+        var followersCount = _context.Followings
+            .Count(f => f.FollowingId == userId);
+
+        // جلب عدد البوستات التي نشرها المستخدم
+        var postsCount = _context.Posts
+            .Count(p => p.UserId == userId);
+
+        // جلب البوستات الخاصة بالمستخدم
+        var posts = _context.Posts
+            .Where(p => p.UserId == userId)
+            .Include(p => p.Category)
+            .OrderByDescending(p => p.PublishedDate)
+            .ToList();
+
+        // إنشاء ViewModel لتمرير البيانات إلى الـ View
+        var model = new ProfileViewModel
+        {
+            User = user,
+            FollowersCount = followersCount,
+            PostsCount = postsCount,
+            Posts = posts
+        };
+
+        return View(model);
     }
 
 }
