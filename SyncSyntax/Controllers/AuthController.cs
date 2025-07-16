@@ -100,7 +100,7 @@ namespace SyncSyntax.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation("User {Email} signed in after registration.", model.Email);
 
-                    return RedirectToAction("Index", "Post", new { area = "ContentCreator" });
+                    return RedirectToAction("FollowingPosts", "Following", new { area = "ContentCreator" });
 
                 }
 
@@ -146,7 +146,7 @@ namespace SyncSyntax.Controllers
             }
 
             _logger.LogInformation("User {Email} signed in successfully.", model.Email);
-            return RedirectToAction("Index", "Post", new { area = "ContentCreator" });
+            return RedirectToAction("FollowingPosts", "Following", new { area = "ContentCreator" });
 
         }
 
@@ -272,7 +272,7 @@ namespace SyncSyntax.Controllers
             _logger.LogInformation("EditProfile: User {Email} updated and re-signed in.", user.Email);
 
             TempData["Success"] = "Profile updated successfully.";
-            return RedirectToAction("Index", "Post", new { area = "ContentCreator" });
+            return RedirectToAction("FollowingPosts", "Following", new { area = "ContentCreator" });
 
         }
 

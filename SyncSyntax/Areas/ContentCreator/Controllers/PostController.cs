@@ -87,7 +87,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         [HttpPost]
         public IActionResult TogglePublishStatus(int postId)
         {
-            // جلب البوست من قاعدة البيانات
+           
             var post = _context.Posts.FirstOrDefault(p => p.Id == postId);
 
             if (post == null)
@@ -98,10 +98,10 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             // تغيير حالة النشر
             post.IsPublished = !post.IsPublished;
 
-            // حفظ التغييرات في قاعدة البيانات
+            
             _context.SaveChanges();
 
-            // إرجاع النتيجة (يمكنك تعديلها حسب الحاجة)
+          
             return Json(new { success = true, isPublished = post.IsPublished });
         }
 
@@ -143,17 +143,17 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 {
                     post.UserName = currentUser.UserName;
                     post.UserImageUrl = currentUser.ProfilePicture ?? "/assets/images/default-profile.jpg";
-                    post.UserId = currentUser.Id;  // تعيين UserId من المستخدم الحالي
+                    post.UserId = currentUser.Id;  
                 }
 
-                // التحقق من وجود عنوان ومحتوى للمقال
+             
                 if (string.IsNullOrEmpty(post.Title) || string.IsNullOrEmpty(post.Content))
                 {
                     ModelState.AddModelError("", "Title and Content are required.");
                     return View(post);
                 }
 
-                // إذا تم رفع صورة جديدة
+               
                 if (ImageUrl != null && ImageUrl.Length > 0)
                 {
                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", ImageUrl.FileName);
@@ -168,16 +168,16 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                     var existingPost = await _context.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == post.Id);
                     if (existingPost != null && !string.IsNullOrEmpty(existingPost.FeatureImagePath))
                     {
-                        post.FeatureImagePath = existingPost.FeatureImagePath; // احتفظ بالصورة القديمة
+                        post.FeatureImagePath = existingPost.FeatureImagePath; 
                     }
                 }
                 else if (post.Id == 0 && string.IsNullOrEmpty(post.FeatureImagePath))
                 {
-                    // تعيين صورة افتراضية فقط إذا كان المقال جديدًا ولا توجد صورة
+                   
                     post.FeatureImagePath = "/assets/images/default-image.jpg";
                 }
 
-                // حفظ أو تحديث المقال
+              
                 if (post.Id == 0)
                 {
                     post.CreatedAt = DateTime.Now;
@@ -193,7 +193,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 }
 
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Profile", "Following", new { userId = post.UserId});
             }
             catch (Exception ex)
             {
@@ -202,28 +202,47 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             }
         }
 
+        
         [HttpGet]
-        public IActionResult Index(int? categoryId)
+        public IActionResult Explore(int? categoryId)
         {
-            _logger.LogInformation("Index called. CategoryId = {CategoryId}", categoryId);
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var postQuery = _context.Posts.Include(p => p.Category)
-                                          .Where(p => p.IsPublished)  // إضافة الفلترة فقط للبوستات المنشورة
-                                          .AsQueryable();
+            var postQuery = _context.Posts
+                .Include(p => p.Category)
+                .Where(p => p.IsPublished);
 
             if (categoryId.HasValue)
             {
                 postQuery = postQuery.Where(p => p.CategoryId == categoryId);
-                _logger.LogInformation("Filtering posts by CategoryId = {CategoryId}", categoryId);
             }
 
-            var posts = postQuery.AsNoTracking().ToList();
+            var posts = postQuery
+                .OrderByDescending(p => p.PublishedDate)
+                .AsNoTracking()
+                .ToList();
+
+           
+            var postOwnerIds = posts.Select(p => p.UserId).Distinct().ToList();
+
+        
+            var followingIds = _context.Followings
+                .Where(f => f.FollowerId == currentUserId && postOwnerIds.Contains(f.FollowingId))
+                .Select(f => f.FollowingId)
+                .ToHashSet();
+
+         
+            var viewModelList = posts.Select(post => new PostWithFollowStatusViewModel
+            {
+                Post = post,
+                IsFollowing = followingIds.Contains(post.UserId)
+            }).ToList();
 
             ViewData["Categories"] = _context.Categories.ToList();
 
-            _logger.LogInformation("Index loaded successfully with {PostCount} posts.", posts.Count);
-            return View(posts);
+            return View(viewModelList);
         }
+
         [HttpGet]
         public IActionResult MyPosts(int? categoryId)
         {
@@ -257,42 +276,6 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             return View(posts); // عرض البوستات في الـ View
         }
 
-        //public async Task<IActionResult> Detail(int id)
-        //{
-        //    if (id <= 0)
-        //    {
-        //        _logger.LogWarning("Detail: Invalid Post ID = {PostId}", id);
-        //        return NotFound();
-        //    }
-        //    _logger.LogInformation("Detail called with Post ID = {PostId}", id);
-
-        //    if (id == 0)
-        //    {
-        //        _logger.LogWarning("Detail: Invalid Post ID = {PostId}", id);
-        //        return NotFound();
-        //    }
-
-        //    var post = _context.Posts
-        //        .Include(p => p.Category)
-        //        .Include(p => p.Comments)
-        //        .Include(p => p.PostLikes)
-        //            .ThenInclude(un => un.User)
-        //        .AsNoTracking()
-        //        .FirstOrDefault(p => p.Id == id);
-
-        //    if (post == null)
-        //    {
-        //        _logger.LogWarning("Detail: Post not found with ID = {PostId}", id);
-        //        return NotFound();
-        //    }
-
-        //    _logger.LogInformation("Detail: Post loaded successfully with ID = {PostId}", id);
-        //    var currentUser = await _userManager.GetUserAsync(User);
-        //    bool userLikedPost = post.PostLikes.Any(l => l.UserId == currentUser.Id);
-        //    ViewData["UserLikedPost"] = userLikedPost;
-        //    ViewData["LikesCount"] = post.PostLikes.Count;
-        //    return View(post);
-        //}
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
@@ -305,7 +288,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 .Include(p => p.Category)
                 .Include(p => p.Comments)
                 .Include(p => p.PostLikes)
-                    .ThenInclude(un => un.User)
+                    .ThenInclude(pl => pl.User)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -316,22 +299,31 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
-            bool userLikedPost = post.PostLikes.Any(l => l.UserId == currentUser.Id);
+            bool isFollowing = false;
+            bool userLikedPost = false;
 
-            // إذا كان الطلب من المودال (Ajax)
+            if (currentUser != null)
+            {
+                isFollowing = _context.Followings.Any(f =>
+                    f.FollowerId == currentUser.Id && f.FollowingId == post.UserId);
+
+                userLikedPost = post.PostLikes.Any(l => l.UserId == currentUser.Id);
+            }
+
+            var viewModel = new PostDetailViewModel
+            {
+                Post = post,
+                IsFollowing = isFollowing,
+                UserLikedPost = userLikedPost
+            };
+
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("PostDetail", post); // إعادة الـ Partial View
+                return PartialView("PostDetail", viewModel);
             }
-            var currentUserName = User.Identity.Name;  // الحصول على الـ UserName الحالي
-            var isFollowing = _context.Followings
-                .Any(f => f.FollowerId == currentUserName && f.FollowingId == post.UserName);  // التحقق باستخدام الـ UserName بدلاً من UserId
 
-            // تخزين حالة المتابعة في ViewData
-            ViewData["IsFollowing"] = isFollowing;
-            return View(post); // عرض الـ View العادي
+            return View(viewModel);
         }
-
 
         [HttpGet]
         public IActionResult Delete(int id)
@@ -348,7 +340,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             _context.SaveChanges();
 
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Profile", "Following");
         }
         [HttpPost]
         public async Task<IActionResult> Like(int postId)
