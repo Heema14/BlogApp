@@ -202,28 +202,47 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             }
         }
 
+        
         [HttpGet]
         public IActionResult Explore(int? categoryId)
         {
-            _logger.LogInformation("Index called. CategoryId = {CategoryId}", categoryId);
+            var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-            var postQuery = _context.Posts.Include(p => p.Category)
-                                          .Where(p => p.IsPublished)  // إضافة الفلترة فقط للبوستات المنشورة
-                                          .AsQueryable();
+            var postQuery = _context.Posts
+                .Include(p => p.Category)
+                .Where(p => p.IsPublished);
 
             if (categoryId.HasValue)
             {
                 postQuery = postQuery.Where(p => p.CategoryId == categoryId);
-                _logger.LogInformation("Filtering posts by CategoryId = {CategoryId}", categoryId);
             }
 
-            var posts = postQuery.AsNoTracking().ToList();
+            var posts = postQuery
+                .OrderByDescending(p => p.PublishedDate)
+                .AsNoTracking()
+                .ToList();
+
+           
+            var postOwnerIds = posts.Select(p => p.UserId).Distinct().ToList();
+
+        
+            var followingIds = _context.Followings
+                .Where(f => f.FollowerId == currentUserId && postOwnerIds.Contains(f.FollowingId))
+                .Select(f => f.FollowingId)
+                .ToHashSet();
+
+         
+            var viewModelList = posts.Select(post => new PostWithFollowStatusViewModel
+            {
+                Post = post,
+                IsFollowing = followingIds.Contains(post.UserId)
+            }).ToList();
 
             ViewData["Categories"] = _context.Categories.ToList();
 
-            _logger.LogInformation("Index loaded successfully with {PostCount} posts.", posts.Count);
-            return View(posts);
+            return View(viewModelList);
         }
+
         [HttpGet]
         public IActionResult MyPosts(int? categoryId)
         {
@@ -257,7 +276,6 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             return View(posts); // عرض البوستات في الـ View
         }
 
-      
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
@@ -270,7 +288,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 .Include(p => p.Category)
                 .Include(p => p.Comments)
                 .Include(p => p.PostLikes)
-                    .ThenInclude(un => un.User)
+                    .ThenInclude(pl => pl.User)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
 
@@ -281,22 +299,31 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             }
 
             var currentUser = await _userManager.GetUserAsync(User);
-            bool userLikedPost = post.PostLikes.Any(l => l.UserId == currentUser.Id);
+            bool isFollowing = false;
+            bool userLikedPost = false;
 
-            
+            if (currentUser != null)
+            {
+                isFollowing = _context.Followings.Any(f =>
+                    f.FollowerId == currentUser.Id && f.FollowingId == post.UserId);
+
+                userLikedPost = post.PostLikes.Any(l => l.UserId == currentUser.Id);
+            }
+
+            var viewModel = new PostDetailViewModel
+            {
+                Post = post,
+                IsFollowing = isFollowing,
+                UserLikedPost = userLikedPost
+            };
+
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("PostDetail", post); 
+                return PartialView("PostDetail", viewModel);
             }
-            var currentUserName = User.Identity.Name;  
-            var isFollowing = _context.Followings
-                .Any(f => f.FollowerId == currentUserName && f.FollowingId == post.UserName);  
 
-            
-            ViewData["IsFollowing"] = isFollowing;
-            return View(post); 
+            return View(viewModel);
         }
-
 
         [HttpGet]
         public IActionResult Delete(int id)

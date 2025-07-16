@@ -7,12 +7,12 @@ public class Following
     [Key]
     public int Id { get; set; }
 
-    public string FollowerId { get; set; }  // ID المستخدم الذي يتابع
-    public string FollowingId { get; set; }  // ID المستخدم الذي يتم متابعته
+    public string FollowerId { get; set; }  
+    public string FollowingId { get; set; } 
 
     [ForeignKey("FollowerId")]
     public AppUser Follower { get; set; }
 
     [ForeignKey("FollowingId")]
-    public AppUser FollowedUser { get; set; } // اسم المستخدم الذي يتم متابعته
+    public AppUser FollowedUser { get; set; } 
 }

@@ -1,4 +1,5 @@
-﻿@model IEnumerable<Post>
+﻿@* @model IEnumerable<Post> *@
+    @model IEnumerable<PostWithFollowStatusViewModel>
 
 @{
     ViewData["Title"] = "Blog Posts";
@@ -39,15 +40,15 @@
 
                 <!-- Post Image with Overlay -->
                 <div class="overflow-hidden position-relative" style="height: 220px;">
-                    <img src="@(!string.IsNullOrEmpty(post.FeatureImagePath) ? post.FeatureImagePath : "/images/default-image.jpg")"
+                    <img src="@(!string.IsNullOrEmpty(post.Post.FeatureImagePath) ? post.Post.FeatureImagePath : "/images/default-image.jpg")"
                          class="card-img-top h-100 w-100 object-fit-cover transition"
-                         alt="@post.Title"
+                         alt="@post.Post.Title"
                          style="transition: transform 0.3s ease;" />
 
                     <!-- Read More Overlay -->
 
-               
-                    <a data-bs-toggle="modal" data-bs-target="#postModal" data-id="@post.Id"
+
+                    <a data-bs-toggle="modal" data-bs-target="#postModal" data-id="@post.Post.Id"
                        class="read-more-overlay d-flex justify-content-center align-items-center text-white text-decoration-none">
                         <span class="fs-6 fw-semibold"><i class="bi bi-book me-2"></i>Read More</span>
                     </a>
@@ -57,39 +58,65 @@
                     <!-- User Info and Actions -->
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <div class="d-flex align-items-center gap-2">
-                            <img src="@post.UserImageUrl" alt="User" class="rounded-circle" style="width: 30px; height: 30px;">
-                            <span>@post.UserName</span>
+                            <img src="@post.Post.UserImageUrl" alt="User" class="rounded-circle" style="width: 30px; height: 30px;">
+                            <span>@post.Post.UserName</span>
                         </div>
+
+                        <div class="d-flex align-items-center gap-2 actions">
+                            @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != post.Post.UserId)
+                            {
+                                if (post.IsFollowing)
+                                {
+                                    <form asp-controller="Following" asp-action="Unfollow" asp-route-userId="@post.Post.UserId" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-person-dash me-1"></i> Unfollow
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <form asp-controller="Following" asp-action="Follow" asp-route-userId="@post.Post.UserId" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-success btn-sm">
+                                            <i class="bi bi-person-plus me-1"></i> Follow
+                                        </button>
+                                    </form>
+                                }
+                            }
+
+                        </div>
+
                     </div>
 
                     <!-- Post Title and Likes -->
                     <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title fw-bold">@post.Title</h5>
+                        <h5 class="card-title fw-bold">@post.Post.Title</h5>
                         <div class="d-flex align-items-center gap-1" style="cursor: pointer;">
-                            <i class="bi bi-heart-fill" style="color: @(post.LikesCount > 0 ? "red" : "gray");"></i>
-                            <span>@post.LikesCount</span>
+                            <i class="bi bi-heart-fill" style="color: @(post.Post.LikesCount > 0 ? "red" : "gray");"></i>
+                            <span>@post.Post.LikesCount</span>
                         </div>
                     </div>
 
                     <!-- Date -->
                     <p class="text-muted mb-2 DatePost">
                         <i class="bi bi-calendar-event me-1"></i>
-                        @post.PublishedDate.ToString("MMMM dd, yyyy")
+                        @post.Post.PublishedDate.ToString("MMMM dd, yyyy")
                     </p>
 
                     <!-- Preview -->
                     @{
-                        var contentTag = HtmlTagHelper.RemoveHtmlTags(post.Content);
+                        var contentTag = HtmlTagHelper.RemoveHtmlTags(post.Post.Content);
                         var preview = contentTag.Length > 100 ? contentTag.Substring(0, 100) + "..." : contentTag;
                     }
 
                     <p class="card-text text-black">@preview</p>
 
                     <!-- Category -->
-                    @if (post.Category != null)
+                    @if (post.Post.Category != null)
                     {
                         <span class="badge bg-info text-dark mt-2">
-                            <i class="bi bi-tag me-1"></i> @post.Category.Name
+                            <i class="bi bi-tag me-1"></i> @post.Post.Category.Name
                         </span>
                     }
                 </div>
@@ -114,16 +141,15 @@
         </div>
     </div>
 </div>
-
 <script>
     $(document).ready(function () {
         $('#postModal').on('show.bs.modal', function (e) {
             var button = $(e.relatedTarget);
-            var postId = button.data('id');
+            var postId = button.data('id');  
             var modalBody = $(this).find('.modal-body');
             modalBody.html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</div>');
 
-            // AJAX request to fetch post details
+            
             $.ajax({
                 url: '@Url.Action("Detail", "Post")/' + postId,
                 type: 'GET',
