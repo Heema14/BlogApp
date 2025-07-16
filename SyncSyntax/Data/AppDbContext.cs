@@ -21,15 +21,15 @@ namespace SyncSyntax.Data
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Following>()
      .HasOne(f => f.Follower)
-     .WithMany()  
-     .HasForeignKey(f => f.FollowerId) 
-     .OnDelete(DeleteBehavior.Restrict);   
+     .WithMany()
+     .HasForeignKey(f => f.FollowerId)
+     .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Following>()
                 .HasOne(f => f.FollowedUser)
-                .WithMany()   
-                .HasForeignKey(f => f.FollowingId)  
-                .OnDelete(DeleteBehavior.Restrict);   
+                .WithMany()
+                .HasForeignKey(f => f.FollowingId)
+                .OnDelete(DeleteBehavior.Restrict);
 
 
             modelBuilder.Entity<Post>()

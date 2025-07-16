@@ -2,32 +2,6 @@
     ViewData["Title"] = "MyPosts";
 }
 
-<style>
-    .read-more-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        background-color: rgba(0, 0, 0, 0.6); /* خلفية شفافة */
-        opacity: 0;
-        transition: 0.3s ease;
-    }
-
-        .read-more-overlay:hover {
-            opacity: 1;
-        }
-
-        .read-more-overlay span {
-            transform: scale(1);
-            transition: transform 0.3s ease;
-        }
-
-        .read-more-overlay:hover span {
-            transform: scale(1.1);
-        }
-
-</style>
 
 <link href="~/css/sidebar.css" rel="stylesheet" />
 
@@ -50,7 +24,7 @@
 
                         <!-- Overlay -->
                         <a asp-action="Detail" asp-route-id="@post.Id" class="read-more-overlay d-flex justify-content-center align-items-center text-white text-decoration-none">
-                            <span class="fs-6 fw-semibold"><i class="bi bi-book me-1"></i>Read More</span>
+                            <span class="fs-6 fw-semibold"><i class="bi bi-book me-2"></i>Read More</span>
                         </a>
                     </div>
 
@@ -59,13 +33,13 @@
                         <div class="d-flex align-items-center justify-content-between mb-3">
                             <div class="d-flex align-items-center gap-2">
                                 <span>
-                                    <img src="@post.UserImageUrl" alt="User Image" class="rounded-circle" style="width: 30px; height: 30px;">
+                                    <img src="@post.UserImageUrl" alt="User" class="rounded-circle" style="width: 30px; height: 30px;">
                                 </span>
                                 <span>@post.UserName</span>
                             </div>
 
                             <div class="d-flex align-items-center gap-2 actions">
-                                <span onclick="confirmDelete(@post.Id)"><i class="bi bi-trash3-fill"></i></span>
+                                <span class="text-danger" onclick="confirmDelete(@post.Id)"><i class="bi bi-trash3-fill"></i></span>
                                 <span onclick="location.href='@Url.Action("Edit", "Post", new { id = post.Id })'">
                                     <i class="bi bi-pencil-square"></i>
                                 </span>
@@ -75,14 +49,13 @@
                         <!-- Post Title and Likes -->
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="card-title fw-bold">@post.Title</h5>
-                            <div class="d-flex align-items-center">
-                                <!-- Heart icon, changes color based on LikesCount -->
-                                <i class="fa fa-heart me-2" style="color: @(post.LikesCount > 0 ? "red" : "gray")"></i>
+                            <div class="d-flex align-items-center gap-1" style="cursor: pointer;">
+                                <i class="bi bi-heart-fill" style="color: @(post.LikesCount > 0 ? "red" : "gray");"></i>
                                 <span>@post.LikesCount</span>
                             </div>
                         </div>
 
-                        <p class="text-muted mb-2">
+                        <p class="text-muted mb-2 DatePost">
                             <i class="bi bi-calendar-event me-1"></i>
                             @post.PublishedDate.ToString("MMMM dd, yyyy")
                         </p>
@@ -92,7 +65,7 @@
                             var preview = contentTag.Length > 100 ? contentTag.Substring(0, 100) + "..." : contentTag;
                         }
 
-                        <p class="card-text text-black" style="font-size:14px;">@preview</p>
+                        <p class="card-text text-black">@preview</p>
 
                         @if (post.Category != null)
                         {

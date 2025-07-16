@@ -22,8 +22,8 @@ Migrations/
 *.tmp
 
 # Build output
-bin
-obj
+**/bin/
+**/obj/
 Debug
 Release
 packages

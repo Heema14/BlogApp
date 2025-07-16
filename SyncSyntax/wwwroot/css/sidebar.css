@@ -10,3 +10,55 @@
         display: none;
     }
 }
+
+.card-title {
+    font-size: 24px;
+}
+
+.DatePost, .card-text {
+    font-size: 14px;
+}
+
+.actions span {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 1px solid blue;
+}
+
+.bi-heart-fill {
+    transition: transform 0.2s;
+}
+
+    .bi-heart-fill:hover {
+        transform: scale(1.2);
+    }
+
+
+.read-more-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.6); /* خلفية شفافة */
+    opacity: 0;
+    transition: 0.3s ease;
+}
+
+    .read-more-overlay:hover {
+        opacity: 1;
+    }
+
+    .read-more-overlay span {
+        transform: scale(1);
+        transition: transform 0.3s ease;
+    }
+
+    .read-more-overlay:hover span {
+        transform: scale(1.1);
+    }

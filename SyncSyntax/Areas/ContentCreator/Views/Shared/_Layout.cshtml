@@ -18,10 +18,9 @@
 
         /* Sidebar Styles */
         .sidebar {
-            background: #ffffff;
+            background: #131313;
             border-right: 1px solid #ddd;
             padding-top: 1rem;
-            height: 100vh;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
         }
 
@@ -29,21 +28,25 @@
                 display: flex;
                 align-items: center;
                 padding: 12px 20px;
-                color: #333;
+                color: #fafafa;
                 text-decoration: none;
                 font-weight: 500;
                 transition: 0.2s ease-in-out;
                 border-radius: 10px;
             }
 
-                .sidebar a:hover {
-                    background-color: #f7f7f7;
-                }
+            .sidebar h4 {
+                color: #fafafa;
+            }
 
-                .sidebar a i {
-                    font-size: 20px;
-                    margin-right: 10px;
-                }
+            .sidebar a:hover {
+                background-color: #606060;
+            }
+
+            .sidebar a i {
+                font-size: 20px;
+                margin-right: 10px;
+            }
 
         /* Mobile Bottom Navigation */
         .sidebar-bottom {
@@ -51,7 +54,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            background: #ffffff;
+            background: #131313;
             border-top: 1px solid #ddd;
             z-index: 1050;
             display: flex;
@@ -62,38 +65,19 @@
 
             .sidebar-bottom a {
                 font-size: 22px;
-                color: #333;
+                color: #fafafa;
                 text-decoration: none;
                 transition: color 0.3s;
             }
 
                 .sidebar-bottom a:hover {
-                    color: #007bff;
+                    color: #272727;
                 }
 
         /* Main Content */
         main {
             min-height: 100vh;
             background-color: #fdfdfd;
-        }
-
-        /* Responsive behavior */
-        @media (max-width: 767px) {
-            .sidebar
-
-        {
-            display: none;
-        }
-
-        }
-
-        @media (min-width: 768px) {
-            .sidebar-bottom
-
-        {
-            display: none;
-        }
-
         }
     </style>
 </head>
@@ -102,14 +86,14 @@
         <div class="row">
             <!-- Sidebar for desktop -->
             <nav class="col-md-3 col-lg-2 sidebar d-none d-md-block">
-                <h4 class="text-center mb-4">Blog App</h4>
+                <h4 class="mb-4">Blog App</h4>
                 <a asp-action="MyPosts" asp-controller="Post"><i class="bi bi-house-door"></i><span> My Posts</span></a>
                 <a href="#"><i class="bi bi-search"></i><span> Search</span></a>
                 <a asp-action="Index" asp-controller="Post"><i class="bi bi-arrow-repeat"></i><span> Explore</span></a>
                 <a href="#"><i class="bi bi-envelope"></i><span> Messages</span></a>
                 <a href="#"><i class="bi bi-bell"></i><span> Notifications</span></a>
                 <a asp-action="Create" asp-controller="Post"><i class="bi bi-plus-circle"></i><span> Create</span></a>
-                <a href="#"><i class="bi bi-person"></i><span> Profile</span></a>
+                <a asp-controller="Auth" asp-area="" asp-action="EditProfile"><i class="bi bi-person"></i><span> Profile</span></a>
             </nav>
 
             <!-- Main content -->
