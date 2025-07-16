@@ -64,7 +64,7 @@ wwwroot\images\a4.jpg
 wwwroot\images\background.jpeg
 wwwroot\images\bg.jpg
 wwwroot\images\colton-sturgeon-peLGhFkbkow-unsplash.jpg
-wwwroot\images\default-image.jpg
+wwwroot\images\logoBlogApp.jpg
 wwwroot\images\overlay.png
 wwwroot\images\p01.jpg
 wwwroot\images\p02.jpg
@@ -84,6 +84,7 @@ wwwroot\images\pic06.jpg
 wwwroot\images\pic07.jpg
 wwwroot\images\pic08.jpg
 wwwroot\images\pic09.jpg
+wwwroot\images\uploadImgs\default-image.jpg
 wwwroot\images\uploadImgs\logoBlogApp.jpg
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
@@ -170,6 +171,7 @@ F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\assets\js\util.js
 F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\assets\webfonts\fa-brands-400.svg
 F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\assets\webfonts\fa-regular-400.svg
 F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\assets\webfonts\fa-solid-900.svg
+F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\css\sidebar.css
 F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\css\site.css
 F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\favicon.ico
 F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\js\site.js
@@ -243,4 +245,3 @@ F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\vendor\jquery\jquery.min.map
 F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\vendor\jquery\jquery.slim.js
 F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\vendor\jquery\jquery.slim.min.js
 F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\vendor\jquery\jquery.slim.min.map
-F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\css\sidebar.css

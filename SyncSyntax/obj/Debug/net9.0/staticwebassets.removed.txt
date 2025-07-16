@@ -1,5 +1,0 @@
-F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\images\03f2c3a9-f4aa-44fd-b46f-259e2ce09c6a.jpg
-F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\images\7052fc62b3488b003ef3cae44c566887.jpg
-F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\images\8527f88d-25c2-466c-a9cd-47cb8c5819fb.jpg
-F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\images\e78c452c-c5b1-4aa3-bca3-cdc1b997261e.jpg
-F:\MyASPCore\BlogApp\SyncSyntax\wwwroot\images\f9cd9527-9a34-43cb-8d50-0af1edab3e0c.jpg

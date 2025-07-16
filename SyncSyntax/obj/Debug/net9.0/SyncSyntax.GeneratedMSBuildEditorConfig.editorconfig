@@ -52,8 +52,8 @@ build_metadata.AdditionalFiles.CssScope =
 build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQ29udGVudENyZWF0b3JcVmlld3NcUG9zdFxDcmVhdGUuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[F:/MyASPCore/BlogApp/SyncSyntax/Areas/ContentCreator/Views/Post/Index.cshtml]
-build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQ29udGVudENyZWF0b3JcVmlld3NcUG9zdFxJbmRleC5jc2h0bWw=
+[F:/MyASPCore/BlogApp/SyncSyntax/Areas/ContentCreator/Views/Post/Explore.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXNcQ29udGVudENyZWF0b3JcVmlld3NcUG9zdFxFeHBsb3JlLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
 [F:/MyASPCore/BlogApp/SyncSyntax/Areas/ContentCreator/Views/Post/MyPosts.cshtml]
