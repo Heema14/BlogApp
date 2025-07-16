@@ -87,7 +87,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         [HttpPost]
         public IActionResult TogglePublishStatus(int postId)
         {
-            // جلب البوست من قاعدة البيانات
+           
             var post = _context.Posts.FirstOrDefault(p => p.Id == postId);
 
             if (post == null)
@@ -98,10 +98,10 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             // تغيير حالة النشر
             post.IsPublished = !post.IsPublished;
 
-            // حفظ التغييرات في قاعدة البيانات
+            
             _context.SaveChanges();
 
-            // إرجاع النتيجة (يمكنك تعديلها حسب الحاجة)
+          
             return Json(new { success = true, isPublished = post.IsPublished });
         }
 
@@ -193,7 +193,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 }
 
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Profile", "Following", new { userId = post.UserId});
             }
             catch (Exception ex)
             {
@@ -313,7 +313,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             _context.SaveChanges();
 
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Profile", "Following");
         }
         [HttpPost]
         public async Task<IActionResult> Like(int postId)

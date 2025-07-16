@@ -273,11 +273,8 @@
         });
     });
 
-
-        function togglePublishStatus(postId, currentStatus) {
-
+    function togglePublishStatus(postId, currentStatus) {
         var isPublished = JSON.parse(currentStatus);
-
 
         $.ajax({
             url: '@Url.Action("TogglePublishStatus", "Post")',
@@ -285,26 +282,21 @@
             data: { postId: postId },
             success: function(response) {
                 if (response.success) {
-
                     var iconElement = $("button[data-id='" + postId + "'] i");
 
                     if (response.isPublished) {
-
-                        iconElement.removeClass('bi-x-circle').addClass('bi-check-circle');
+                        iconElement.removeClass('bi-eye-slash').addClass('bi-eye');
                     } else {
-
-                        iconElement.removeClass('bi-check-circle').addClass('bi-x-circle');
+                        iconElement.removeClass('bi-eye').addClass('bi-eye-slash');
                     }
                 } else {
-                    alert("An error occurred while changing the post status.");
+                    alert("An error occurred while changing the post status..");
                 }
             },
             error: function() {
-                alert("There was an error connecting to the server.");
+                alert("There was an error connecting to the server..");
             }
         });
     }
-
-
 
 </script>
