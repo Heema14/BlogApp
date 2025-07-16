@@ -1,13 +1,68 @@
 ﻿@{
     ViewData["Title"] = "MyPosts";
 }
-
-
 <link href="~/css/sidebar.css" rel="stylesheet" />
 
 
+<style>
+    .create-post-btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: rgb(20, 20, 20);
+        border: none;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0px 0px 0px 4px rgba(180, 160, 255, 0.253);
+        cursor: pointer;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        position: relative;
+        color: white;
+        text-decoration: none;
+    }
+
+        .create-post-btn .svgIcon {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+
+        .create-post-btn:hover {
+            width: 160px;
+            border-radius: 50px;
+        }
+
+            .create-post-btn:hover .svgIcon {
+                transform: translateY(-200%);
+            }
+
+        .create-post-btn::before {
+            content: "Create New Post";
+            position: absolute;
+            color: white;
+            font-size: 0;
+            bottom: -10px;
+            transition: all 0.3s ease;
+        }
+
+        .create-post-btn:hover::before {
+            font-size: 14px;
+            bottom: unset;
+        }
+</style>
+
 <!-- Explore Content -->
 <section class="col-12 col-md-9 col-lg-10 explore-grid">
+
+    <!-- Create Post Button -->
+    <div class="text-end mb-4">
+        <a asp-action="Create" class="button create-post-btn">
+            <i class="bi bi-plus-circle svgIcon"></i>
+        </a>
+    </div>
+
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         @foreach (var post in Model)
         {
@@ -23,7 +78,7 @@
                              style="transition: transform 0.3s ease;" />
 
                         <!-- Overlay -->
-                        <a asp-action="Detail" asp-route-id="@post.Id" class="read-more-overlay d-flex justify-content-center align-items-center text-white text-decoration-none">
+                        <a asp-action="Detail" asp-controller="Post" asp-area="ContentCreator" asp-route-id="@post.Id" class="read-more-overlay d-flex justify-content-center align-items-center text-white text-decoration-none">
                             <span class="fs-6 fw-semibold"><i class="bi bi-book me-2"></i>Read More</span>
                         </a>
                     </div>

@@ -1,116 +1,4 @@
-﻿@* @model PostViewModel
-
-@{
-    ViewData["Title"] = "Create Post";
-}
-
-<style>
-    .profile-picture {
-        height: 250px;
-        width: 250px;
-        aspect-ratio: 1 / 1;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 2px solid #0d6efd; /* bootstrap primary color */
-        cursor: pointer;
-        transition: box-shadow 0.3s ease;
-    }
-
-        .profile-picture:hover {
-            box-shadow: 0 0 15px #0d6efdaa;
-        }
-</style> *@
-
-@* <div class="container my-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="text-primary fw-bold">@ViewData["Title"]</h2>
-        <a asp-action="Index" asp-controller="Post" class="btn btn-outline-primary rounded shadow-sm">
-            <i class="fas fa-arrow-left me-2"></i> Back to List
-        </a>
-    </div>
-
-    <form asp-action="Create" method="post" enctype="multipart/form-data" novalidate>
-
-        <div class="mb-4 d-flex flex-column align-items-center justify-content-center">
-            <!-- صورة المعاينة التي تعمل كزر لاختيار الملف -->
-            <img id="imgPreview" src="~/images/default-image.jpg"
-                 alt="Click to upload image"
-                 class="img-fluid profile-picture"
-                 style="object-fit: cover; cursor: pointer;border-radius:50%;" />
-
-            <!-- حقل الملف مخفي -->
-            <input asp-for="FeatureImage" type="file" accept="image/png, image/jpg, image/jpeg" id="imageInput" style="display: none;" />
-
-            <small class="text-muted mt-2">Click the image to upload your profile picture (max 2MB)</small>
-            <span asp-validation-for="FeatureImage" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Post.Title" class="form-label"></label>
-            <input asp-for="Post.Title" class="form-control form-control" placeholder="Enter post title" />
-            <span asp-validation-for="Post.Title" class="text-danger"></span>
-        </div>
-
-        <div class="mb-3">
-            <label asp-for="Post.CategoryId" class="form-label"></label>
-            <select asp-for="Post.CategoryId" asp-items="Model.Categories" class="form-select">
-                <option value="">Select Category</option>
-            </select>
-            <span asp-validation-for="Post.CategoryId" class="text-danger"></span>
-        </div>
-@* 
-        <div class="mb-3">
-            <label asp-for="Post.Author" class="form-label"></label>
-            <input asp-for="Post.Author" class="form-control" placeholder="Author name" />
-            <span asp-validation-for="Post.Author" class="text-danger"></span>
-        </div> *@
-
-      @*   <div class="mb-4">
-            <label asp-for="Post.Content" class="form-label"></label>
-            <textarea asp-for="Post.Content" class="form-control" rows="7" placeholder="Write your post content here..."></textarea>
-            <span asp-validation-for="Post.Content" class="text-danger"></span>
-        </div>
-
-        <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">Create Post</button>
-    </form>
-</div>
- 
-<partial name="_ValidationScriptsPartial" />
-
-@section Scripts {
-    <script src="https://cdn.tiny.cloud/1/8v7ap9no879e3vf48t9bipzno7dfbo8dgefvm9kgcttuz3nu/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
-    <script>
-        tinymce.init({
-            selector: 'textarea'
-        });
-
-               const imgPreview = document.getElementById('imgPreview');
-        const imageInput = document.getElementById('imageInput');
-
-        // عند الضغط على الصورة تفتح نافذة اختيار الملف
-        imgPreview.addEventListener('click', () => {
-            imageInput.click();
-        });
-
-        // عند اختيار ملف، نعرضه كصورة المعاينة
-        imageInput.addEventListener('change', (event) => {
-            const file = event.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    imgPreview.src = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            }
-        });
-
-    </script>
-}
- *@
-
-
-
- @model Post
+﻿@model Post
 
 <head>
     <meta charset="UTF-8">
@@ -141,7 +29,7 @@
             <p>Select Article image </p>
             <div class="w-100">
                 <div class="text-center mb-4 d-flex justify-content-center">
-                    <div class="w-100">
+                    <div class="w-100 border">
                         <label for="imageInput" class="d-block position-relative" style="cursor:pointer;">
                             <div class="position-relative" style="width: 100%; height: 150px;">
                                 <div id="finalImageContainer" class="d-flex justify-content-center align-items-center w-100 h-100" style="background-color:rgba(0,0,0,0.5);">
@@ -167,8 +55,8 @@
             @*            <form asp-action="Create" method="post"> *@
             <div class="form-field">
                 <div class="custom-floating-label mb-3">
+                    <label asp-for="Title"></label>
                     <input class="form-control" name="Title" value="@Model.Title" placeholder="Title" required />
-                    <label>Title</label>
                     <span class="text-danger error-message"></span>
                 </div>
             </div>
@@ -204,21 +92,16 @@
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
 
-
-
-            <button type="submit" class="btn btn-primary">
-                @(Model.Id == 0 ? "Save" : "Save Changes")
-            </button>
+            <div class="d-flex align-items-center gap-3">
+                <button type="submit" class="btn btn-primary">
+                    @(Model.Id == 0 ? "Save" : "Save Changes")
+                </button>
+                <a asp-action="MyPosts" asp-area="ContentCreator" asp-controller="Post" class="btn btn-danger">Back to Posts</a>
+            </div>
 
         </form>
-
-        <div>
-            <a href="@Url.Action("Index", "Post")">Back to Posts</a>
-        </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -237,8 +120,8 @@
                     console.error("Error initializing CKEditor:", error);
                 });
         });
-    </script>
-    <script>
+
+        //previewImage
         function previewImage(event) {
             var reader = new FileReader();
             var file = event.target.files[0];
@@ -246,13 +129,14 @@
                 var finalImage = document.getElementById('finalImage');
                 var svgIcon = document.getElementById('svgIcon');
 
-               
+
                 svgIcon.style.display = 'none';
                 finalImage.style.display = 'block';
                 finalImage.src = reader.result;
             }
             reader.readAsDataURL(file);
         }
+
     </script>
 
 </body>

@@ -19,3 +19,5 @@ public class PostLike
     [Required(ErrorMessage = "UserId is required.")]
     public string UserId { get; set; }
     public AppUser User { get; set; }
+
+}

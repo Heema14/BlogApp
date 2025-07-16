@@ -30,89 +30,23 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
         }
 
-        //[HttpGet]
-        //public IActionResult Create()
-        //{
-        //    var postViewModel = new PostViewModel
-        //    {
-        //        Categories = new SelectList(_context.Categories, "Id", "Name"),
-        //    };
-        //    return View(postViewModel);
-        //}
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //[RequestSizeLimit(10 * 1024 * 1024)]
-        //public async Task<IActionResult> Create(PostViewModel postViewModel)
-        //{
-        //    _logger.LogInformation("Create(PostViewModel) called.");
-
-        //    if (!ModelState.IsValid)
-        //    {
-        //        _logger.LogWarning("Create(PostViewModel) called with invalid model state.");
-        //        return View(postViewModel);
-        //    }
-
-        //    var allowedExtensions = _config.GetSection("uploading:allowedFileExtension").Get<List<string>>();
-        //    var maxSizeMb = _config.GetValue<int>("uploading:allowedFileSize");
-        //    var maxSizeBytes = maxSizeMb * 1024 * 1024;
-
-        //    var ext = Path.GetExtension(postViewModel.FeatureImage.FileName).ToLower();
-        //    if (!allowedExtensions.Contains(ext))
-        //    {
-        //        _logger.LogWarning("Invalid image format: {Extension}. Allowed: {@AllowedExtensions}", ext, allowedExtensions);
-        //        ModelState.AddModelError("Image", $"Invalid image format. Allowed formats: {string.Join(", ", allowedExtensions)}");
-
-        //        return View(postViewModel);
-        //    }
-
-        //    if (postViewModel.FeatureImage.Length > maxSizeBytes)
-        //    {
-        //        _logger.LogWarning("Image too large: {Size} bytes. Max allowed: {MaxSizeBytes}", postViewModel.FeatureImage.Length, maxSizeBytes);
-
-        //        ModelState.AddModelError("Image", $"Image size cannot exceed {maxSizeMb}MB.");
-        //        return View(postViewModel);
-        //    }
-
-        //    postViewModel.Post.FeatureImagePath = await _uploadFile.UploadFileToFolderAsync(postViewModel.FeatureImage);
-
-        //    _context.Posts.Add(postViewModel.Post);
-        //    await _context.SaveChangesAsync();
-
-        //    _logger.LogInformation("Post created successfully: {@Post}", postViewModel.Post);
-
-        //    return RedirectToAction(nameof(Index));
-        //}
 
         [HttpPost]
         public IActionResult TogglePublishStatus(int postId)
         {
-           
             var post = _context.Posts.FirstOrDefault(p => p.Id == postId);
-
             if (post == null)
-            {
                 return NotFound();
-            }
 
-            // تغيير حالة النشر
             post.IsPublished = !post.IsPublished;
-
-            
             _context.SaveChanges();
-
-          
             return Json(new { success = true, isPublished = post.IsPublished });
         }
 
         public IActionResult Create()
         {
-
             var categories = _context.Categories.ToList();
-
-
             ViewBag.Categories = categories;
-
             return View(new Post());
         }
 
@@ -131,6 +65,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         }
 
         [HttpPost]
+        [RequestSizeLimit(5 * 1024 * 1024)]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Save(Post post, IFormFile? ImageUrl)
         {
@@ -142,18 +77,18 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 if (currentUser != null)
                 {
                     post.UserName = currentUser.UserName;
-                    post.UserImageUrl = currentUser.ProfilePicture ?? "/assets/images/default-profile.jpg";
-                    post.UserId = currentUser.Id;  
+                    post.UserImageUrl = currentUser.ProfilePicture ?? "/images/uploadImgs/default-profile.jpg";
+                    post.UserId = currentUser.Id;
                 }
 
-             
+
                 if (string.IsNullOrEmpty(post.Title) || string.IsNullOrEmpty(post.Content))
                 {
                     ModelState.AddModelError("", "Title and Content are required.");
                     return View(post);
                 }
 
-               
+
                 if (ImageUrl != null && ImageUrl.Length > 0)
                 {
                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", ImageUrl.FileName);
@@ -161,23 +96,23 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                     {
                         await ImageUrl.CopyToAsync(stream);
                     }
-                    post.FeatureImagePath = "/images/" + ImageUrl.FileName;
+                    post.FeatureImagePath = "/images/uploadImgs" + ImageUrl.FileName;
                 }
                 else if (post.Id != 0 && string.IsNullOrEmpty(post.FeatureImagePath))
                 {
                     var existingPost = await _context.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == post.Id);
                     if (existingPost != null && !string.IsNullOrEmpty(existingPost.FeatureImagePath))
                     {
-                        post.FeatureImagePath = existingPost.FeatureImagePath; 
+                        post.FeatureImagePath = existingPost.FeatureImagePath;
                     }
                 }
                 else if (post.Id == 0 && string.IsNullOrEmpty(post.FeatureImagePath))
                 {
-                   
-                    post.FeatureImagePath = "/assets/images/default-image.jpg";
+
+                    post.FeatureImagePath = "/images/uploadImgs/default-image.jpg";
                 }
 
-              
+
                 if (post.Id == 0)
                 {
                     post.CreatedAt = DateTime.Now;
@@ -193,7 +128,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 }
 
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Profile", "Following", new { userId = post.UserId});
+                return RedirectToAction("Profile", "Following", new { userId = post.UserId });
             }
             catch (Exception ex)
             {
@@ -202,7 +137,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             }
         }
 
-        
+
         [HttpGet]
         public IActionResult Explore(int? categoryId)
         {
@@ -222,16 +157,16 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 .AsNoTracking()
                 .ToList();
 
-           
+
             var postOwnerIds = posts.Select(p => p.UserId).Distinct().ToList();
 
-        
+
             var followingIds = _context.Followings
                 .Where(f => f.FollowerId == currentUserId && postOwnerIds.Contains(f.FollowingId))
                 .Select(f => f.FollowingId)
                 .ToHashSet();
 
-         
+
             var viewModelList = posts.Select(post => new PostWithFollowStatusViewModel
             {
                 Post = post,
@@ -271,7 +206,10 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             var posts = postQuery.AsNoTracking().ToList(); // جلب البوستات دون تتبع التغييرات
 
             // إرسال الفئات إلى الـ View (إذا كنت بحاجة إليها لعرضها في قائمة الفئات مثلاً)
-            ViewData["Categories"] = _context.Categories.ToList();
+            ViewBag.Categories = _context.Categories
+                .AsNoTracking()
+                .Select(c => new { id = c.Id, name = c.Name })
+                .ToList();
 
             return View(posts); // عرض البوستات في الـ View
         }
@@ -342,6 +280,8 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             return RedirectToAction("Profile", "Following");
         }
+
+
         [HttpPost]
         public async Task<IActionResult> Like(int postId)
         {
@@ -409,7 +349,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 return Json(new { success = false, message = "An unexpected error occurred." });
             }
         }
-     
+
     }
 }
 

@@ -129,25 +129,37 @@ namespace SyncSyntax.Controllers
                 return View(model);
             }
 
-            var user = await _userManager.FindByEmailAsync(model.Email);
+            // هنا بدنا نبحث المستخدم سواء بالـ Email أو بالـ UserName
+            AppUser? user = null;
+
+            // جرب أول بالإيميل
+            user = await _userManager.FindByEmailAsync(model.EmailOrUsername);
+
             if (user == null)
             {
-                _logger.LogWarning("Sign-in failed: no user found with email {Email}.", model.Email);
+                // لو ما لقيناه بالإيميل، جرب باليوزرنيم
+                user = await _userManager.FindByNameAsync(model.EmailOrUsername);
+            }
+
+            if (user == null)
+            {
+                _logger.LogWarning("Sign-in failed: no user found with email or username {Input}.", model.EmailOrUsername);
                 ModelState.AddModelError(string.Empty, "Invalid username or password");
                 return View(model);
             }
+
+            // جرب تسجيل الدخول بكلمة المرور
             var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, isPersistent: false, lockoutOnFailure: false);
 
             if (!signInResult.Succeeded)
             {
-                _logger.LogWarning("Sign-in failed: incorrect password for email {Email}.", model.Email);
+                _logger.LogWarning("Sign-in failed: incorrect password for user {Input}.", model.EmailOrUsername);
                 ModelState.AddModelError(string.Empty, "Invalid username or password");
                 return View(model);
             }
 
-            _logger.LogInformation("User {Email} signed in successfully.", model.Email);
-            return RedirectToAction("FollowingPosts", "Following", new { area = "ContentCreator" });
-
+            _logger.LogInformation("User {Input} signed in successfully.", model.EmailOrUsername);
+            return RedirectToAction("Explore", "Post", new { area = "ContentCreator" });
         }
 
 
