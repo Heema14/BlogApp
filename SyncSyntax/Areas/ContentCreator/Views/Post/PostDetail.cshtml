@@ -102,7 +102,9 @@
         </form>
     }
     <hr>
-    <div class="d-flex justify-content-between align-items-center">
+   <div class="d-flex justify-content-between align-items-center">
+    @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != @Model.UserId)   
+    {
         @if (ViewData["IsFollowing"] != null && (bool)ViewData["IsFollowing"])
         {
             <form asp-controller="Following" asp-action="Unfollow" asp-route-userId="@Model.UserId" method="post">
@@ -119,9 +121,10 @@
                     <i class="bi bi-person-plus me-1"></i> Follow
                 </button>
             </form>
-
         }
-    </div>
+    }
+</div>
+
 
 
 </div>

@@ -143,17 +143,17 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 {
                     post.UserName = currentUser.UserName;
                     post.UserImageUrl = currentUser.ProfilePicture ?? "/assets/images/default-profile.jpg";
-                    post.UserId = currentUser.Id;  // تعيين UserId من المستخدم الحالي
+                    post.UserId = currentUser.Id;  
                 }
 
-                // التحقق من وجود عنوان ومحتوى للمقال
+             
                 if (string.IsNullOrEmpty(post.Title) || string.IsNullOrEmpty(post.Content))
                 {
                     ModelState.AddModelError("", "Title and Content are required.");
                     return View(post);
                 }
 
-                // إذا تم رفع صورة جديدة
+               
                 if (ImageUrl != null && ImageUrl.Length > 0)
                 {
                     var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", ImageUrl.FileName);
@@ -168,16 +168,16 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                     var existingPost = await _context.Posts.AsNoTracking().FirstOrDefaultAsync(p => p.Id == post.Id);
                     if (existingPost != null && !string.IsNullOrEmpty(existingPost.FeatureImagePath))
                     {
-                        post.FeatureImagePath = existingPost.FeatureImagePath; // احتفظ بالصورة القديمة
+                        post.FeatureImagePath = existingPost.FeatureImagePath; 
                     }
                 }
                 else if (post.Id == 0 && string.IsNullOrEmpty(post.FeatureImagePath))
                 {
-                    // تعيين صورة افتراضية فقط إذا كان المقال جديدًا ولا توجد صورة
+                   
                     post.FeatureImagePath = "/assets/images/default-image.jpg";
                 }
 
-                // حفظ أو تحديث المقال
+              
                 if (post.Id == 0)
                 {
                     post.CreatedAt = DateTime.Now;
@@ -203,7 +203,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         }
 
         [HttpGet]
-        public IActionResult Index(int? categoryId)
+        public IActionResult Explore(int? categoryId)
         {
             _logger.LogInformation("Index called. CategoryId = {CategoryId}", categoryId);
 
@@ -257,42 +257,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             return View(posts); // عرض البوستات في الـ View
         }
 
-        //public async Task<IActionResult> Detail(int id)
-        //{
-        //    if (id <= 0)
-        //    {
-        //        _logger.LogWarning("Detail: Invalid Post ID = {PostId}", id);
-        //        return NotFound();
-        //    }
-        //    _logger.LogInformation("Detail called with Post ID = {PostId}", id);
-
-        //    if (id == 0)
-        //    {
-        //        _logger.LogWarning("Detail: Invalid Post ID = {PostId}", id);
-        //        return NotFound();
-        //    }
-
-        //    var post = _context.Posts
-        //        .Include(p => p.Category)
-        //        .Include(p => p.Comments)
-        //        .Include(p => p.PostLikes)
-        //            .ThenInclude(un => un.User)
-        //        .AsNoTracking()
-        //        .FirstOrDefault(p => p.Id == id);
-
-        //    if (post == null)
-        //    {
-        //        _logger.LogWarning("Detail: Post not found with ID = {PostId}", id);
-        //        return NotFound();
-        //    }
-
-        //    _logger.LogInformation("Detail: Post loaded successfully with ID = {PostId}", id);
-        //    var currentUser = await _userManager.GetUserAsync(User);
-        //    bool userLikedPost = post.PostLikes.Any(l => l.UserId == currentUser.Id);
-        //    ViewData["UserLikedPost"] = userLikedPost;
-        //    ViewData["LikesCount"] = post.PostLikes.Count;
-        //    return View(post);
-        //}
+      
         public async Task<IActionResult> Detail(int id)
         {
             if (id <= 0)
@@ -318,18 +283,18 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             var currentUser = await _userManager.GetUserAsync(User);
             bool userLikedPost = post.PostLikes.Any(l => l.UserId == currentUser.Id);
 
-            // إذا كان الطلب من المودال (Ajax)
+            
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("PostDetail", post); // إعادة الـ Partial View
+                return PartialView("PostDetail", post); 
             }
-            var currentUserName = User.Identity.Name;  // الحصول على الـ UserName الحالي
+            var currentUserName = User.Identity.Name;  
             var isFollowing = _context.Followings
-                .Any(f => f.FollowerId == currentUserName && f.FollowingId == post.UserName);  // التحقق باستخدام الـ UserName بدلاً من UserId
+                .Any(f => f.FollowerId == currentUserName && f.FollowingId == post.UserName);  
 
-            // تخزين حالة المتابعة في ViewData
+            
             ViewData["IsFollowing"] = isFollowing;
-            return View(post); // عرض الـ View العادي
+            return View(post); 
         }
 
 

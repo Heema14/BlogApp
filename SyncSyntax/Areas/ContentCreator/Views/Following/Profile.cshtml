@@ -1,56 +1,310 @@
-﻿@model ProfileViewModel
+﻿
+ @model ProfileViewModel
+
 <style>
     .profile-header {
-        text-align: center;
-        margin-bottom: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 30px;
     }
 
     .profile-picture {
-        width: 150px;
-        height: 150px;
+        width: 120px;
+        height: 120px;
         border-radius: 50%;
         object-fit: cover;
+        border: 2px solid #ddd;
+    }
+
+    .profile-actions {
+        margin-top: 10px;
+        display: flex;
+        gap: 10px;
+    }
+
+        .profile-actions button {
+            padding: 5px 15px;
+            border: 1px solid #ccc;
+            background-color: white;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+    .profile-username {
+        font-weight: bold;
+        margin-top: 10px;
+        font-size: 18px;
+    }
+
+    .profile-bio {
+        text-align: center;
+        font-size: 14px;
+        margin-top: 5px;
+        max-width: 300px;
     }
 
     .profile-stats {
         display: flex;
         justify-content: center;
-        gap: 20px;
+        gap: 25px;
+        margin-top: 15px;
+        font-size: 15px;
+    }
+
+    .new-post-circle {
+        width: 70px;
+        height: 70px;
+        border: 2px solid #ccc;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 30px;
+        color: #888;
+        margin: 30px auto 10px;
+        cursor: pointer;
     }
 
     .posts-container {
         display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 20px;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+        padding: 0 30px 50px;
     }
 
     .post img {
         width: 100%;
         height: auto;
-        border-radius: 10px;
+        border-radius: 8px;
     }
 
-    .post p {
-        text-align: center;
-        font-size: 14px;
+    .nav-tabs-custom {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        font-weight: bold;
+        border-top: 1px solid #eee;
+        border-bottom: 1px solid #eee;
+        padding: 10px 0;
+        margin: 20px 0;
     }
 
+        .nav-tabs-custom span {
+            cursor: pointer;
+            color: #333;
+        }
 </style>
+
 <div class="profile-header">
     <img src="@Model.User.ProfilePicture" alt="Profile Picture" class="profile-picture">
-    <h2>@Model.User.UserName</h2>
+
+    <div class="profile-username">@Model.User.UserName</div>
+
+    <div class="profile-actions">
+        <button>Edit Profile</button>
+
+    </div>
+
     <div class="profile-stats">
-        <span>@Model.FollowersCount متابعين</span>
-        <span>@Model.PostsCount بوستات</span>
+        <span>@Model.PostsCount Articles</span>
+        <span>@Model.FollowersCount Followers</span>
+        <span>@Model.FollowingCount Following</span>
+    </div>
+
+    <div class="profile-bio">
+        <div><strong>@Model.User.MajorName</strong></div>
+        @*       <div>@Model.User.Bio</div> *@
     </div>
 </div>
 
-<div class="posts-container">
-    @foreach (var post in Model.Posts)
-    {
-        <div class="post">
-            <img src="@post.FeatureImagePath" alt="Post Image">
-            <p>@post.Content</p>
-        </div>
-    }
+<div class="new-post-circle">+</div>
+<div style="text-align:center; font-weight: bold;">Share Articles</div>
+
+<div class="nav-tabs-custom">
+    <span>Articles</span>
+
 </div>
+
+<!-- Explore Content -->
+<section class="col-12 col-md-9 col-lg-10 explore-grid">
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        
+        @foreach (var post in Model.Posts)
+        {
+            <div class="col">
+
+                <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
+
+                    <!-- Post Image -->
+                    <div class="overflow-hidden position-relative" style="height: 220px;">
+                        <img src="@(!string.IsNullOrEmpty(post.FeatureImagePath) ? post.FeatureImagePath : "/images/default-image.jpg")"
+                             class="card-img-top h-100 w-100 object-fit-cover transition"
+                             alt="@post.Title"
+                             style="transition: transform 0.3s ease;" />
+
+                        <!-- Overlay -->
+                        <a data-bs-toggle="modal" data-bs-target="#postModal" data-id="@post.Id"
+                           class="read-more-overlay d-flex justify-content-center align-items-center text-white text-decoration-none">
+                            <span class="fs-6 fw-semibold"><i class="bi bi-book me-2"></i>Read More</span>
+                        </a>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- User Info (Above Title) -->
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <span>
+                                    <img src="@post.UserImageUrl" alt="User" class="rounded-circle" style="width: 30px; height: 30px;">
+                                </span>
+                                <span>@post.UserName</span>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2 actions">
+                                <span class="text-danger" onclick="confirmDelete(@post.Id)"><i class="bi bi-trash3-fill"></i></span>
+                                <span onclick="location.href='@Url.Action("Edit", "Post", new { id = post.Id })'">
+                                    <i class="bi bi-pencil-square"></i>
+                                </span>
+                                <!-- زر On/Off Toggle -->
+                                <span onclick="togglePublishStatus(@post.Id, '@post.IsPublished.ToString().ToLower()')">
+                                    <button class="btn btn-sm position-relative p-2" data-id="@post.Id">
+                                        @if (post.IsPublished)
+                                        {
+                                            <i class="bi bi-eye"></i> <!-- Icon for Published (eye) -->
+                                        }
+                                        else
+                                        {
+                                            <i class="bi bi-eye-slash"></i> <!-- Icon for Unpublished (eye-slash) -->
+                                        }
+                                    </button>
+                                </span>
+
+                            </div>
+                        </div>
+
+                        <!-- Post Title and Likes -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title fw-bold">@post.Title</h5>
+                            <div class="d-flex align-items-center gap-1" style="cursor: pointer;">
+                                <i class="bi bi-heart-fill" style="color: @(post.LikesCount > 0 ? "red" : "gray");"></i>
+                                <span>@post.LikesCount</span>
+                            </div>
+                        </div>
+
+                        <p class="text-muted mb-2 DatePost">
+                            <i class="bi bi-calendar-event me-1"></i>
+                            @post.PublishedDate.ToString("MMMM dd, yyyy")
+                        </p>
+
+                        @{
+                            var contentTag = HtmlTagHelper.RemoveHtmlTags(post.Content);
+                            var preview = contentTag.Length > 100 ? contentTag.Substring(0, 100) + "..." : contentTag;
+                        }
+
+                        <p class="card-text text-black">@preview</p>
+
+                        @if (post.Category != null)
+                        {
+                            <span class="badge bg-info text-dark mt-2">
+                                <i class="bi bi-tag me-1"></i> @post.Category.Name
+                            </span>
+                        }
+                    </div>
+
+                </div>
+
+            </div>
+        }
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title" id="postModalLabel">Post Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- Modal Body -->
+                <div class="modal-body">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<script>
+    function confirmDelete(postId) {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'This post will be deleted permanently!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, cancel!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                window.location.href = '@Url.Action("Delete", "Post", new { id = "__POST_ID__" })'.replace('__POST_ID__', postId);
+            }
+        });
+    }
+</script>
+<script>
+    $(document).ready(function () {
+        $('#postModal').on('show.bs.modal', function (e) {
+            var button = $(e.relatedTarget);
+            var postId = button.data('id');
+            var modalBody = $(this).find('.modal-body');
+            modalBody.html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</div>');
+
+            // AJAX request to fetch post details
+            $.ajax({
+                url: '@Url.Action("Detail", "Post")/' + postId,
+                type: 'GET',
+                success: function (response) {
+                    modalBody.html(response);
+                },
+                error: function () {
+                    modalBody.html('<p class="text-danger">Failed to load post details.</p>');
+                }
+            });
+        });
+    });
+
+
+        function togglePublishStatus(postId, currentStatus) {
+
+        var isPublished = JSON.parse(currentStatus);
+
+
+        $.ajax({
+            url: '@Url.Action("TogglePublishStatus", "Post")',
+            type: 'POST',
+            data: { postId: postId },
+            success: function(response) {
+                if (response.success) {
+
+                    var iconElement = $("button[data-id='" + postId + "'] i");
+
+                    if (response.isPublished) {
+
+                        iconElement.removeClass('bi-x-circle').addClass('bi-check-circle');
+                    } else {
+
+                        iconElement.removeClass('bi-check-circle').addClass('bi-x-circle');
+                    }
+                } else {
+                    alert("An error occurred while changing the post status.");
+                }
+            },
+            error: function() {
+                alert("There was an error connecting to the server.");
+            }
+        });
+    }
+
+
+
+</script>

@@ -27,15 +27,15 @@ public class FollowingController : Controller
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        // جلب قائمة المتابعين للمستخدم الحالي
+
         var followedUsers = _context.Followings
             .Where(f => f.FollowerId == userId)
             .Select(f => f.FollowingId)
             .ToList();
 
-        // جلب البوستات من المستخدمين الذين يتابعهم المستخدم الحالي
+
         var posts = _context.Posts
-            .Where(p => followedUsers.Contains(p.UserId)) // هنا تم تعديل UserName إلى UserId
+            .Where(p => followedUsers.Contains(p.UserId))
             .Include(p => p.Category)
             .OrderByDescending(p => p.PublishedDate)
             .ToList();
@@ -46,24 +46,24 @@ public class FollowingController : Controller
     [HttpPost]
     public IActionResult Follow(string userId)
     {
-       
+
         if (Request.Method != "POST")
         {
-            return BadRequest(); // يضمن أنه يتم قبول الطلبات من نوع POST فقط
+            return BadRequest();
         }
 
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         _logger.LogInformation($"Attempting to follow user with ID: {userId}");
         _logger.LogInformation($"Current logged-in user ID: {currentUserId}");
 
-        // تأكد من أن المستخدم الذي تريد متابعته موجود في قاعدة البيانات
+
         var userToFollow = _context.Users.FirstOrDefault(u => u.Id == userId);
         if (userToFollow == null)
         {
-            return NotFound("User not found");  // إذا لم يكن المستخدم موجودًا، يمكنك إرجاع رسالة خطأ
+            return NotFound("User not found");
         }
 
-        // تأكد من أن المستخدم لا يتابع نفسه
+
         if (currentUserId == userId)
         {
             return RedirectToAction("Profile", new { userId = userId });
@@ -89,7 +89,7 @@ public class FollowingController : Controller
     }
 
 
-    [HttpPost]  // تأكد من إضافة هذا السطر
+    [HttpPost]
     public IActionResult Unfollow(string userId)
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -115,36 +115,41 @@ public class FollowingController : Controller
     }
     public IActionResult Profile(string userId)
     {
-        // التأكد من أن المستخدم الذي نحاول عرض بروفايله موجود في قاعدة البيانات
+        Console.WriteLine("UserID received: " + userId);
+
         var user = _context.Users.FirstOrDefault(u => u.Id == userId);
         if (user == null)
         {
             return NotFound("User not found");
         }
 
-        // جلب عدد المتابعين للمستخدم
+
         var followersCount = _context.Followings
             .Count(f => f.FollowingId == userId);
 
-        // جلب عدد البوستات التي نشرها المستخدم
+
         var postsCount = _context.Posts
             .Count(p => p.UserId == userId);
 
-        // جلب البوستات الخاصة بالمستخدم
         var posts = _context.Posts
             .Where(p => p.UserId == userId)
             .Include(p => p.Category)
             .OrderByDescending(p => p.PublishedDate)
             .ToList();
 
-        // إنشاء ViewModel لتمرير البيانات إلى الـ View
+        var followingCount = _context.Followings
+            .Count(f => f.FollowerId == userId);
+
+
         var model = new ProfileViewModel
         {
             User = user,
             FollowersCount = followersCount,
+            FollowingCount = followingCount,
             PostsCount = postsCount,
             Posts = posts
         };
+
 
         return View(model);
     }

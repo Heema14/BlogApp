@@ -97,7 +97,7 @@ app.MapAreaControllerRoute(
 app.MapAreaControllerRoute(
     name: "contentcreator",
     areaName: "ContentCreator",
-    pattern: "ContentCreator/{controller=Post}/{action=Index}/{id?}"
+    pattern: "ContentCreator/{controller=Following}/{action=FollowingPosts}/{id?}"
     );
 
 app.MapControllerRoute(
