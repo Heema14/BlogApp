@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SyncSyntax")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e3cdbddfb2d4f02479725d3cdcded91cd407fb6b")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+49215254cb604a3a30abb3bbe562e4577daa33e7")]
 [assembly: System.Reflection.AssemblyProductAttribute("SyncSyntax")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SyncSyntax")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

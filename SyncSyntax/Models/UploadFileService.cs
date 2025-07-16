@@ -19,7 +19,7 @@ namespace SyncSyntax.Models
 
         public async Task<string> UploadFileToFolderAsync(IFormFile file)
         {
-            var folderName = _config.GetValue<string>("uploading:FolderPath") ?? "images";
+            var folderName = _config.GetValue<string>("uploading:FolderPath") ?? "images/uploadImgs";
             var wwwRootPath = _webHostEnvironment.WebRootPath;
             var savePath = Path.Combine(wwwRootPath, folderName);
 

@@ -86,7 +86,14 @@
         <div class="row">
             <!-- Sidebar for desktop -->
             <nav class="col-md-3 col-lg-2 sidebar d-none d-md-block">
-                <h4 class="mb-4">Blog App</h4>
+
+                <div class="d-flex justify-content-start align-items-center mb-4 gap-2">
+                    <div>
+                        <img class="rounded-circle" src="~/images/uploadimgs/logoblogapp.jpg" alt="logo" width="40" height="40" />
+                    </div>
+                    <h4 class="m-0">Blog App</h4>
+                </div>
+
                 <a asp-action="MyPosts" asp-controller="Post"><i class="bi bi-house-door"></i><span> My Posts</span></a>
                 <a href="#"><i class="bi bi-search"></i><span> Search</span></a>
                 <a asp-action="Index" asp-controller="Post"><i class="bi bi-arrow-repeat"></i><span> Explore</span></a>

@@ -57,9 +57,6 @@ wwwroot\assets\webfonts\fa-solid-900.woff2
 wwwroot\css\sidebar.css
 wwwroot\css\site.css
 wwwroot\favicon.ico
-wwwroot\images\03f2c3a9-f4aa-44fd-b46f-259e2ce09c6a.jpg
-wwwroot\images\7052fc62b3488b003ef3cae44c566887.jpg
-wwwroot\images\8527f88d-25c2-466c-a9cd-47cb8c5819fb.jpg
 wwwroot\images\a1.jpg
 wwwroot\images\a2.jpg
 wwwroot\images\a3.jpg
@@ -68,8 +65,6 @@ wwwroot\images\background.jpeg
 wwwroot\images\bg.jpg
 wwwroot\images\colton-sturgeon-peLGhFkbkow-unsplash.jpg
 wwwroot\images\default-image.jpg
-wwwroot\images\e78c452c-c5b1-4aa3-bca3-cdc1b997261e.jpg
-wwwroot\images\f9cd9527-9a34-43cb-8d50-0af1edab3e0c.jpg
 wwwroot\images\overlay.png
 wwwroot\images\p01.jpg
 wwwroot\images\p02.jpg
@@ -89,6 +84,7 @@ wwwroot\images\pic06.jpg
 wwwroot\images\pic07.jpg
 wwwroot\images\pic08.jpg
 wwwroot\images\pic09.jpg
+wwwroot\images\uploadImgs\logoBlogApp.jpg
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css
 wwwroot\lib\bootstrap\dist\css\bootstrap-grid.css.map

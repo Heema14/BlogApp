@@ -7,8 +7,6 @@ namespace SyncSyntax.Models
     {
         public string? MajorName { get; set; }
 
-        //public string? MajorName => $"{FirstName} {LastName}";
-
         public string? ProfilePicture { get; set; }
 
         [Required]
@@ -30,13 +28,8 @@ namespace SyncSyntax.Models
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        //// إضافة خاصية FullName
-        //public string FullName => $"{FirstName} {LastName}";
-
-        //// إضافة حقل الصورة
-        //public string? ProfilePictureUrl { get; set; } // رابط الصورة
-
         public ICollection<PostLike> PostLikes { get; set; }
+
         // العلاقة بين المستخدمين الذين يتابعهم هذا المستخدم
         public ICollection<Following> FollowedUsers { get; set; }
 

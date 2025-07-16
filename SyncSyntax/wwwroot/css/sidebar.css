@@ -11,6 +11,11 @@
     }
 }
 
+.card:hover {
+    transition: all linear 200ms;
+    transform: translateY(-6px);
+}
+
 .card-title {
     font-size: 24px;
 }

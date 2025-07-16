@@ -11,7 +11,7 @@
         aspect-ratio: 1 / 1;
         object-fit: cover;
         border-radius: 50%;
-        border: 2px solid #0d6efd; /* bootstrap primary color */
+        border: 2px solid #0d6efd;
         cursor: pointer;
         transition: box-shadow 0.3s ease;
     }
@@ -72,7 +72,7 @@
                     <div class="col-md-6 d-flex flex-column align-items-center">
                         <input asp-for="ProfilePicture" type="file" id="profilePicInput" accept=".png,.jpg,.jpeg" class="d-none" />
                         <label for="profilePicInput" class="mb-0">
-                            <img id="ProfilePicture" src="~/images/default-image.jpg" alt="Profile Image" class="profile-picture" loading="lazy" />
+                            <img id="ProfilePicture" src="~/images/uploadImgs/default-image.jpg" alt="Profile Image" class="profile-picture" loading="lazy" />
                         </label>
                         <small class="text-muted mt-2">Click the image to upload your profile picture (max 2MB)</small>
                         <span asp-validation-for="ProfilePicture" class="text-danger mt-1"></span>

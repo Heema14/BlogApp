@@ -21,31 +21,26 @@
 <section class="d-flex justify-content-center align-items-center flex-column py-5">
     <div class="container-fluid">
         <div class="row d-flex justify-content-center align-items-center h-100">
-            <!-- صورة جانبية -->
             <div class="col-md-9 col-lg-6 col-xl-5">
                 <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
                      class="img-fluid" alt="Sample image">
             </div>
 
-            <!-- نموذج تسجيل الدخول -->
             <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
                 <form asp-action="SignIn" method="post" novalidate>
 
-                    <!-- Email input -->
                     <div class="form-outline mb-4">
                         <label asp-for="Email" class="form-label"></label>
                         <input asp-for="Email" type="email" class="form-control form-control-lg" placeholder="Enter your email" style="font-size: 16px;font-weight: 600;" />
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
 
-                    <!-- Password input -->
                     <div class="form-outline mb-3 position-relative">
                         <label asp-for="Password" class="form-label"></label>
                         <input asp-for="Password" type="password" class="form-control form-control-lg"
                                placeholder="Enter your password" id="registerPassword" style="font-size: 16px;" />
                         <span asp-validation-for="Password" class="text-danger"></span>
 
-                        <!-- Toggle icon using Bootstrap Icons -->
                         <span onclick="togglePassword('registerPassword', this)" class="position-absolute translate-middle-y pe-3"
                               style="cursor: pointer; top: 70%; right: 4px;">
                             <i id="toggleIcon" class="bi bi-eye fs-5 text-black"></i>
@@ -62,7 +57,6 @@
                         <a href="#" class="text-body">Forgot password?</a>
                     </div>
 
-                    <!-- زر الدخول -->
                     <div class="text-center text-lg-start mt-4 pt-2">
                         <button type="submit" class="btn btn-primary btn-lg px-4 w-100" style="font-size: 16px;">
                             Sign In

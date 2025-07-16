@@ -379,3 +379,4 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/SyncSyntax/bin/Debug/net9.0/SyncSyntax.deps.json
