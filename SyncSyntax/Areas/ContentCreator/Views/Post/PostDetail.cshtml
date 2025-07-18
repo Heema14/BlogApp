@@ -34,20 +34,21 @@
 
     <hr>
     <div class="post-date">Published on @Model.Post.CreatedAt.ToString("MMMM dd, yyyy")</div>
-@*     <div>
-        <p>@Model.Post.Description</p>
-        @Html.Raw(Model.Post.Content)
-    </div> *@
-
+ 
     <hr />
 
     <button id="likeButton" class="btn btn-light mb-2" onclick="toggleLike(@Model.Post.Id)">
         <i class="fa fa-heart" id="likeIcon"
-           style="color: @(Model.Post.LikesCount > 0 ? "red" : (ViewData["UserLikedPost"] != null && (bool)ViewData["UserLikedPost"] ? "red" : "gray"))"></i>
+           style="color: @(Model.UserLikedPost ? "red" : "gray")">
+        </i>
 
         <span id="likesCount">@Model.Post.LikesCount</span>
         Like
     </button>
+
+    <!-- هذا حقل مخفي لتخزين حالة الاعجاب -->
+    <input type="hidden" id="userLikedPost" value="@Model.UserLikedPost" />
+
 
 
 
@@ -142,25 +143,19 @@
         });
     });
 
-
-    function toggleLike(postId) {
-
+           function toggleLike(postId) {
         $.ajax({
             url: '@Url.Action("Like", "Post")/',
             type: 'POST',
-            data: {
-                postId: postId
-            },
+            data: { postId: postId },
             success: function(response) {
                 if (response.success) {
-
                     $('#likesCount').text(response.likesCount);
 
-
                     if (response.userLiked) {
-                        $('#likeIcon').css('color', 'gray');
+                        $('#likeIcon').css('color', 'gray');  
                     } else {
-                        $('#likeIcon').css('color', 'red');
+                        $('#likeIcon').css('color', 'red');  
                     }
                 } else {
                     alert(response.message);
@@ -171,6 +166,7 @@
             }
         });
     }
+
 
 
 

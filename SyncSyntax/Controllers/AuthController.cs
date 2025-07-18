@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using SyncSyntax.Data;
 using SyncSyntax.Models;
 using SyncSyntax.Models.IServices;
 using SyncSyntax.Models.ViewModels;
@@ -17,6 +19,7 @@ namespace SyncSyntax.Controllers
         private readonly IConfiguration _config;
         private readonly IUploadFileService _uploadFile;
         private readonly ILogger<AuthController> _logger;
+        private readonly AppDbContext _context;
 
         public AuthController(SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager,
@@ -24,7 +27,8 @@ namespace SyncSyntax.Controllers
             ILogger<AuthController> logger,
             IWebHostEnvironment webHostEnvironment,
             IConfiguration config,
-            IUploadFileService uploadFile)
+            IUploadFileService uploadFile,
+            AppDbContext context)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -33,6 +37,7 @@ namespace SyncSyntax.Controllers
             _webHostEnvironment = webHostEnvironment;
             _config = config;
             _uploadFile = uploadFile;
+            _context = context;
         }
 
         [HttpGet]
@@ -105,8 +110,19 @@ namespace SyncSyntax.Controllers
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation("User {Email} signed in after registration.", model.Email);
 
-                    return RedirectToAction("FollowingPosts", "Following", new { area = "ContentCreator" });
+                    // Add a notification here
+                    var notification = new Notification
+                    {
+                        UserId = user.Id,  // Add the user ID of the one who signed up
+                        Message = $"Welcome {user.UserName}! Your account has been successfully created.",
+                        IsRead = false,
+                        CreatedAt = DateTime.Now
+                    };
 
+                    _context.Notifications.Add(notification);
+                    await _context.SaveChangesAsync();
+
+                    return RedirectToAction("FollowingPosts", "Following", new { area = "ContentCreator" });
                 }
 
                 foreach (var error in result.Errors)

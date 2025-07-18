@@ -1,0 +1,171 @@
+﻿@model IEnumerable<Notification>
+
+<h1 class="page-title">Notifications</h1>
+
+<div class="notification-list">
+    @if (Model.Any())
+    {
+        foreach (var notification in Model)
+        {
+            <div id="notification-@notification.Id" class="notification-item @((notification.IsRead ? "read" : "unread"))">
+                <div class="notification-header">
+                    <div class="user-image">
+                        @if (notification.User != null && !string.IsNullOrEmpty(notification.User.ProfilePicture))
+                        {
+                            <img src="@Url.Content(notification.User.ProfilePicture)" alt="@notification.User.UserName" class="user-avatar" />
+                        }
+                        else
+                        {
+                            <img src="https://via.placeholder.com/40" alt="No User" class="user-avatar" />
+                        }
+                    </div>
+                    <div class="user-info">
+                        <p class="user-name">@notification.User?.UserName</p>
+                        <small class="notification-date">@notification.CreatedAt.ToString("g")</small>
+                    </div>
+                </div>
+                <p class="notification-message">@notification.Message</p>
+
+                @if (!notification.IsRead)
+                {
+                    <a href="javascript:void(0);" class="mark-read" data-id="@notification.Id">Mark as Read</a>
+                }
+            </div>
+        }
+    }
+    else
+    {
+        <p>No notifications.</p>
+    }
+</div>
+
+<style>
+    /* Title */
+    .page-title {
+        font-size: 2rem;
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333;
+        font-family: 'Arial', sans-serif;
+    }
+
+    /* Notification List */
+    .notification-list {
+        max-width: 900px;
+        margin: 0 auto;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Notification Item */
+    .notification-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 15px;
+        background-color: #fff;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        font-family: 'Arial', sans-serif;
+    }
+
+        /* When notification is unread */
+        .notification-item.unread {
+            background-color: #eef4ff;
+            border-left: 5px solid #007bff;
+        }
+
+        /* When notification is read */
+        .notification-item.read {
+            background-color: #f7f7f7;
+            border-left: 5px solid #dcdcdc;
+        }
+
+        /* Hover Effect */
+        .notification-item:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+    /* Notification Header */
+    .notification-header {
+        display: flex;
+        align-items: center;
+    }
+
+    /* User Image */
+    .user-image {
+        margin-right: 15px;
+    }
+
+    .user-avatar {
+        width: 45px;
+        height: 45px;
+        border-radius: 50%;
+        object-fit: cover;
+    }
+
+    /* User Info */
+    .user-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .user-name {
+        font-weight: bold;
+        font-size: 1rem;
+        color: #333;
+        margin-bottom: 5px;
+    }
+
+    .notification-date {
+        font-size: 0.85rem;
+        color: #888;
+    }
+
+    /* Notification Message */
+    .notification-message {
+        margin-top: 12px;
+        font-size: 1rem;
+        color: #555;
+    }
+
+    /* Mark as Read */
+    .mark-read {
+        color: #007bff;
+        font-size: 0.9rem;
+        text-decoration: none;
+        margin-top: 10px;
+        display: inline-block;
+        transition: color 0.2s ease;
+    }
+
+        .mark-read:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+    /* No Notifications Message */
+    .no-notifications {
+        text-align: center;
+        font-size: 1.2rem;
+        color: #888;
+    }
+</style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    $(document).on('click', '.mark-read', function () {
+        var notificationId = $(this).data('id');
+        $.ajax({
+            url: '@Url.Action("MarkAsRead", "Notification")/' + notificationId,
+            type: 'GET',
+            success: function () {
+                $('#notification-' + notificationId).removeClass('unread').addClass('read');
+            }
+        });
+    });
+</script>

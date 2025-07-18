@@ -455,6 +455,41 @@ namespace SyncSyntax.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("SyncSyntax.Models.Notification", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRead")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<int?>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Notifications");
+                });
+
             modelBuilder.Entity("Following", b =>
                 {
                     b.HasOne("SyncSyntax.Models.AppUser", null)
@@ -582,6 +617,23 @@ namespace SyncSyntax.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SyncSyntax.Models.Notification", b =>
+                {
+                    b.HasOne("Post", "Post")
+                        .WithMany()
+                        .HasForeignKey("PostId");
+
+                    b.HasOne("SyncSyntax.Models.AppUser", "User")
+                        .WithMany("Notifications")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("Post", b =>
                 {
                     b.Navigation("Comments");
@@ -594,6 +646,8 @@ namespace SyncSyntax.Migrations
                     b.Navigation("FollowedUsers");
 
                     b.Navigation("Followers");
+
+                    b.Navigation("Notifications");
 
                     b.Navigation("PostLikes");
                 });

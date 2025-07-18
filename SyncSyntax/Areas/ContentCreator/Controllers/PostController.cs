@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
 using SyncSyntax.Models.IServices;
@@ -19,7 +21,9 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         private readonly IConfiguration _config;
         private readonly IUploadFileService _uploadFile;
         private readonly UserManager<AppUser> _userManager;
-        public PostController(AppDbContext context, IWebHostEnvironment webHostEnvironment, ILogger<PostController> logger, IUploadFileService uploadFile, IConfiguration config, UserManager<AppUser> userManager)
+        private readonly IServiceProvider _serviceProvider;
+
+        public PostController(AppDbContext context, IWebHostEnvironment webHostEnvironment, ILogger<PostController> logger, IUploadFileService uploadFile, IConfiguration config, UserManager<AppUser> userManager, IServiceProvider serviceProvider)
         {
             _context = context;
             _webHostEnvironment = webHostEnvironment;
@@ -27,19 +31,57 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             _uploadFile = uploadFile;
             _config = config;
             _userManager = userManager;
-
+            _serviceProvider = serviceProvider;
         }
 
-
         [HttpPost]
-        public IActionResult TogglePublishStatus(int postId)
+        public async Task<IActionResult> TogglePublishStatus(int postId)
         {
-            var post = _context.Posts.FirstOrDefault(p => p.Id == postId);
+            var post = await _context.Posts.FirstOrDefaultAsync(p => p.Id == postId);
             if (post == null)
                 return NotFound();
 
+            var currentUser = await _userManager.GetUserAsync(User);
+            if (currentUser == null)
+            {
+                return Unauthorized();
+            }
+
             post.IsPublished = !post.IsPublished;
             _context.SaveChanges();
+
+            if (post.IsPublished)
+            {
+                var userWhoPublished = await _userManager.FindByIdAsync(post.UserId);
+
+                if (userWhoPublished != null)
+                {
+                    var followers = await _context.Followings
+                                                  .Where(f => f.FollowingId == userWhoPublished.Id)
+                                                  .Select(f => f.FollowerId)
+                                                  .ToListAsync();
+
+                    foreach (var followerId in followers)
+                    {
+                        var follower = await _userManager.FindByIdAsync(followerId);
+                        if (follower != null)
+                        {
+                            var notification = new Notification
+                            {
+                                UserId = followerId,
+                                Message = $"{userWhoPublished.UserName} published a new post: '{post.Title}'",
+                                IsRead = false,
+                                CreatedAt = DateTime.Now
+                            };
+
+                            _context.Notifications.Add(notification);
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+                }
+            }
+
             return Json(new { success = true, isPublished = post.IsPublished });
         }
 
@@ -141,6 +183,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         [HttpGet]
         public IActionResult Explore(int? categoryId)
         {
+
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var postQuery = _context.Posts
@@ -174,6 +217,13 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             }).ToList();
 
             ViewData["Categories"] = _context.Categories.ToList();
+
+            var unreadNotificationsCount = _context.Notifications
+                .Where(n => n.UserId == currentUserId && !n.IsRead)
+                .Count();
+
+           
+            ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
 
             return View(viewModelList);
         }
@@ -288,13 +338,11 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         {
             try
             {
-
                 var currentUser = await _userManager.GetUserAsync(User);
                 if (currentUser == null)
                 {
                     return Unauthorized();
                 }
-
 
                 var post = await _context.Posts.FindAsync(postId);
                 if (post == null)
@@ -302,20 +350,15 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                     return Json(new { success = false, message = "Post not found." });
                 }
 
-                _logger.LogInformation($"User {currentUser.UserName} with ID {currentUser.Id} is attempting to like/unlike post {postId}.");
-
-
                 var existingLike = await _context.PostLikes
                     .FirstOrDefaultAsync(l => l.PostId == postId && l.UserId == currentUser.Id);
 
                 if (existingLike != null)
                 {
-
                     _context.PostLikes.Remove(existingLike);
                 }
                 else
                 {
-
                     var postLike = new PostLike
                     {
                         PostId = postId,
@@ -326,23 +369,19 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                     _context.PostLikes.Add(postLike);
                 }
 
-
+                // تحديث عدد اللايكات
                 post.LikesCount = await _context.PostLikes.CountAsync(l => l.PostId == postId);
-
 
                 await _context.SaveChangesAsync();
 
-
                 var userLiked = post.PostLikes.Any(l => l.UserId == currentUser.Id);
 
-                return Json(new { success = true, likesCount = post.LikesCount, userLiked });
-            }
-            catch (DbUpdateException dbEx)
-            {
-                var innerException = dbEx.InnerException?.Message ?? "No inner exception message.";
-                _logger.LogError($"Database error in Like action: {dbEx.Message}. Inner exception: {innerException}");
+                // إعلام جميع العملاء المتصلين بالتحديث باستخدام SignalR
+                var hubContext = _serviceProvider.GetRequiredService<IHubContext<LikeHub>>();
+                await hubContext.Clients.Group($"Post-{postId}").SendAsync("ReceiveLike", post.LikesCount, userLiked);
 
-                return Json(new { success = false, message = "An error occurred while saving your like. Please try again later." });
+                // إرسال حالة الإعجاب وعدد اللايكات في الاستجابة
+                return Json(new { success = true, likesCount = post.LikesCount, userLiked });
             }
             catch (Exception ex)
             {
@@ -350,7 +389,6 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 return Json(new { success = false, message = "An unexpected error occurred." });
             }
         }
-
 
     }
 }

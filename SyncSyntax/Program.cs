@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
-using SyncSyntax.Models.CommentHub;
 using SyncSyntax.Models.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -92,6 +91,7 @@ app.MapStaticAssets();
 
 
 app.MapHub<CommentHub>("/commentHub");
+ 
 
 
 app.MapAreaControllerRoute(

@@ -21,6 +21,32 @@
             margin: 0;
         }
 
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            width: 20px;
+            height: 20px;
+            background-color: red;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2px;
+        }
+
+        a {
+            position: relative;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .bi-bell {
+            font-size: 24px; /* يمكنك تعديل حجم الأيقونة */
+        }
         /* Sidebar Styles */
         .sidebar {
             background: #131313;
@@ -103,7 +129,17 @@
                 <a href="#"><i class="bi bi-search"></i><span> Search</span></a>
                 <a asp-action="Explore" asp-controller="Post"><i class="bi bi-arrow-repeat"></i><span> Explore</span></a>
                 <a href="#"><i class="bi bi-envelope"></i><span> Messages</span></a>
-                <a href="#"><i class="bi bi-bell"></i><span> Notifications</span></a>
+                <a href="@Url.Action("Index", "Notification")">
+                    <i class="bi bi-bell"></i>
+                    <span>Notifications</span>
+                    @if (ViewBag.UnreadNotificationsCount > 0)
+                    {
+                        <span class="notification-badge">
+                            @ViewBag.UnreadNotificationsCount
+                        </span>
+                    }
+
+
                 <a asp-action="Create" asp-controller="Post"><i class="bi bi-plus-circle"></i><span> Create</span></a>
                 <a asp-controller="Following"
                    asp-area="ContentCreator"

@@ -177,9 +177,9 @@
                                 <span>@post.UserName</span>
                              </div>
  *@
-                      
+
                             <div class="d-flex align-items-center gap-2 actions">
-                                @if (post.UserId == currentUserId) 
+                                @if (post.UserId == Model.CurrentUserId)
                                 {
                                     <span class="text-danger" onclick="confirmDelete(@post.Id)">
                                         <i class="bi bi-trash3-fill"></i>
@@ -202,6 +202,7 @@
                                     </span>
                                 }
                             </div>
+
 
                         </div>
 

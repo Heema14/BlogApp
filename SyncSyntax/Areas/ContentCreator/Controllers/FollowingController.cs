@@ -68,25 +68,21 @@ public class FollowingController : Controller
       
         ViewData["Categories"] = _context.Categories.ToList();
 
-      
+        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier); 
+
+        var unreadNotificationsCount = _context.Notifications
+            .Where(n => n.UserId == currentUserId && !n.IsRead)
+            .Count();
+
+        ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
+
         return View(viewModelList);
     }
-
 
     [HttpPost]
     public IActionResult Follow(string userId)
     {
-
-        if (Request.Method != "POST")
-        {
-            return BadRequest();
-        }
-
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-        _logger.LogInformation($"Attempting to follow user with ID: {userId}");
-        _logger.LogInformation($"Current logged-in user ID: {currentUserId}");
-
-
         var userToFollow = _context.Users.FirstOrDefault(u => u.Id == userId);
         if (userToFollow == null)
         {
@@ -100,21 +96,22 @@ public class FollowingController : Controller
 
         var follow = new Following { FollowerId = currentUserId, FollowingId = userId };
 
-        try
+        _context.Followings.Add(follow);
+        _context.SaveChanges();
+
+        var notification = new Notification
         {
-            _context.Followings.Add(follow);
-            _context.SaveChanges();
-        }
-        catch (DbUpdateException ex)
-        {
-            var innerException = ex.InnerException?.Message ?? "No inner exception";
-            _logger.LogError($"DbUpdateException: {innerException}");
-            return BadRequest("An error occurred while following the user.");
-        }
+            UserId = userId,  // الشخص الذي يتم متابعته
+            Message = $"{_userManager.GetUserName(User)} started following you.",  // نرسل إشعارًا للمتابع عليه
+            IsRead = false,
+            CreatedAt = DateTime.Now
+        };
+
+        _context.Notifications.Add(notification);
+        _context.SaveChanges();
 
         return RedirectToAction("Profile", new { userId = userId });
     }
-
 
     [HttpPost]
     public IActionResult Unfollow(string userId)
@@ -150,6 +147,9 @@ public class FollowingController : Controller
             return NotFound("User not found");
         }
 
+        var currentUser = _userManager.GetUserAsync(User).Result; // جلب المستخدم الحالي
+        var currentUserId = currentUser?.Id; // معرف المستخدم الحالي
+
         var followersCount = _context.Followings
             .Count(f => f.FollowingId == userId);
 
@@ -172,7 +172,8 @@ public class FollowingController : Controller
             FollowingCount = followingCount,
             PostsCount = postsCount,
             Posts = posts,
-            Bio = user.Bio
+            Bio = user.Bio,
+            CurrentUserId = currentUserId // إضافة معرف المستخدم الحالي إلى الـ ViewModel
         };
 
         return View(model);
