@@ -32,10 +32,10 @@ namespace SyncSyntax.Models
 
         public ICollection<PostLike> PostLikes { get; set; }
 
-        // العلاقة بين المستخدمين الذين يتابعهم هذا المستخدم
+      
         public ICollection<Following> FollowedUsers { get; set; }
 
-        // العلاقة بين المتابعين لهذا المستخدم
+        public string? Bio { get; set; }
         public ICollection<Following> Followers { get; set; }
 
     }

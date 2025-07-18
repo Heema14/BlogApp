@@ -149,25 +149,33 @@ else
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
 
     <script>
-               $(document).ready(function () {
-            $('#postModal').on('show.bs.modal', function (e) {
-                var button = $(e.relatedTarget);
-                var postId = button.data('id');
-                var modalBody = $(this).find('.modal-body');
-                modalBody.html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</div>');
+                      $(document).on('click', '[data-bs-toggle="modal"]', function (e) {
+            var button = $(e.currentTarget); 
+            var postId = button.data('id');  
 
+         
+            console.log("Opening post with ID: " + postId);
 
-                $.ajax({
-                    url: '@Url.Action("Detail", "Post")/' + postId,
-                    type: 'GET',
-                    success: function (response) {
-                        modalBody.html(response);
-                    },
-                    error: function () {
-                        modalBody.html('<p class="text-danger">Failed to load post details.</p>');
-                    }
-                });
+            $('#postModal').find('.modal-body').html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</div>');
+
+           
+            $.ajax({
+                url: '@Url.Action("Detail", "Post")/' + postId,
+                type: 'GET',
+                success: function (response) {
+                   
+                    $('#postModal .modal-body').html(response);
+                },
+                error: function () {
+                    $('#postModal .modal-body').html('<p class="text-danger">Failed to load post details.</p>');
+                }
             });
+        });
+
+        
+        $('#postModal').on('hidden.bs.modal', function () {
+            var modalBody = $(this).find('.modal-body');
+            modalBody.html('');
         });
 
 

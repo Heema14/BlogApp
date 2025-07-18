@@ -209,11 +209,6 @@ namespace SyncSyntax.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Description")
-                        .IsRequired()
-                        .HasMaxLength(5000)
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("FeatureImagePath")
                         .HasColumnType("nvarchar(max)");
 
@@ -257,42 +252,6 @@ namespace SyncSyntax.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Posts");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            CategoryId = 1,
-                            Content = "Content of the first post",
-                            CreatedAt = new DateTime(2023, 7, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "This is a description for post one.",
-                            FeatureImagePath = "/images/p03.jpg",
-                            IsPublished = true,
-                            LikesCount = 0,
-                            PublishedDate = new DateTime(2023, 7, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Post One",
-                            UserId = "1",
-                            UserImageUrl = "/images/p09.jpg",
-                            UserName = "user1",
-                            Views = 0
-                        },
-                        new
-                        {
-                            Id = 2,
-                            CategoryId = 2,
-                            Content = "Content of the second post",
-                            CreatedAt = new DateTime(2023, 7, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Description = "This is a description for post two.",
-                            FeatureImagePath = "/images/p01.jpg",
-                            IsPublished = true,
-                            LikesCount = 0,
-                            PublishedDate = new DateTime(2023, 7, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            Title = "Post Two",
-                            UserId = "1",
-                            UserImageUrl = "/images/p08.jpg",
-                            UserName = "user2",
-                            Views = 0
-                        });
                 });
 
             modelBuilder.Entity("PostLike", b =>
@@ -329,6 +288,9 @@ namespace SyncSyntax.Migrations
 
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
+
+                    b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -382,7 +344,8 @@ namespace SyncSyntax.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("bit");

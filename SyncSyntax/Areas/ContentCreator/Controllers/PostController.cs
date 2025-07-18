@@ -71,7 +71,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         {
             try
             {
-                _logger.LogInformation($"Received post data: {post.Id}, {post.Title}, {post.Description}, {post.CategoryId}, {post.Content}");
+                _logger.LogInformation($"Received post data: {post.Id}, {post.Title}, {post.CategoryId}, {post.Content}");
 
                 var currentUser = await _userManager.GetUserAsync(User);
                 if (currentUser != null)
@@ -255,9 +255,10 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 UserLikedPost = userLikedPost
             };
 
+            // التأكد من أن الـ Request هو Ajax
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("PostDetail", viewModel);
+                return PartialView("PostDetail", viewModel);  // ارجع الـ Partial View
             }
 
             return View(viewModel);

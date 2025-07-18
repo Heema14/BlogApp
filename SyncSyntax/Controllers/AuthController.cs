@@ -160,7 +160,7 @@ namespace SyncSyntax.Controllers
             }
 
             _logger.LogInformation("User {Input} signed in successfully.", model.EmailOrUsername);
-            return RedirectToAction("Explore", "Post", new { area = "ContentCreator" });
+            return RedirectToAction("FollowingPosts", "Following", new { area = "ContentCreator" });
         }
 
 

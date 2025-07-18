@@ -1,105 +1,140 @@
-﻿@model IEnumerable<Post>
+﻿@* @model IEnumerable<Post> *@
+@model IEnumerable<PostWithFollowStatusViewModel>
 
 @{
     ViewData["Title"] = "Blog Posts";
 }
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
 <link href="~/css/sidebar.css" rel="stylesheet" />
 
-<!-- Category Filter -->
-<div class="text-center my-4">
-    @if (ViewBag.Categories != null)
-    {
-        <div class="d-flex justify-content-center flex-wrap gap-2">
-            @foreach (var category in ViewBag.Categories)
-            {
-                <a asp-controller="Post" asp-action="Index" asp-route-categoryId="@category.Id"
-                   class="badge bg-warning text-dark text-decoration-none px-3 py-2 fs-6 rounded-pill shadow-sm">
-                    @category.Name
-                </a>
-            }
-        </div>
-    }
+<!-- Category Search -->
+<div class="my-4 text-center">
+    <div class="input-group w-50 mx-auto">
+        <input type="text" id="categorySearchInput" class="form-control" placeholder="Search category..." autocomplete="off" />
+        <button class="btn btn-success" id="searchCategoryBtn">
+            <i class="bi bi-search"></i> Search
+        </button>
+    </div>
 </div>
 
 <!-- Create Post Button -->
 <div class="text-end mb-4">
-    <a asp-action="Create" asp-controller="Post" class="button create-post-btn">
+    <a asp-action="Create" class="button create-post-btn">
         <i class="bi bi-plus-circle svgIcon"></i>
     </a>
 </div>
+@if (!Model.Any())
+{
+    <div class="alert alert-warning text-center mt-4">
+        <i class="bi bi-info-circle"></i> Looks like you're not following anyone at the moment. Don't worry! Start following some fresh new faces and enjoy reading their unique and inspiring posts. 📚✨
+        <br />
+        <a asp-action="Users" class="btn btn-primary mt-3" style="font-size: 16px; display: inline-flex; align-items: center; background: linear-gradient(to right, #ff7e5f, #feb47b); border: none; border-radius: 25px; padding: 12px 24px; text-decoration: none; color: white;">
+            <i class="bi bi-person-plus" style="margin-right: 8px;"></i> Explore New Users
+        </a>
+    </div>
+}
 
-<!-- Posts Grid -->
-<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-    @foreach (var post in Model)
-    {
-        <div class="col">
+else
+{
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        @foreach (var post in Model)
+        {
+            <!-- Posts Grid -->
+            <div class="col">
 
-            <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
 
-                <!-- Post Image with Overlay -->
-                <div class="overflow-hidden position-relative" style="height: 220px;">
-                    <img src="@(!string.IsNullOrEmpty(post.FeatureImagePath) ? post.FeatureImagePath : "/images/default-image.jpg")"
-                         class="card-img-top h-100 w-100 object-fit-cover transition"
-                         alt="@post.Title"
-                         style="transition: transform 0.3s ease;" />
+                    <!-- Post Image with Overlay -->
+                    <div class="overflow-hidden position-relative" style="height: 220px;">
+                        <img src="@(!string.IsNullOrEmpty(post.Post.FeatureImagePath) ? post.Post.FeatureImagePath : "/images/default-image.jpg")"
+                             class="card-img-top h-100 w-100 object-fit-cover transition"
+                             alt="@post.Post.Title"
+                             style="transition: transform 0.3s ease;" />
 
-                    <!-- Read More Overlay -->
+                        <!-- Read More Overlay -->
 
 
-                    <a data-bs-toggle="modal" data-bs-target="#postModal" data-id="@post.Id"
-                       class="read-more-overlay d-flex justify-content-center align-items-center text-white text-decoration-none">
-                        <span class="fs-6 fw-semibold"><i class="bi bi-book me-2"></i>Read More</span>
-                    </a>
-                </div>
-
-                <div class="card-body">
-                    <!-- User Info and Actions -->
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <img src="@post.UserImageUrl" alt="User" class="rounded-circle" style="width: 30px; height: 30px;">
-                            <span>@post.UserName</span>
-                        </div>
+                        <a data-bs-toggle="modal" data-bs-target="#postModal" data-id="@post.Post.Id"
+                           class="read-more-overlay d-flex justify-content-center align-items-center text-white text-decoration-none">
+                            <span class="fs-6 fw-semibold"><i class="bi bi-book me-2"></i>Read More</span>
+                        </a>
                     </div>
 
-                    <!-- Post Title and Likes -->
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="card-title fw-bold">@post.Title</h5>
-                        <div class="d-flex align-items-center gap-1" style="cursor: pointer;">
-                            <i class="bi bi-heart-fill" style="color: @(post.LikesCount > 0 ? "red" : "gray");"></i>
-                            <span>@post.LikesCount</span>
+                    <div class="card-body">
+                        <!-- User Info and Actions -->
+                        <div class="d-flex align-items-center justify-content-between mb-3">
+                            <div class="d-flex align-items-center gap-2">
+                                <img src="@post.Post.UserImageUrl" alt="User" class="rounded-circle" style="width: 30px; height: 30px;">
+                                <span>@post.Post.UserName</span>
+                            </div>
+
+                            <div class="d-flex align-items-center gap-2 actions">
+                                @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != post.Post.UserId)
+                                {
+                                    if (post.IsFollowing)
+                                    {
+                                        <form asp-controller="Following" asp-action="Unfollow" asp-route-userId="@post.Post.UserId" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-danger btn-sm">
+                                                <i class="bi bi-person-dash me-1"></i> Unfollow
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <form asp-controller="Following" asp-action="Follow" asp-route-userId="@post.Post.UserId" method="post">
+                                            @Html.AntiForgeryToken()
+                                            <button type="submit" class="btn btn-success btn-sm">
+                                                <i class="bi bi-person-plus me-1"></i> Follow
+                                            </button>
+                                        </form>
+                                    }
+                                }
+
+                            </div>
+
                         </div>
+
+                        <!-- Post Title and Likes -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title fw-bold">@post.Post.Title</h5>
+                            <div class="d-flex align-items-center gap-1" style="cursor: pointer;">
+                                <i class="bi bi-heart-fill" style="color: @(post.Post.LikesCount > 0 ? "red" : "gray");"></i>
+                                <span>@post.Post.LikesCount</span>
+                            </div>
+                        </div>
+
+                        <!-- Date -->
+                        <p class="text-muted mb-2 DatePost">
+                            <i class="bi bi-calendar-event me-1"></i>
+                            @post.Post.PublishedDate.ToString("MMMM dd, yyyy")
+                        </p>
+
+                        <!-- Preview -->
+                        @{
+                            var contentTag = HtmlTagHelper.RemoveHtmlTags(post.Post.Content);
+                            var preview = contentTag.Length > 100 ? contentTag.Substring(0, 100) + "..." : contentTag;
+                        }
+
+                        <p class="card-text text-black">@preview</p>
+
+                        <!-- Category -->
+                        @if (post.Post.Category != null)
+                        {
+                            <span class="badge bg-info text-dark mt-2">
+                                <i class="bi bi-tag me-1"></i> @post.Post.Category.Name
+                            </span>
+                        }
                     </div>
 
-                    <!-- Date -->
-                    <p class="text-muted mb-2 DatePost">
-                        <i class="bi bi-calendar-event me-1"></i>
-                        @post.PublishedDate.ToString("MMMM dd, yyyy")
-                    </p>
-
-                    <!-- Preview -->
-                    @{
-                        var contentTag = HtmlTagHelper.RemoveHtmlTags(post.Content);
-                        var preview = contentTag.Length > 100 ? contentTag.Substring(0, 100) + "..." : contentTag;
-                    }
-
-                    <p class="card-text text-black">@preview</p>
-
-                    <!-- Category -->
-                    @if (post.Category != null)
-                    {
-                        <span class="badge bg-info text-dark mt-2">
-                            <i class="bi bi-tag me-1"></i> @post.Category.Name
-                        </span>
-                    }
                 </div>
 
             </div>
+        }
+    </div>
+}
 
-        </div>
-    }
-</div>
+
+
 <!-- Modal -->
 <div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
@@ -116,25 +151,85 @@
     </div>
 </div>
 
-<script>
-    $(document).ready(function () {
-        $('#postModal').on('show.bs.modal', function (e) {
-            var button = $(e.relatedTarget);
-            var postId = button.data('id');
-            var modalBody = $(this).find('.modal-body');
-            modalBody.html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</div>');
 
-            // AJAX request to fetch post details
+@section Scripts {
+    <!-- jQuery and jQuery UI -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
+
+    <script>
+                      $(document).on('click', '[data-bs-toggle="modal"]', function (e) {
+            var button = $(e.currentTarget);  // الزر الذي تم النقر عليه
+            var postId = button.data('id');   // جلب ID البوست من الزر
+
+            // إضافة log لتتبع الـ postId
+            console.log("Opening post with ID: " + postId); // سيظهر الـ postId في الكونسول
+
+            // تنظيف محتوى الـ Modal قبل تحميل البيانات الجديدة
+            $('#postModal').find('.modal-body').html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</div>');
+
+            // إرسال Ajax لاسترجاع محتوى البوست بناءً على الـ ID
             $.ajax({
                 url: '@Url.Action("Detail", "Post")/' + postId,
                 type: 'GET',
                 success: function (response) {
-                    modalBody.html(response);
+                    // تحديث محتوى الـ Modal بالبيانات المسترجعة
+                    $('#postModal .modal-body').html(response);
                 },
                 error: function () {
-                    modalBody.html('<p class="text-danger">Failed to load post details.</p>');
+                    $('#postModal .modal-body').html('<p class="text-danger">Failed to load post details.</p>');
                 }
             });
         });
-    });
-</script>
+
+        // عند إغلاق الـ Modal
+        $('#postModal').on('hidden.bs.modal', function () {
+            var modalBody = $(this).find('.modal-body');
+            modalBody.html(''); // تنظيف المحتوى عند إغلاق الـ Modal
+        });
+
+
+            //Search
+        const categories = @Html.Raw(Json.Serialize(ViewBag.Categories));
+
+        $("#categorySearchInput").autocomplete({
+            source: categories.map(c => ({ label: c.name, value: c.id })),
+            minLength: 0,
+            select: function (event, ui) {
+                window.location.href = "?categoryId=" + ui.item.value;
+            }
+        }).focus(function () {
+            $(this).autocomplete("search", "");
+        });
+
+        // search
+        function searchCategory() {
+            const inputVal = $("#categorySearchInput").val().toLowerCase().trim();
+            if (!inputVal) return;
+
+            const match = categories.find(c => c.name.toLowerCase().includes(inputVal));
+
+            if (match) {
+                window.location.href = "?categoryId=" + match.id;
+            } else {
+                alert("No matching category found.");
+            }
+        }
+
+        // Button click
+        $("#searchCategoryBtn").on("click", function () {
+            searchCategory();
+        });
+
+        // Enter key press
+        $("#categorySearchInput").on("keypress", function (e) {
+            if (e.which === 13) {
+                searchCategory();
+                e.preventDefault();
+            }
+        });
+
+    </script>
+}
+

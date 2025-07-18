@@ -8,5 +8,6 @@ public class ProfileViewModel
     public int FollowersCount { get; set; }
     public int FollowingCount { get; set; }
     public int PostsCount { get; set; }
+    public string? Bio { get; set; }
     public List<Post> Posts { get; set; }
 }

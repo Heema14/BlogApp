@@ -1,4 +1,7 @@
 ﻿ @model ProfileViewModel
+@{
+    var currentUserId = User.Identity.Name;  
+}
 
 <style>
     .profile-header {
@@ -107,25 +110,33 @@
     <img src="@Model.User.ProfilePicture" alt="Profile Picture" class="profile-picture">
 
     <div class="profile-username">@Model.User.UserName</div>
+    <div class="profile-bio">
+        <div>@Model.User.Bio</div>
 
+    </div>
+@if (currentUserId == Model.User.UserName)
+    {
     <div class="profile-actions">
         <a asp-action="EditProfile" asp-area="" asp-controller="Auth">Edit Profile</a>
     </div>
-
+    }
     <div class="profile-stats">
         <span>@Model.PostsCount Articles</span>
         <span>@Model.FollowersCount Followers</span>
         <span>@Model.FollowingCount Following</span>
     </div>
 
-    <div class="profile-bio">
-        <div><strong>@Model.User.MajorName</strong></div>
-        @*       <div>@Model.User.Bio</div> *@
-    </div>
+   
 </div>
-
-<div class="new-post-circle">+</div>
-<div style="text-align:center; font-weight: bold;">Share Articles</div>
+@if (currentUserId == Model.User.UserName)
+    {
+<div class="text-end mb-4">
+    <a asp-action="Create" asp-controller="Post" class="button create-post-btn">
+        <i class="bi bi-plus-circle svgIcon"></i>
+    </a>
+</div>
+    }
+@* <div style="text-align:center; font-weight: bold;">Share Articles</div> *@
 
 <div class="nav-tabs-custom">
     <span>Articles</span>
@@ -159,33 +170,39 @@
                     <div class="card-body">
                         <!-- User Info (Above Title) -->
                         <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div class="d-flex align-items-center gap-2">
+                       @*      <div class="d-flex align-items-center gap-2">
                                 <span>
                                     <img src="@post.UserImageUrl" alt="User" class="rounded-circle" style="width: 30px; height: 30px;">
                                 </span>
                                 <span>@post.UserName</span>
-                            </div>
-
+                             </div>
+ *@
+                      
                             <div class="d-flex align-items-center gap-2 actions">
-                                <span class="text-danger" onclick="confirmDelete(@post.Id)"><i class="bi bi-trash3-fill"></i></span>
-                                <span onclick="location.href='@Url.Action("Edit", "Post", new { id = post.Id })'">
-                                    <i class="bi bi-pencil-square"></i>
-                                </span>
-                                <!-- زر On/Off Toggle -->
-                                <span onclick="togglePublishStatus(@post.Id, '@post.IsPublished.ToString().ToLower()')">
-                                    <button class="btn btn-sm position-relative p-2" data-id="@post.Id">
-                                        @if (post.IsPublished)
-                                        {
-                                            <i class="bi bi-eye"></i> <!-- Icon for Published (eye) -->
-                                        }
-                                        else
-                                        {
-                                            <i class="bi bi-eye-slash"></i> <!-- Icon for Unpublished (eye-slash) -->
-                                        }
-                                    </button>
-                                </span>
-
+                                @if (post.UserId == currentUserId) 
+                                {
+                                    <span class="text-danger" onclick="confirmDelete(@post.Id)">
+                                        <i class="bi bi-trash3-fill"></i>
+                                    </span>
+                                    <span onclick="location.href='@Url.Action("Edit", "Post", new { id = post.Id })'">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </span>
+                                    <!-- زر On/Off Toggle -->
+                                    <span onclick="togglePublishStatus(@post.Id, '@post.IsPublished.ToString().ToLower()')">
+                                        <button class="btn btn-sm position-relative p-2" data-id="@post.Id">
+                                            @if (post.IsPublished)
+                                            {
+                                                <i class="bi bi-eye"></i> <!-- Icon for Published (eye) -->
+                                            }
+                                            else
+                                            {
+                                                <i class="bi bi-eye-slash"></i> <!-- Icon for Unpublished (eye-slash) -->
+                                            }
+                                        </button>
+                                    </span>
+                                }
                             </div>
+
                         </div>
 
                         <!-- Post Title and Likes -->

@@ -21,23 +21,57 @@ public class FollowingController : Controller
         _userManager = userManager;
     }
 
-    public IActionResult FollowingPosts()
+    public IActionResult FollowingPosts(int? categoryId)
     {
+       
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+        
         var followedUsers = _context.Followings
             .Where(f => f.FollowerId == userId)
             .Select(f => f.FollowingId)
             .ToList();
 
-        var posts = _context.Posts
-            .Where(p => followedUsers.Contains(p.UserId))
+     
+        var postQuery = _context.Posts
             .Include(p => p.Category)
+            .Where(p => followedUsers.Contains(p.UserId) && p.IsPublished);
+
+      
+        if (categoryId.HasValue)
+        {
+            postQuery = postQuery.Where(p => p.CategoryId == categoryId);
+        }
+
+       
+        var posts = postQuery
             .OrderByDescending(p => p.PublishedDate)
+            .AsNoTracking()
             .ToList();
 
-        return View(posts);
+        
+        var postOwnerIds = posts.Select(p => p.UserId).Distinct().ToList();
+
+        
+        var followingIds = _context.Followings
+            .Where(f => f.FollowerId == userId && postOwnerIds.Contains(f.FollowingId))
+            .Select(f => f.FollowingId)
+            .ToHashSet();
+
+       
+        var viewModelList = posts.Select(post => new PostWithFollowStatusViewModel
+        {
+            Post = post,
+            IsFollowing = followingIds.Contains(post.UserId)
+        }).ToList();
+
+      
+        ViewData["Categories"] = _context.Categories.ToList();
+
+      
+        return View(viewModelList);
     }
+
 
     [HttpPost]
     public IActionResult Follow(string userId)
@@ -137,11 +171,23 @@ public class FollowingController : Controller
             FollowersCount = followersCount,
             FollowingCount = followingCount,
             PostsCount = postsCount,
-            Posts = posts
+            Posts = posts,
+            Bio = user.Bio
         };
 
         return View(model);
     }
 
+
+    public async Task<IActionResult> Users()
+    {
+        var currentUser = await _userManager.GetUserAsync(User);
+
+        var users = await _context.Users
+                                   .Where(u => u.Id != currentUser.Id) 
+                                   .ToListAsync();
+
+        return View(users);
+    }
 
 }

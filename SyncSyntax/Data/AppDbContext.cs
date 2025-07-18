@@ -63,42 +63,42 @@ namespace SyncSyntax.Data
                 new Category { Id = 5, Name = "Design" }
             );
 
-            // Assume that the user with Id "1" exists in the database
-            string userId = "1"; // You may need to update this with a valid user ID.
+          
+            //string userId = "maria_zourob"; 
 
-            // Seed Posts with static values for PublishedDate
-            modelBuilder.Entity<Post>().HasData(
-                new Post
-                {
-                    Id = 1,
-                    Title = "Post One",
-                    Content = "Content of the first post",
-                    Description = "This is a description for post one.",
-                    FeatureImagePath = "/images/p03.jpg",
-                    CreatedAt = new DateTime(2023, 7, 12),
-                    UserName = "user1",
-                    UserImageUrl = "/images/p09.jpg",
-                    IsPublished = true,
-                    PublishedDate = new DateTime(2023, 7, 12),
-                    CategoryId = 1,
-                    UserId = userId // Add UserId here
-                },
-                new Post
-                {
-                    Id = 2,
-                    Title = "Post Two",
-                    Content = "Content of the second post",
-                    Description = "This is a description for post two.",
-                    FeatureImagePath = "/images/p01.jpg",
-                    CreatedAt = new DateTime(2023, 7, 12),
-                    UserName = "user2",
-                    UserImageUrl = "/images/p08.jpg",
-                    IsPublished = true,
-                    PublishedDate = new DateTime(2023, 7, 12),
-                    CategoryId = 2,
-                    UserId = userId // Add UserId here
-                }
-            );
+            
+            //modelBuilder.Entity<Post>().HasData(
+            //    new Post
+            //    {
+            //        Id = 1,
+            //        Title = "Post One",
+            //        Content = "Content of the first post",
+            //        Description = "This is a description for post one.",
+            //        FeatureImagePath = "/images/p03.jpg",
+            //        CreatedAt = new DateTime(2023, 7, 12),
+            //        UserName = "maria_zourob",
+            //        UserImageUrl = "/images/p03.jpg",
+            //        IsPublished = true,
+            //        PublishedDate = new DateTime(2023, 7, 12),
+            //        CategoryId = 1,
+            //        UserId = userId 
+            //    },
+            //    new Post
+            //    {
+            //        Id = 2,
+            //        Title = "Post Two",
+            //        Content = "Content of the second post",
+            //        Description = "This is a description for post two.",
+            //        FeatureImagePath = "/images/p01.jpg",
+            //        CreatedAt = new DateTime(2023, 7, 12),
+            //        UserName = "maria_zourob",
+            //        UserImageUrl = "/images/p03.jpg",
+            //        IsPublished = true,
+            //        PublishedDate = new DateTime(2023, 7, 12),
+            //        CategoryId = 2,
+            //        UserId = userId 
+            //    }
+            //);
         }
 
     }

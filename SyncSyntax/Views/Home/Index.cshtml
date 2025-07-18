@@ -10,6 +10,12 @@
             object-fit: cover;
         }
 
+ 
+        .button.soloo:hover {
+            background-color: white !important;
+            color: rgb(24, 191, 239) !important;
+            cursor: pointer;
+        }
     </style>
     <title>Massively by HTML5 UP</title>
     <meta charset="utf-8" />
@@ -34,9 +40,17 @@
                 A free, fully responsive HTML5 + CSS3 site template designed by <a href="https://twitter.com/ajlkn"> </a> for <a href="https://html5up.net">HTML5 UP</a><br />
                 and released for free under the <a href="https://html5up.net/license">Creative Commons license</a>.
             </p>
+            <a asp-action="signin" asp-controller="Auth" asp-area="" class="button solid soloo" style="margin-bottom: 20px; background-color:rgb(24, 191, 239) ; color: white;">
+                Get Started
+            </a>
+
+
+@* 
             <ul class="actions">
+
                 <li><a href="#header" class="button icon solid solo fa-arrow-down scrolly">Continue</a></li>
-            </ul>
+
+            </ul> *@
         </div>
 
         <!-- Header -->
@@ -113,8 +127,8 @@
                         <a href="#" class="image fit">
                             <img src="@post.FeatureImagePath" alt="Post Image" />
                         </a>
-                        <p>@post.Description.Substring(0, Math.Min(post.Description.Length, 300))...</p>
-                        <ul class="actions special">
+@*                         <p>@post.Description.Substring(0, Math.Min(post.Description.Length, 300))...</p>
+ *@                        <ul class="actions special">
                             <li><a asp-action="SignIn" asp-controller="Auth" class="button">Full Story</a></li>
 
                             @* <li><a href="@Url.Action("Detail", "Post", new { id = post.Id, area = "ContentCreator" })" class="button">Full Story</a></li> *@
