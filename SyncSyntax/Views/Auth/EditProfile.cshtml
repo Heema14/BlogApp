@@ -2,17 +2,17 @@
 
 <style>
     #ProfilePicture {
-    aspect-ratio: 1 / 1;
-    object-fit: cover;
-    border-radius: 50%;
-    border: 2px solid #0d6efd;
-    cursor: pointer;
-    transition: box-shadow 0.3s ease;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 2px solid #0d6efd;
+        cursor: pointer;
+        transition: box-shadow 0.3s ease;
     }
 
-    #ProfilePicture:hover {
-    box-shadow: 0 0 15px #0d6efdaa;
-    }
+        #ProfilePicture:hover {
+            box-shadow: 0 0 15px #0d6efdaa;
+        }
 </style>
 
 
@@ -49,15 +49,54 @@
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="nameUser" class="form-label">Username</label>
-                    <input asp-for="nameUser" class="form-control" placeholder="Enter username..." />
-                    <span asp-validation-for="nameUser" class="text-danger"></span>
+                    <label asp-for="NameUser" class="form-label">Username</label>
+                    <input asp-for="NameUser" class="form-control" placeholder="enter username..." />
+                    <span asp-validation-for="NameUser" class="text-danger"></span>
                 </div>
 
                 <div class="mb-3">
-                    <label asp-for="Major" class="form-label">Major</label>
-                    <input asp-for="Major" class="form-control" placeholder="Enter your major..." />
+                    <label asp-for="FirstName" class="form-label"></label>
+                    <input asp-for="FirstName" class="form-control" placeholder="first name..." />
+                    <span asp-validation-for="FirstName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="LastName" class="form-label"></label>
+                    <input asp-for="LastName" class="form-control" placeholder="first name..." />
+                    <span asp-validation-for="LastName" class="text-danger"></span>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="Major" class="form-label"></label>
+                    <input asp-for="Major" class="form-control" placeholder="major..." />
                     <span asp-validation-for="Major" class="text-danger"></span>
+                </div>
+                
+                <div class="mb-3">
+                    <label asp-for="DateOfBirth" class="form-label"></label>
+                    <input type="date" asp-for="DateOfBirth" class="form-control" placeholder="DateOfBirth..." />
+                    <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                </div>
+
+                <div>
+                    <label asp-for="Gender" class="form-label"></label>
+                    <div class="mb-3">
+                        @foreach (var gender in Enum.GetValues(typeof(Gender)))
+                        {
+                            var isChecked = (Model.Gender.ToString() == gender.ToString()) ? "checked" : "";
+
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="Gender" value="@gender" @isChecked required />
+                                <label class="form-check-label">@gender</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label asp-for="PhoneNumber" class="form-label"></label>
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="phone number..." />
+                    <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
 
                 <div class="d-grid">

@@ -31,9 +31,15 @@
                 <div class="row gy-3">
                     <div class="col-md-6">
                         <div class="mb-3">
-                            <label asp-for="Email" class="form-label"></label>
-                            <input asp-for="Email" class="form-control" placeholder="Email..." />
-                            <span asp-validation-for="Email" class="text-danger"></span>
+                            <label asp-for="FirstName" class="form-label"></label>
+                            <input asp-for="FirstName" class="form-control" placeholder="first name..." />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="LastName" class="form-label"></label>
+                            <input asp-for="LastName" class="form-control" placeholder="last name..." />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
                         </div>
 
                         <div class="mb-3">
@@ -42,12 +48,43 @@
                             <span asp-validation-for="MajorName" class="text-danger"></span>
                         </div>
 
+                        <div>
+                            <label asp-for="Gender" class="form-label"></label>
+                            <div class="mb-3">
+                                @foreach (var gender in Enum.GetValues(typeof(Gender)))
+                                {
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input" type="radio" name="Gender" value="@gender" required />
+                                        <label class="form-check-label">@gender</label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="DateOfBirth" class="form-label"></label>
+                            <input type="date" asp-for="DateOfBirth" class="form-control" placeholder="date of birth..." />
+                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Email" class="form-label"></label>
+                            <input asp-for="Email" class="form-control" placeholder="Email..." />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="PhoneNumber" class="form-label"></label>
+                            <input asp-for="PhoneNumber" class="form-control" placeholder="Phone..." />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+
                         <div class="mb-3 position-relative">
                             <label asp-for="Password" class="form-label"></label>
                             <input asp-for="Password" type="password" class="form-control" placeholder="Password..." id="registerPassword" />
                             <span asp-validation-for="Password" class="text-danger"></span>
 
-                            <span onclick="togglePassword('registerPassword', this)" class="position-absolute translate-middle-y pe-3" style="cursor: pointer; top: 62%; right: 4px;">
+                            <span onclick="togglePassword('registerPassword', this)" class="position-absolute translate-middle-y pe-3" style="cursor: pointer; top: 66%; right: 4px;">
                                 <i class="bi bi-eye fs-5 text-black"></i>
                             </span>
                         </div>
@@ -58,7 +95,7 @@
                             <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm Password..." id="ConfirmPassword" />
                             <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
 
-                            <span onclick="togglePassword('ConfirmPassword', this)" class="position-absolute translate-middle-y pe-3" style="cursor: pointer; top: 62%; right: 4px;">
+                            <span onclick="togglePassword('ConfirmPassword', this)" class="position-absolute translate-middle-y pe-3" style="cursor: pointer; top: 66%; right: 4px;">
                                 <i class="bi bi-eye fs-5 text-black"></i>
                             </span>
                         </div>

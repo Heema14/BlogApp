@@ -1,5 +1,4 @@
-﻿
- @model ProfileViewModel
+﻿ @model ProfileViewModel
 
 <style>
     .profile-header {
@@ -23,13 +22,20 @@
         gap: 10px;
     }
 
-        .profile-actions button {
+        .profile-actions a {
             padding: 5px 15px;
+            text-decoration: none;
             border: 1px solid #ccc;
             background-color: white;
+            color: #222;
             cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
             border-radius: 5px;
         }
+                .profile-actions a:hover {
+                    background-color: #222;
+                    color: #fff;
+                }
 
     .profile-username {
         font-weight: bold;
@@ -103,8 +109,7 @@
     <div class="profile-username">@Model.User.UserName</div>
 
     <div class="profile-actions">
-        <button>Edit Profile</button>
-
+        <a asp-action="EditProfile" asp-area="" asp-controller="Auth">Edit Profile</a>
     </div>
 
     <div class="profile-stats">

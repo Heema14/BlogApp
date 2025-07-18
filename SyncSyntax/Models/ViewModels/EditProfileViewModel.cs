@@ -8,15 +8,30 @@ namespace SyncSyntax.Models.ViewModels
         [Display(Name = "Email")]
         public string Email { get; set; }
 
+        [StringLength(50, MinimumLength = 3)]
+        public string FirstName { get; set; }
+
+        [StringLength(50, MinimumLength = 3)]
+        public string LastName { get; set; }
+
         [MinLength(3)]
-        public string? nameUser { get; set; }
+        public string? NameUser { get; set; }
 
         [MinLength(2)]
         public string? Major { get; set; }
 
-        public string? ProfilePicturePath { get; set; } // to use in <img src="...">
+        public string? ProfilePicturePath { get; set; } // image is exist
 
-        // New image
-        public IFormFile? NewProfilePicture { get; set; } // to edit image in page <input type="file"> 
+        public IFormFile? NewProfilePicture { get; set; } // new image
+
+        public Gender Gender { get; set; }
+
+        [DataType(DataType.Date)]
+        public DateTime DateOfBirth { get; set; }
+
+        [Phone]
+        [StringLength(15)]
+        public string? PhoneNumber { get; set; }
     }
+
 }

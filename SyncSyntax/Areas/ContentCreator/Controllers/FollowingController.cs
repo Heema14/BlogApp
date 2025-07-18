@@ -6,8 +6,6 @@ using SyncSyntax.Data;
 using SyncSyntax.Models;
 using System.Security.Claims;
 
-
-
 [Authorize(Roles = "ContentCreator, Admin")]
 [Area("ContentCreator")]
 public class FollowingController : Controller
@@ -27,12 +25,10 @@ public class FollowingController : Controller
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-
         var followedUsers = _context.Followings
             .Where(f => f.FollowerId == userId)
             .Select(f => f.FollowingId)
             .ToList();
-
 
         var posts = _context.Posts
             .Where(p => followedUsers.Contains(p.UserId))
@@ -63,7 +59,6 @@ public class FollowingController : Controller
             return NotFound("User not found");
         }
 
-
         if (currentUserId == userId)
         {
             return RedirectToAction("Profile", new { userId = userId });
@@ -83,9 +78,7 @@ public class FollowingController : Controller
             return BadRequest("An error occurred while following the user.");
         }
 
-
         return RedirectToAction("Profile", new { userId = userId });
-
     }
 
 
@@ -111,8 +104,8 @@ public class FollowingController : Controller
         }
 
         return RedirectToAction("Profile", new { userId = userId });
-
     }
+
     public IActionResult Profile(string userId)
     {
         Console.WriteLine("UserID received: " + userId);
@@ -123,10 +116,8 @@ public class FollowingController : Controller
             return NotFound("User not found");
         }
 
-
         var followersCount = _context.Followings
             .Count(f => f.FollowingId == userId);
-
 
         var postsCount = _context.Posts
             .Count(p => p.UserId == userId);
@@ -140,7 +131,6 @@ public class FollowingController : Controller
         var followingCount = _context.Followings
             .Count(f => f.FollowerId == userId);
 
-
         var model = new ProfileViewModel
         {
             User = user,
@@ -150,8 +140,8 @@ public class FollowingController : Controller
             Posts = posts
         };
 
-
         return View(model);
     }
+
 
 }

@@ -91,12 +91,12 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
                 if (ImageUrl != null && ImageUrl.Length > 0)
                 {
-                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images", ImageUrl.FileName);
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "images/uploadImgs", ImageUrl.FileName);
                     using (var stream = new FileStream(filePath, FileMode.Create))
                     {
                         await ImageUrl.CopyToAsync(stream);
                     }
-                    post.FeatureImagePath = "/images/uploadImgs" + ImageUrl.FileName;
+                    post.FeatureImagePath = "/images/uploadImgs/" + ImageUrl.FileName;
                 }
                 else if (post.Id != 0 && string.IsNullOrEmpty(post.FeatureImagePath))
                 {

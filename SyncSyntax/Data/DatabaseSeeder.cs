@@ -53,7 +53,7 @@ namespace SyncSyntax.Data
                     EmailConfirmed = true,
                     FirstName = "Admin",
                     LastName = "User",
-                    Gender = "Male",
+                    Gender = Gender.Male,
                     DateOfBirth = new DateTime(1980, 1, 1),
                     PhoneNumber = "123456789"
                 };
@@ -80,7 +80,7 @@ namespace SyncSyntax.Data
                     EmailConfirmed = true,
                     FirstName = "Content",
                     LastName = "Creator",
-                    Gender = "Female",
+                    Gender = Gender.Female,
                     DateOfBirth = new DateTime(1990, 6, 15),
                     PhoneNumber = "987654321",
                     ProfilePicture = "/images/a2.jpg"
@@ -97,12 +97,10 @@ namespace SyncSyntax.Data
                     logger.LogError("Failed to create ContentCreator user: " + string.Join(", ", createContentCreator.Errors.Select(e => e.Description)));
                 }
             }
-            // إضافة مستخدم ContentCreator جديد
             string newContentCreatorEmail = "newcreator@blog.com";
             string newContentCreatorPassword = "NewCreator123/";
             var newContentCreator = await userManager.FindByEmailAsync(newContentCreatorEmail).ConfigureAwait(false);
 
-            // إنشاء محتوى Creator إضافي
             if (newContentCreator == null)
             {
                 var newContentCreatorUser = new AppUser
@@ -112,7 +110,7 @@ namespace SyncSyntax.Data
                     EmailConfirmed = true,
                     FirstName = "New",
                     LastName = "Creator",
-                    Gender = "Male",
+                    Gender = Gender.Male,
                     DateOfBirth = new DateTime(1995, 4, 22),
                     PhoneNumber = "555123456",
                     ProfilePicture = "/images/a3.jpg"

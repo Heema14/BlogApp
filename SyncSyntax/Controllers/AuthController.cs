@@ -53,6 +53,11 @@ namespace SyncSyntax.Controllers
                     Email = model.Email,
                     UserName = username,
                     MajorName = model.MajorName,
+                    FirstName = model.FirstName,
+                    LastName = model.LastName,
+                    PhoneNumber = model.PhoneNumber,
+                    Gender = model.Gender,
+                    DateOfBirth = model.DateOfBirth,
                 };
 
                 if (model.ProfilePicture != null && model.ProfilePicture.Length > 0)
@@ -88,14 +93,14 @@ namespace SyncSyntax.Controllers
                 {
                     _logger.LogInformation("User account created successfully for {Email}", model.Email);
 
-                    if (!await _roleManager.RoleExistsAsync("User"))
+                    if (!await _roleManager.RoleExistsAsync("ContentCreator"))
                     {
-                        _logger.LogInformation("Default 'User' role created.");
-                        await _roleManager.CreateAsync(new IdentityRole("User"));
+                        _logger.LogInformation("Default 'ContentCreator' role created.");
+                        await _roleManager.CreateAsync(new IdentityRole("ContentCreator"));
                     }
 
-                    await _userManager.AddToRoleAsync(user, "User");
-                    _logger.LogInformation("User {Email} assigned to 'User' role.", model.Email);
+                    await _userManager.AddToRoleAsync(user, "ContentCreator");
+                    _logger.LogInformation("User {Email} assigned to 'ContentCreator' role.", model.Email);
 
                     await _signInManager.SignInAsync(user, isPersistent: false);
                     _logger.LogInformation("User {Email} signed in after registration.", model.Email);
@@ -129,15 +134,12 @@ namespace SyncSyntax.Controllers
                 return View(model);
             }
 
-            // هنا بدنا نبحث المستخدم سواء بالـ Email أو بالـ UserName
+            // UserNmae or Email
             AppUser? user = null;
 
-            // جرب أول بالإيميل
             user = await _userManager.FindByEmailAsync(model.EmailOrUsername);
-
             if (user == null)
             {
-                // لو ما لقيناه بالإيميل، جرب باليوزرنيم
                 user = await _userManager.FindByNameAsync(model.EmailOrUsername);
             }
 
@@ -148,7 +150,6 @@ namespace SyncSyntax.Controllers
                 return View(model);
             }
 
-            // جرب تسجيل الدخول بكلمة المرور
             var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, isPersistent: false, lockoutOnFailure: false);
 
             if (!signInResult.Succeeded)
@@ -170,9 +171,14 @@ namespace SyncSyntax.Controllers
 
             var model = new EditProfileViewModel
             {
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Gender = user.Gender,
                 Email = user.Email,
                 Major = user.MajorName,
-                nameUser = user.UserName,
+                NameUser = user.UserName,
+                DateOfBirth = user.DateOfBirth,
+                PhoneNumber = user.PhoneNumber,
                 ProfilePicturePath = user.ProfilePicture
             };
             return View(model);
@@ -195,24 +201,24 @@ namespace SyncSyntax.Controllers
             }
 
             // Update username if changed
-            if (user.UserName != model.nameUser && !string.IsNullOrWhiteSpace(model.nameUser))
+            if (user.UserName != model.NameUser && !string.IsNullOrWhiteSpace(model.NameUser))
             {
-                var existingUser = await _userManager.FindByNameAsync(model.nameUser);
+                var existingUser = await _userManager.FindByNameAsync(model.NameUser);
                 if (existingUser != null && existingUser.Id != user.Id)
                 {
-                    _logger.LogWarning("EditProfile: Username {Username} is already taken.", model.nameUser);
-                    ModelState.AddModelError(nameof(model.nameUser), "This username is already taken.");
+                    _logger.LogWarning("EditProfile: Username {Username} is already taken.", model.NameUser);
+                    ModelState.AddModelError(nameof(model.NameUser), "This username is already taken.");
                     model.ProfilePicturePath = user.ProfilePicture;
                     return View(model);
                 }
 
-                var setUserNameResult = await _userManager.SetUserNameAsync(user, model.nameUser);
+                var setUserNameResult = await _userManager.SetUserNameAsync(user, model.NameUser);
                 if (!setUserNameResult.Succeeded)
                 {
                     foreach (var error in setUserNameResult.Errors)
                     {
                         _logger.LogWarning("EditProfile: Failed to update username for {Email} - {Error}", user.Email, error.Description);
-                        ModelState.AddModelError(nameof(model.nameUser), error.Description);
+                        ModelState.AddModelError(nameof(model.NameUser), error.Description);
                     }
                     model.ProfilePicturePath = user.ProfilePicture;
                     return View(model);
@@ -221,11 +227,35 @@ namespace SyncSyntax.Controllers
                 _logger.LogInformation("EditProfile: Username updated successfully for user {Email}.", user.Email);
             }
 
-            // Update major
             if (user.MajorName != model.Major)
             {
                 user.MajorName = model.Major;
                 _logger.LogInformation("EditProfile: Major updated for user {Email}.", user.Email);
+            }
+            if (user.FirstName != model.FirstName)
+            {
+                user.FirstName = model.FirstName;
+                _logger.LogInformation("EditProfile: FirstName updated for user {Email}.", user.Email);
+            }
+            if (user.LastName != model.LastName)
+            {
+                user.LastName = model.LastName;
+                _logger.LogInformation("EditProfile: LastName updated for user {Email}.", user.Email);
+            }
+            if (user.DateOfBirth != model.DateOfBirth)
+            {
+                user.DateOfBirth = model.DateOfBirth;
+                _logger.LogInformation("EditProfile: DateOfBirth updated for user {Email}.", user.Email);
+            }
+            if (user.Gender != model.Gender)
+            {
+                user.Gender = model.Gender;
+                _logger.LogInformation("EditProfile: Gender updated for user {Email}.", user.Email);
+            }
+            if (user.PhoneNumber != model.PhoneNumber)
+            {
+                user.PhoneNumber = model.PhoneNumber;
+                _logger.LogInformation("EditProfile: PhoneNumber updated for user {Email}.", user.Email);
             }
 
             // Update profile picture if provided

@@ -115,7 +115,9 @@
                         </a>
                         <p>@post.Description.Substring(0, Math.Min(post.Description.Length, 300))...</p>
                         <ul class="actions special">
-                            <li><a href="@Url.Action("Detail", "Post", new { id = post.Id, area = "ContentCreator" })" class="button">Full Story</a></li>
+                            <li><a asp-action="SignIn" asp-controller="Auth" class="button">Full Story</a></li>
+
+                            @* <li><a href="@Url.Action("Detail", "Post", new { id = post.Id, area = "ContentCreator" })" class="button">Full Story</a></li> *@
                         </ul>
                     </article>
                 }

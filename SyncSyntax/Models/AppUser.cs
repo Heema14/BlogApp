@@ -18,15 +18,17 @@ namespace SyncSyntax.Models
         public string LastName { get; set; }
 
         [Required]
-        public string Gender { get; set; } // Male, Female, Other
+        public Gender Gender { get; set; }
 
         [Required]
+        [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
 
         [Phone]
+        [StringLength (15)]
         public string? PhoneNumber { get; set; }
 
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public ICollection<PostLike> PostLikes { get; set; }
 
@@ -35,7 +37,6 @@ namespace SyncSyntax.Models
 
         // العلاقة بين المتابعين لهذا المستخدم
         public ICollection<Following> Followers { get; set; }
-
 
     }
 }

@@ -20,10 +20,10 @@ namespace SyncSyntax.Data
         {
             base.OnModelCreating(modelBuilder);
             modelBuilder.Entity<Following>()
-     .HasOne(f => f.Follower)
-     .WithMany()
-     .HasForeignKey(f => f.FollowerId)
-     .OnDelete(DeleteBehavior.Restrict);
+                .HasOne(f => f.Follower)
+                .WithMany()
+                .HasForeignKey(f => f.FollowerId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Following>()
                 .HasOne(f => f.FollowedUser)
@@ -33,16 +33,20 @@ namespace SyncSyntax.Data
 
 
             modelBuilder.Entity<Post>()
-           .HasMany(p => p.PostLikes)
-           .WithOne(pl => pl.Post)
-           .HasForeignKey(pl => pl.PostId)
-           .OnDelete(DeleteBehavior.NoAction);
+                .HasMany(p => p.PostLikes)
+                .WithOne(pl => pl.Post)
+                .HasForeignKey(pl => pl.PostId)
+                .OnDelete(DeleteBehavior.NoAction);
 
 
             modelBuilder.Entity<PostLike>()
                 .HasOne(pl => pl.User)
                 .WithMany(u => u.PostLikes)
                 .HasForeignKey(pl => pl.UserId);
+
+            modelBuilder.Entity<AppUser>()
+                .Property(u => u.Gender)
+                .HasConversion<string>();
 
             // Call the Seed method to populate initial data
             Seed(modelBuilder);
