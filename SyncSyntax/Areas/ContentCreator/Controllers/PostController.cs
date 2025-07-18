@@ -287,14 +287,14 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         {
             try
             {
-                // الحصول على المستخدم الحالي
+
                 var currentUser = await _userManager.GetUserAsync(User);
                 if (currentUser == null)
                 {
-                    return Unauthorized(); // إذا كان المستخدم غير موجود
+                    return Unauthorized();
                 }
 
-                // العثور على الـ Post بواسطة الـ postId
+
                 var post = await _context.Posts.FindAsync(postId);
                 if (post == null)
                 {
@@ -303,18 +303,18 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
                 _logger.LogInformation($"User {currentUser.UserName} with ID {currentUser.Id} is attempting to like/unlike post {postId}.");
 
-                // تحقق إذا كان المستخدم قد سبق له إعجاب هذا الـ Post
+
                 var existingLike = await _context.PostLikes
                     .FirstOrDefaultAsync(l => l.PostId == postId && l.UserId == currentUser.Id);
 
                 if (existingLike != null)
                 {
-                    // إذا كان الـ Like موجودًا، قم بإزالته
+
                     _context.PostLikes.Remove(existingLike);
                 }
                 else
                 {
-                    // إذا لم يكن الـ Like موجودًا، أضفه
+
                     var postLike = new PostLike
                     {
                         PostId = postId,
@@ -325,13 +325,13 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                     _context.PostLikes.Add(postLike);
                 }
 
-                // تحديث عدد اللايكات بعد إضافة أو إزالة اللايك
+
                 post.LikesCount = await _context.PostLikes.CountAsync(l => l.PostId == postId);
 
-                // حفظ التغييرات في قاعدة البيانات
+
                 await _context.SaveChangesAsync();
 
-                // استرجاع حالة إعجاب المستخدم بالـ Post
+
                 var userLiked = post.PostLikes.Any(l => l.UserId == currentUser.Id);
 
                 return Json(new { success = true, likesCount = post.LikesCount, userLiked });
@@ -349,6 +349,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 return Json(new { success = false, message = "An unexpected error occurred." });
             }
         }
+
 
     }
 }

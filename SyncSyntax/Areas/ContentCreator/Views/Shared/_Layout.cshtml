@@ -1,17 +1,19 @@
-﻿<!DOCTYPE html>
+﻿
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>@ViewData["Title"] - Blog App</title>
     <link href="~/css/sidebar.css" rel="stylesheet" />
-    <link href="~/css/sidebar.css" rel="stylesheet" />
     <!-- Bootstrap & Icons -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet" />
     <link href="~/css/site.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
 
     <style>
         body {
@@ -97,7 +99,7 @@
                     <h4 class="m-0">Blog App</h4>
                 </a>
 
-                <a asp-action="MyPosts" asp-controller="Post"><i class="bi bi-house-door"></i><span> My Posts</span></a>
+                <a asp-action="FollowingPosts" asp-controller="Following"><i class="bi bi-house-door"></i><span> Home</span></a>
                 <a href="#"><i class="bi bi-search"></i><span> Search</span></a>
                 <a asp-action="Explore" asp-controller="Post"><i class="bi bi-arrow-repeat"></i><span> Explore</span></a>
                 <a href="#"><i class="bi bi-envelope"></i><span> Messages</span></a>
@@ -109,9 +111,6 @@
                    asp-route-userId="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
                     <i class="bi bi-person"></i><span> Profile</span>
                 </a>
-
-                <hr class="text-white" />
-
                 <a asp-controller="Auth" asp-area="" asp-action="SignOut" class="text-danger">
                     <i class="bi bi-box-arrow-right"></i><span> Sign Out</span>
                 </a>
@@ -136,8 +135,7 @@
         <a href="#"><i class="bi bi-person"></i></a>
     </div>
 
-    <!-- Scripts -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     @RenderSection("Scripts", required: false)

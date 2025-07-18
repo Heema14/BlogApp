@@ -49,6 +49,8 @@
         Like
     </button>
 
+
+
     <h3>Comments</h3>
 
     @if (Model.Post.Comments?.Any() ?? false)
@@ -90,79 +92,86 @@
 </div>
 
 
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
-    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
 
-    <script>
-        const postId = @Model.Post.Id;
+<partial name="_ValidationScriptsPartial" />
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
 
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl(`/commentHub?postId=${postId}`)
-            .build();
+<script>
+    const postId = @Model.Post.Id;
 
-        connection.on("ReceiveComment", function (userName, content, commentDate) {
-            $('.no-comments').remove();
+    const connection = new signalR.HubConnectionBuilder()
+        .withUrl(`/commentHub?postId=${postId}`)
+        .build();
 
-            if ($('.comments-section').length === 0) {
-                $('.post-content').after('<div class="comments-section mb-5"></div>');
-            }
+    connection.on("ReceiveComment", function (userName, content, commentDate) {
+        $('.no-comments').remove();
 
-            $('.comments-section').append(`
-                <div class="card mb-3 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">${userName}</h5>
-                        <p class="comment-date"><small>${commentDate}</small></p>
-                        <p class="card-text">${content}</p>
-                    </div>
+        if ($('.comments-section').length === 0) {
+            $('.post-content').after('<div class="comments-section mb-5"></div>');
+        }
+
+        $('.comments-section').append(`
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">${userName}</h5>
+                    <p class="comment-date"><small>${commentDate}</small></p>
+                    <p class="card-text">${content}</p>
                 </div>
-            `);
+            </div>
+        `);
+    });
+
+    connection.start().catch(function (err) {
+        return console.error(err.toString());
+    });
+
+    $(document).ready(function () {
+        $('#commentForm').on('submit', function (event) {
+            event.preventDefault();
+
+            const content = $('#Content').val();
+
+            connection.invoke("BroadcastComment", content, postId)
+                .then(() => {
+                    $('#commentForm')[0].reset();
+                })
+                .catch(function (err) {
+                    return console.error(err.toString());
+                });
         });
-
-        connection.start().catch(function (err) {
-            return console.error(err.toString());
-        });
-
-        $(document).ready(function () {
-            $('#commentForm').on('submit', function (event) {
-                event.preventDefault();
-
-                const content = $('#Content').val();
-
-                connection.invoke("BroadcastComment", content, postId)
-                    .then(() => {
-                        $('#commentForm')[0].reset();
-                    })
-                    .catch(function (err) {
-                        return console.error(err.toString());
-                    });
-            });
-        });
+    });
 
 
+    function toggleLike(postId) {
 
-               function toggleLike(postId) {
-            $.ajax({
-                url: '@Url.Action("Like", "Post")',
-                type: 'POST',
-                data: { postId: postId },
-                success: function (response) {
+        $.ajax({
+            url: '@Url.Action("Like", "Post")/',
+            type: 'POST',
+            data: {
+                postId: postId
+            },
+            success: function(response) {
+                if (response.success) {
 
-                    $("#likesCount").text(response.likesCount);
+                    $('#likesCount').text(response.likesCount);
 
 
                     if (response.userLiked) {
-                        $("#likeIcon").css("color", "red");
+                        $('#likeIcon').css('color', 'gray');
                     } else {
-                        $("#likeIcon").css("color", "gray");
+                        $('#likeIcon').css('color', 'red');
                     }
-                },
-                 error: function () {
-            alert("Failed to update like status.");
-        }
-            });
-        }
-    </script>
-}
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function() {
+                alert('An error occurred while processing your request.');
+            }
+        });
+    }
 
+
+
+</script>
