@@ -1,0 +1,176 @@
+﻿@model ChatViewModel
+
+<div class="chat-list">
+    @if (ViewData["Message"] != null)
+    {
+        <p class="no-messages">@ViewData["Message"]</p>
+    }
+
+    @if (Model.OtherUsers != null && Model.Conversations != null)
+    {
+        foreach (var conversation in Model.Conversations)
+        {
+            var otherUserId = conversation.SenderId == Model.CurrentUserId ? conversation.ReceiverId : conversation.SenderId;
+            var otherUser = Model.OtherUsers.FirstOrDefault(u => u.Id == otherUserId);
+
+            if (otherUser != null)
+            {
+                <div class="chat-preview">
+                    <a href="@Url.Action("Chat", "Messages", new { userId = otherUser.Id })">
+                        <div class="chat-user">
+                            <img src="@otherUser.ProfilePicture" class="profile-img" />
+                            <div class="chat-info">
+                                <span class="username">@otherUser.FirstName @otherUser.LastName</span>
+                                <small>@conversation.Content</small>
+
+                            </div>
+                        </div>
+
+                        
+                    </a>
+
+
+                    
+                </div>
+            }
+            else
+            {
+                <div class="text-danger">❗User data missing (ID may be deleted)</div>
+            }
+        }
+    }
+
+
+<!-- If no conversations, show start new chat -->
+<div class="start-new-chat" style="display: @(Model.Conversations.Count == 0 ? "block" : "none")">
+    <h4>ابدأ محادثة جديدة</h4>
+    @foreach (var user in Model.AvailableUsers)  
+    {
+        <div class="chat-preview new-chat">
+            <a href="@Url.Action("Chat", "Messages", new { userId = user.Id })">
+                <div class="chat-user">
+                    <img src="@user.ProfilePicture" class="profile-img" />
+                    <div class="chat-info">
+                        <span class="username">@user.FirstName @user.LastName</span>
+                        <small>ابدأ محادثة</small>
+                    </div>
+                </div>
+            </a>
+        </div>
+    }
+</div>
+
+    
+</div>
+
+<style>
+     
+    .chat-list {
+        padding: 20px;
+        background-color: #fafafa;
+    }
+
+     
+    .no-messages {
+        color: #888;
+        text-align: center;
+        font-size: 16px;
+    }
+
+    
+    .chat-preview {
+        display: flex;
+        align-items: center;
+        background-color: #fff;
+        margin-bottom: 15px;
+        padding: 12px;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+        .chat-preview:hover {
+            background-color: #f8f8f8;
+            transform: scale(1.02);
+        }
+
+    
+    .chat-user {
+        display: flex;
+        align-items: center;
+    }
+
+    .profile-img {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 15px;
+    }
+
+    .chat-info {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .username {
+        font-weight: bold;
+        font-size: 14px;
+        color: #333;
+    }
+
+    .last-message {
+        color: #999;
+        font-size: 12px;
+        margin-top: 5px;
+    }
+
+    
+    .start-new-chat {
+        margin-top: 30px;
+        text-align: center;
+        background-color: #f8f8f8;
+        padding: 20px;
+        border-radius: 10px;
+    }
+
+        .start-new-chat h4 {
+            font-size: 18px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+    .new-chat {
+        background-color: #fff;
+        margin-bottom: 12px;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+        .new-chat a {
+            display: flex;
+            align-items: center;
+        }
+
+        .new-chat .profile-img {
+            width: 45px;
+            height: 45px;
+            margin-right: 10px;
+        }
+
+        .new-chat .chat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .new-chat .username {
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .new-chat .last-message {
+            color: #888;
+            font-size: 12px;
+        }
+
+</style>

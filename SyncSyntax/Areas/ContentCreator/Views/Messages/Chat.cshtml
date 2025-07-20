@@ -1,0 +1,266 @@
+﻿@model List<Message>
+@{
+    var currentUserId = User.Identity.Name;
+    var chatUser = ViewBag.ChatUser;
+}
+
+
+<div class="chat-container">
+    <div class="chat-header">
+        <input type="hidden" id="senderId" value="@User.Identity.Name" />
+        <input type="hidden" id="receiverId" value="@chatUser.Id" />
+
+        <div class="profile">
+            <img src="@chatUser.ProfilePicture" alt="Profile Picture" class="profile-img" />
+            <h4>@chatUser.FirstName @chatUser.LastName</h4>
+        </div>
+    </div>
+
+    <div id="messagesContainer" class="chat-messages">
+        @foreach (var message in Model)
+        {
+            <div class="message @(message.SenderId == currentUserId ? "sent" : "received")">
+                <p>@message.Content</p>
+                <small>@message.SentAt.ToString("HH:mm")</small>
+            </div>
+        }
+    </div>
+
+    <div class="chat-input">
+        <input type="text" id="messageInput" placeholder="Write a message..." required />
+        <button type="button" id="emojiBtn">😊</button>
+        <button id="sendButton">Send</button>
+    </div>
+
+
+</div>
+ 
+
+
+<style>
+    .chat-container {
+        width: 100%;
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #f5f5f5;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .chat-header {
+        background-color: #007bff;
+        color: white;
+        padding: 10px 15px;
+        display: flex;
+        align-items: center;
+    }
+
+        .chat-header .profile {
+            display: flex;
+            align-items: center;
+        }
+
+            .chat-header .profile img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+                margin-right: 10px;
+            }
+
+        .chat-header h4 {
+            font-size: 16px;
+            font-weight: normal;
+            margin: 0;
+        }
+
+    .chat-messages {
+        padding: 15px;
+        max-height: 400px;
+        overflow-y: auto;
+        background-color: #fff;
+    }
+
+    .message {
+        margin-bottom: 15px;
+        padding: 10px;
+        border-radius: 10px;
+        position: relative;
+        font-size: 14px;
+        word-wrap: break-word;
+        max-width: 80%;
+    }
+
+        .message.sent {
+            background-color: #d1e7ff;
+            align-self: flex-end;
+            text-align: right;
+        }
+
+        .message.received {
+            background-color: #e9ecef;
+            align-self: flex-start;
+            text-align: left;
+        }
+
+        .message small {
+            font-size: 10px;
+            color: #999;
+            position: absolute;
+            bottom: 5px;
+            left: 10px;
+        }
+
+    .chat-input {
+        display: flex;
+        padding: 10px;
+        background-color: #fff;
+        border-top: 1px solid #ddd;
+    }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        .chat-input button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+            .chat-input button:hover {
+                background-color: #0056b3;
+            }
+
+    /* Make the chat container responsive */
+    @@media (max-width: 600px) {
+        .chat-container
+
+    {
+        max-width: 100%;
+    }
+
+    .chat-header h4 {
+        font-size: 14px;
+    }
+
+    .chat-input input {
+        font-size: 12px;
+    }
+
+    .chat-input button {
+        font-size: 12px;
+    }
+
+    }
+</style>
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+
+<script>
+    
+    var connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chathub")
+        .build();
+
+
+    connection.start().then(function () {
+        console.log("Connected to SignalR Hub!");
+    }).catch(function (err) {
+        console.error("SignalR connection failed: " + err.toString());
+    });
+
+
+    
+    connection.on("ReceiveMessage", function (sender, message) {
+        var messageContainer = document.getElementById("messagesContainer");
+        var messageElement = document.createElement("div");
+
+        
+        messageElement.classList.add(sender === document.getElementById("senderId").value ? "sent" : "received");
+        messageElement.innerHTML = `<p>${message}</p><small>من: ${sender}</small>`;
+
+        
+        messageContainer.appendChild(messageElement);
+        messageContainer.scrollTop = messageContainer.scrollHeight;  
+
+        console.log(`New message from ${sender}: ${message}`);
+    });
+
+       document.getElementById("sendButton").addEventListener("click", function () {
+        var messageContent = document.getElementById("messageInput").value.trim();
+        var sender = document.getElementById("senderId").value.trim();
+        var receiver = document.getElementById("receiverId").value.trim();
+
+        if (!messageContent || !sender || !receiver) {
+            alert("Please provide Sender, Receiver, and Message.");
+            return;
+        }
+
+        // أرسل عبر SignalR فقط
+        connection.invoke("SendMessage", sender, receiver, messageContent)
+            .catch(err => console.error(err));
+
+        // أضف الرسالة للواجهة فوراً
+        var messageContainer = document.getElementById("messagesContainer");
+        var messageElement = document.createElement("div");
+        messageElement.classList.add("sent");
+        messageElement.innerHTML = `<p>${messageContent}</p><small>${new Date().toLocaleTimeString()}</small>`;
+        messageContainer.appendChild(messageElement);
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+
+        document.getElementById("messageInput").value = "";
+    });
+
+
+
+</script>
+<!-- مكتبة الإيموجي الجاهزة -->
+<script src="https://unpkg.com/picmo@latest/dist/umd/index.js"></script>
+<link rel="stylesheet" href="https://unpkg.com/picmo@latest/dist/styles.css">
+<script type="module">
+  import 'https://cdn.jsdelivr.net/npm/emoji-picker-element@@^1/index.js';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const picker = document.createElement('emoji-picker');
+    picker.style.position = 'absolute';
+    picker.style.bottom = '60px';
+    picker.style.right = '20px';
+    picker.style.zIndex = '1000';
+    picker.style.display = 'none';
+
+    document.body.appendChild(picker);
+
+    const input = document.querySelector('#messageInput');
+    const emojiBtn = document.querySelector('#emojiBtn');
+
+    emojiBtn.addEventListener('click', () => {
+      picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+    });
+
+    picker.addEventListener('emoji-click', event => {
+      const emoji = event.detail.unicode;
+      const start = input.selectionStart;
+      const end = input.selectionEnd;
+      input.value = input.value.slice(0, start) + emoji + input.value.slice(end);
+      input.focus();
+      input.selectionStart = input.selectionEnd = start + emoji.length;
+      // لا نغلق البوكس هنا!
+    });
+
+    // إغلاق البوكس فقط إذا المستخدم ضغط خارج الزر والإيموجي
+    document.addEventListener('click', (e) => {
+      if (!picker.contains(e.target) && e.target !== emojiBtn) {
+        picker.style.display = 'none';
+      }
+    });
+  });
+</script>

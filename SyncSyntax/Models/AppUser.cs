@@ -38,6 +38,6 @@ namespace SyncSyntax.Models
         public string? Bio { get; set; }
         public ICollection<Following> Followers { get; set; }
         public ICollection<Notification> Notifications { get; set; }
-
+       
     }
 }
