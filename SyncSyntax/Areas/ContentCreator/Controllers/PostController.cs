@@ -377,8 +377,8 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 var userLiked = post.PostLikes.Any(l => l.UserId == currentUser.Id);
 
                 // إعلام جميع العملاء المتصلين بالتحديث باستخدام SignalR
-                var hubContext = _serviceProvider.GetRequiredService<IHubContext<LikeHub>>();
-                await hubContext.Clients.Group($"Post-{postId}").SendAsync("ReceiveLike", post.LikesCount, userLiked);
+                //var hubContext = _serviceProvider.GetRequiredService<IHubContext<LikeHub>>();
+                //await hubContext.Clients.Group($"Post-{postId}").SendAsync("ReceiveLike", post.LikesCount, userLiked);
 
                 // إرسال حالة الإعجاب وعدد اللايكات في الاستجابة
                 return Json(new { success = true, likesCount = post.LikesCount, userLiked });
