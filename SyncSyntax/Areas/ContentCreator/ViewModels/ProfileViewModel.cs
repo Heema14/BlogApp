@@ -1,6 +1,4 @@
-﻿
-
-using SyncSyntax.Models;
+﻿using SyncSyntax.Models;
 
 public class ProfileViewModel
 {

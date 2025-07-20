@@ -193,6 +193,7 @@ namespace SyncSyntax.Controllers
                 Email = user.Email,
                 Major = user.MajorName,
                 NameUser = user.UserName,
+                Bio = user.Bio,
                 DateOfBirth = user.DateOfBirth,
                 PhoneNumber = user.PhoneNumber,
                 ProfilePicturePath = user.ProfilePicture
@@ -272,6 +273,11 @@ namespace SyncSyntax.Controllers
             {
                 user.PhoneNumber = model.PhoneNumber;
                 _logger.LogInformation("EditProfile: PhoneNumber updated for user {Email}.", user.Email);
+            }
+            if (user.Bio != model.Bio)
+            {
+                user.Bio = model.Bio;
+                _logger.LogInformation("EditProfile: Bio updated for user {Email}.", user.Email);
             }
 
             // Update profile picture if provided

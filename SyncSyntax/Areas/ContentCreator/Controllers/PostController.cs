@@ -323,8 +323,6 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             {
                 return NotFound();
             }
-
-
             _context.Posts.Remove(post);
             _context.SaveChanges();
 
@@ -333,62 +331,62 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         }
 
 
-        [HttpPost]
-        public async Task<IActionResult> Like(int postId)
-        {
-            try
-            {
-                var currentUser = await _userManager.GetUserAsync(User);
-                if (currentUser == null)
-                {
-                    return Unauthorized();
-                }
+        //[HttpPost]
+        //public async Task<IActionResult> Like(int postId)
+        //{
+        //    try
+        //    {
+        //        var currentUser = await _userManager.GetUserAsync(User);
+        //        if (currentUser == null)
+        //        {
+        //            return Unauthorized();
+        //        }
 
-                var post = await _context.Posts.FindAsync(postId);
-                if (post == null)
-                {
-                    return Json(new { success = false, message = "Post not found." });
-                }
+        //        var post = await _context.Posts.FindAsync(postId);
+        //        if (post == null)
+        //        {
+        //            return Json(new { success = false, message = "Post not found." });
+        //        }
 
-                var existingLike = await _context.PostLikes
-                    .FirstOrDefaultAsync(l => l.PostId == postId && l.UserId == currentUser.Id);
+        //        var existingLike = await _context.PostLikes
+        //            .FirstOrDefaultAsync(l => l.PostId == postId && l.UserId == currentUser.Id);
 
-                if (existingLike != null)
-                {
-                    _context.PostLikes.Remove(existingLike);
-                }
-                else
-                {
-                    var postLike = new PostLike
-                    {
-                        PostId = postId,
-                        UserId = currentUser.Id,
-                        LikedAt = DateTime.Now
-                    };
+        //        if (existingLike != null)
+        //        {
+        //            _context.PostLikes.Remove(existingLike);
+        //        }
+        //        else
+        //        {
+        //            var postLike = new PostLike
+        //            {
+        //                PostId = postId,
+        //                UserId = currentUser.Id,
+        //                LikedAt = DateTime.Now
+        //            };
 
-                    _context.PostLikes.Add(postLike);
-                }
+        //            _context.PostLikes.Add(postLike);
+        //        }
 
-                // تحديث عدد اللايكات
-                post.LikesCount = await _context.PostLikes.CountAsync(l => l.PostId == postId);
+        //        // تحديث عدد اللايكات
+        //        post.LikesCount = await _context.PostLikes.CountAsync(l => l.PostId == postId);
 
-                await _context.SaveChangesAsync();
+        //        await _context.SaveChangesAsync();
 
-                var userLiked = post.PostLikes.Any(l => l.UserId == currentUser.Id);
+        //        var userLiked = post.PostLikes.Any(l => l.UserId == currentUser.Id);
 
-                // إعلام جميع العملاء المتصلين بالتحديث باستخدام SignalR
-                var hubContext = _serviceProvider.GetRequiredService<IHubContext<LikeHub>>();
-                await hubContext.Clients.Group($"Post-{postId}").SendAsync("ReceiveLike", post.LikesCount, userLiked);
+        //        // إعلام جميع العملاء المتصلين بالتحديث باستخدام SignalR
+        //        var hubContext = _serviceProvider.GetRequiredService<IHubContext<LikeHub>>();
+        //        await hubContext.Clients.Group($"Post-{postId}").SendAsync("ReceiveLike", post.LikesCount, userLiked);
 
-                // إرسال حالة الإعجاب وعدد اللايكات في الاستجابة
-                return Json(new { success = true, likesCount = post.LikesCount, userLiked });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in Like action: {ex.Message}");
-                return Json(new { success = false, message = "An unexpected error occurred." });
-            }
-        }
+        //        // إرسال حالة الإعجاب وعدد اللايكات في الاستجابة
+        //        return Json(new { success = true, likesCount = post.LikesCount, userLiked });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError($"Error in Like action: {ex.Message}");
+        //        return Json(new { success = false, message = "An unexpected error occurred." });
+        //    }
+        //}
 
     }
 }

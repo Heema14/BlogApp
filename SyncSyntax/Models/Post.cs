@@ -2,9 +2,6 @@
 using SyncSyntax.Models;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Runtime.CompilerServices;
-using System.Text.RegularExpressions;
-using System.Xml.Linq;
 
 public class Post
 {
@@ -18,10 +15,6 @@ public class Post
     [Required(ErrorMessage = "Please enter the content")]
     [StringLength(2500, ErrorMessage = "Content must not exceed 2500 characters.")]
     public string Content { get; set; }
-
-    [Required(ErrorMessage = "Please enter the description")]
-    //[StringLength(5000, ErrorMessage = "Description must not exceed 5000 characters.")]
-    //public string? Description { get; set; }
 
     [DataType(DataType.DateTime)]
     public DateTime CreatedAt { get; set; } = DateTime.Now;

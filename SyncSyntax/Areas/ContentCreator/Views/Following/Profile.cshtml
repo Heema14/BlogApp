@@ -107,7 +107,7 @@
 </style>
 
 <div class="profile-header">
-    <img src="@Model.User.ProfilePicture" alt="Profile Picture" class="profile-picture">
+    <img src="@(Model.User.ProfilePicture ?? "/images/uploadImgs/default-image.jpg")")" alt="Profile Picture" class="profile-picture">
 
     <div class="profile-username">@Model.User.UserName</div>
     <div class="profile-bio">
@@ -121,9 +121,9 @@
     </div>
     }
     <div class="profile-stats">
-        <span>@Model.PostsCount Articles</span>
-        <span>@Model.FollowersCount Followers</span>
-        <span>@Model.FollowingCount Following</span>
+        <strong><span>@Model.PostsCount Articles</span></strong>
+        <strong><span>@Model.FollowersCount Followers</span></strong>
+        <strong><span>@Model.FollowingCount Following</span></strong>
     </div>
 
    
@@ -140,11 +140,18 @@
 
 <div class="nav-tabs-custom">
     <span>Articles</span>
-
 </div>
 
 <!-- Explore Content -->
 <section class="col-12 col-md-9 col-lg-10 explore-grid">
+
+    @if (Model.Posts.Count == 0)
+    {
+        <div class="text-center">
+            <strong class="text-danger">There are no Posts yet..</strong>
+        </div>
+    }
+
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
         
         @foreach (var post in Model.Posts)
@@ -155,7 +162,7 @@
 
                     <!-- Post Image -->
                     <div class="overflow-hidden position-relative" style="height: 220px;">
-                        <img src="@(!string.IsNullOrEmpty(post.FeatureImagePath) ? post.FeatureImagePath : "/images/default-image.jpg")"
+                        <img src="@(!string.IsNullOrEmpty(post.FeatureImagePath) ? post.FeatureImagePath : "/images/uploadImgs/default-image.jpg")"
                              class="card-img-top h-100 w-100 object-fit-cover transition"
                              alt="@post.Title"
                              style="transition: transform 0.3s ease;" />
@@ -257,6 +264,11 @@
         </div>
     </div>
 </section>
+
+
+
+@section Scripts {
+
 <script>
     function confirmDelete(postId) {
         Swal.fire({
@@ -273,8 +285,8 @@
             }
         });
     }
-</script>
-<script>
+
+
     $(document).ready(function () {
         $('#postModal').on('show.bs.modal', function (e) {
             var button = $(e.relatedTarget);
@@ -323,3 +335,5 @@
     }
 
 </script>
+
+}

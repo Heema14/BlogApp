@@ -26,6 +26,9 @@ namespace SyncSyntax.Models.ViewModels
 
         public Gender Gender { get; set; }
 
+        [MinLength(20), MaxLength(200)]
+        public string? Bio { get; set; } = string.Empty;
+
         [DataType(DataType.Date)]
         public DateTime DateOfBirth { get; set; }
 
