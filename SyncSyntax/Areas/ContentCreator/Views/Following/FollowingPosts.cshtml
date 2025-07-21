@@ -18,11 +18,10 @@
 
 <!-- Create Post Button -->
 <div class="text-end mb-4">
-    <a asp-action="Create" asp-controller="Post" class="button create-post-btn">
+    <a asp-action="Create" class="button create-post-btn">
         <i class="bi bi-plus-circle svgIcon"></i>
     </a>
 </div>
-
 @if (!Model.Any())
 {
     <div class="alert alert-warning text-center mt-4">

@@ -136,7 +136,6 @@ else
             </div>
             <!-- Modal Body -->
             <div class="modal-body">
-                @* Body Here *@
             </div>
         </div>
     </div>
@@ -150,21 +149,21 @@ else
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
 
     <script>
-        $(document).on('click', '[data-bs-toggle="modal"]', function (e) {
-            var button = $(e.currentTarget);
-            var postId = button.data('id');
+                      $(document).on('click', '[data-bs-toggle="modal"]', function (e) {
+            var button = $(e.currentTarget); 
+            var postId = button.data('id');  
 
-
+         
             console.log("Opening post with ID: " + postId);
 
             $('#postModal').find('.modal-body').html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</div>');
 
-
+           
             $.ajax({
                 url: '@Url.Action("Detail", "Post")/' + postId,
                 type: 'GET',
                 success: function (response) {
-
+                   
                     $('#postModal .modal-body').html(response);
                 },
                 error: function () {
@@ -173,7 +172,7 @@ else
             });
         });
 
-
+        
         $('#postModal').on('hidden.bs.modal', function () {
             var modalBody = $(this).find('.modal-body');
             modalBody.html('');

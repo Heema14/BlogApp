@@ -33,8 +33,8 @@
     }
 
     <hr>
-    <div class="post-date">Published on: @Model.Post.CreatedAt.ToString("MMMM dd, yyyy")</div>
-
+    <div class="post-date">Published on @Model.Post.CreatedAt.ToString("MMMM dd, yyyy")</div>
+ 
     <hr />
 
     <button id="likeButton" class="btn btn-light mb-2" onclick="toggleLike(@Model.Post.Id)">
@@ -48,6 +48,9 @@
 
     <!-- هذا حقل مخفي لتخزين حالة الاعجاب -->
     <input type="hidden" id="userLikedPost" value="@Model.UserLikedPost" />
+
+
+
 
     <h3>Comments</h3>
 

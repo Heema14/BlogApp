@@ -17,7 +17,7 @@ namespace SyncSyntax.Data
         public DbSet<Comment> Comments { get; set; }
         public DbSet<Following> Followings { get; set; }
         public DbSet<Notification> Notifications { get; set; }
-
+        public DbSet<Message> Messages { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -50,6 +50,17 @@ namespace SyncSyntax.Data
                 .Property(u => u.Gender)
                 .HasConversion<string>();
 
+            modelBuilder.Entity<Message>()
+        .HasOne<AppUser>()
+        .WithMany()
+        .HasForeignKey(m => m.SenderId)
+        .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Message>()
+                .HasOne<AppUser>()
+                .WithMany()
+                .HasForeignKey(m => m.ReceiverId)
+                .OnDelete(DeleteBehavior.Restrict);
             // Call the Seed method to populate initial data
             Seed(modelBuilder);
         }
@@ -66,41 +77,7 @@ namespace SyncSyntax.Data
             );
 
           
-            //string userId = "maria_zourob"; 
-
-            
-            //modelBuilder.Entity<Post>().HasData(
-            //    new Post
-            //    {
-            //        Id = 1,
-            //        Title = "Post One",
-            //        Content = "Content of the first post",
-            //        Description = "This is a description for post one.",
-            //        FeatureImagePath = "/images/p03.jpg",
-            //        CreatedAt = new DateTime(2023, 7, 12),
-            //        UserName = "maria_zourob",
-            //        UserImageUrl = "/images/p03.jpg",
-            //        IsPublished = true,
-            //        PublishedDate = new DateTime(2023, 7, 12),
-            //        CategoryId = 1,
-            //        UserId = userId 
-            //    },
-            //    new Post
-            //    {
-            //        Id = 2,
-            //        Title = "Post Two",
-            //        Content = "Content of the second post",
-            //        Description = "This is a description for post two.",
-            //        FeatureImagePath = "/images/p01.jpg",
-            //        CreatedAt = new DateTime(2023, 7, 12),
-            //        UserName = "maria_zourob",
-            //        UserImageUrl = "/images/p03.jpg",
-            //        IsPublished = true,
-            //        PublishedDate = new DateTime(2023, 7, 12),
-            //        CategoryId = 2,
-            //        UserId = userId 
-            //    }
-            //);
+  
         }
 
     }

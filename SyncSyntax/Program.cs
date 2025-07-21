@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SyncSyntax.Data;
+using SyncSyntax.Hubs;
 using SyncSyntax.Models;
 using SyncSyntax.Models.Hubs;
 using SyncSyntax.Models.IServices;
