@@ -271,20 +271,41 @@
 
 
 
-    connection.on("ReceiveMessage", function (sender, message) {
+       connection.on("ReceiveMessage", function (sender, message, messageId, sentAt, isRead) {
         var messageContainer = document.getElementById("messagesContainer");
         var messageElement = document.createElement("div");
 
+        var currentUserId = document.getElementById("senderId").value;
 
-        messageElement.classList.add(sender === document.getElementById("senderId").value ? "sent" : "received");
-        messageElement.innerHTML = `<p>${message}</p><small>من: ${sender}</small>`;
+        var isSent = sender === currentUserId;
 
+        messageElement.classList.add("message");
+        messageElement.classList.add(isSent ? "sent" : "received");
+
+        messageElement.innerHTML = `
+            <div class="message-header">
+                <div class="dropdown message-options">
+                    <button class="dots-btn" data-bs-toggle="dropdown" aria-expanded="false">⋮</button>
+                    <ul class="dropdown-menu" style="direction: rtl;">
+                        ${isSent ? `
+                        <li><a class="dropdown-item edit-message" data-id="${messageId}" href="#">Edit</a></li>
+                        <li><a class="dropdown-item delete-message" data-id="${messageId}" href="#">Delete</a></li>
+                        ` : ""}
+                        <li><a class="dropdown-item info-message" data-id="${messageId}" href="#">Info</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p>${message}</p>
+            <small>
+                ${new Date(sentAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                ${isSent && isRead ? '<span title="Read">✅</span>' : ''}
+            </small>
+        `;
 
         messageContainer.appendChild(messageElement);
         messageContainer.scrollTop = messageContainer.scrollHeight;
-
-        console.log(`New message from ${sender}: ${message}`);
     });
+
 
        document.getElementById("sendButton").addEventListener("click", function () {
         var messageContent = document.getElementById("messageInput").value.trim();
@@ -300,13 +321,13 @@
         connection.invoke("SendMessage", sender, receiver, messageContent)
             .catch(err => console.error(err));
 
-        // أضف الرسالة للواجهة فوراً
-        var messageContainer = document.getElementById("messagesContainer");
-        var messageElement = document.createElement("div");
-        messageElement.classList.add("sent");
-        messageElement.innerHTML = `<p>${messageContent}</p><small>${new Date().toLocaleTimeString()}</small>`;
-        messageContainer.appendChild(messageElement);
-        messageContainer.scrollTop = messageContainer.scrollHeight;
+        // // أضف الرسالة للواجهة فوراً
+        // var messageContainer = document.getElementById("messagesContainer");
+        // var messageElement = document.createElement("div");
+        // messageElement.classList.add("sent");
+        // messageElement.innerHTML = `<p>${messageContent}</p><small>${new Date().toLocaleTimeString()}</small>`;
+        // messageContainer.appendChild(messageElement);
+        // messageContainer.scrollTop = messageContainer.scrollHeight;
 
         document.getElementById("messageInput").value = "";
     });
