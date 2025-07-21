@@ -149,22 +149,27 @@ else
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
 
     <script>
-                      $(document).on('click', '[data-bs-toggle="modal"]', function (e) {
-            var button = $(e.currentTarget); 
-            var postId = button.data('id');  
+                $(document).on('click', '[data-bs-toggle="modal"]', function (e) {
+            var button = $(e.currentTarget);
+            var postId = button.data('id');
 
-         
             console.log("Opening post with ID: " + postId);
 
             $('#postModal').find('.modal-body').html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</div>');
 
-           
             $.ajax({
                 url: '@Url.Action("Detail", "Post")/' + postId,
                 type: 'GET',
                 success: function (response) {
-                   
                     $('#postModal .modal-body').html(response);
+
+                    // **Setup SignalR connection for Likes inside modal after content loads**
+                    setupPostLikeHub(postId);
+
+                    // **Attach toggleLike function to button inside modal**
+                    $('#likeButton-' + postId).off('click').on('click', function () {
+                        toggleLike(postId);
+                    });
                 },
                 error: function () {
                     $('#postModal .modal-body').html('<p class="text-danger">Failed to load post details.</p>');
@@ -172,11 +177,55 @@ else
             });
         });
 
-        
+        // SignalR connection holder
+        let postConnection = null;
+
+        function setupPostLikeHub(postId) {
+            if (postConnection) {
+                postConnection.stop();
+                postConnection = null;
+            }
+
+            postConnection = new signalR.HubConnectionBuilder()
+                .withUrl(`/postHub?postId=${postId}`)
+                .build();
+
+            postConnection.on("ReceiveLike", function (postId, likesCount) {
+                console.log("Received like update:", postId, likesCount);
+                $('#likesCount-' + postId).text(likesCount);
+            });
+
+            postConnection.start().catch(err => console.error(err.toString()));
+        }
+
+        function toggleLike(postId) {
+            $.ajax({
+                url: '@Url.Action("Like", "Post")',
+                type: 'POST',
+                data: { postId: postId },
+                success: function (response) {
+                    if (response.success) {
+                        $('#likesCount-' + postId).text(response.likesCount);
+                        $('#likeIcon-' + postId).css('color', response.userLiked ? 'red' : 'gray');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+
+        // Clear modal content and stop SignalR when modal closes
         $('#postModal').on('hidden.bs.modal', function () {
-            var modalBody = $(this).find('.modal-body');
-            modalBody.html('');
+            if (postConnection) {
+                postConnection.stop();
+                postConnection = null;
+            }
+            $(this).find('.modal-body').html('');
         });
+
 
 
             //Search
@@ -191,6 +240,7 @@ else
         }).focus(function () {
             $(this).autocomplete("search", "");
         });
+
 
         // search
         function searchCategory() {
@@ -221,4 +271,5 @@ else
 
     </script>
 }
+
 

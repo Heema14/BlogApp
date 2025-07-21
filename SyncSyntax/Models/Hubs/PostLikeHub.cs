@@ -21,6 +21,12 @@ namespace SyncSyntax.Models.Hubs
 
             await base.OnConnectedAsync();
         }
+
+        public async Task JoinGroup(string postId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, postId);
+        }
+
     }
 
 }

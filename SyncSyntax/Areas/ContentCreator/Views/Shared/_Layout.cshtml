@@ -157,7 +157,7 @@
                         </span>
                     }
 
-                    </a>
+                </a>
                 <a asp-action="Create" asp-controller="Post"><i class="bi bi-plus-circle"></i><span> Create</span></a>
                 <a asp-controller="Following"
                    asp-area="ContentCreator"
@@ -165,13 +165,16 @@
                    asp-route-userId="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
                     <i class="bi bi-person"></i><span> Profile</span>
                 </a>
+
+                <hr class="text-white" />
+
                 <a asp-controller="Auth" asp-area="" asp-action="SignOut" class="text-danger">
                     <i class="bi bi-box-arrow-right"></i><span> Sign Out</span>
                 </a>
 
 
-             
-             
+
+
             </nav>
 
             <!-- Main content -->
@@ -196,6 +199,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     @RenderSection("Scripts", required: false)
-   
+
 </body>
 </html>

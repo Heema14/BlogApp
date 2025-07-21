@@ -22,6 +22,7 @@
         <i class="bi bi-plus-circle svgIcon"></i>
     </a>
 </div>
+
 @if (!Model.Any())
 {
     <div class="alert alert-warning text-center mt-4">
@@ -157,25 +158,28 @@ else
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+
 
     <script>
-                      $(document).on('click', '[data-bs-toggle="modal"]', function (e) {
-            var button = $(e.currentTarget);  // الزر الذي تم النقر عليه
-            var postId = button.data('id');   // جلب ID البوست من الزر
+        // تحميل تفاصيل البوست داخل المودال عند الضغط على الزر
+        $(document).on('click', '[data-bs-toggle="modal"]', function (e) {
+            var button = $(e.currentTarget);
+            var postId = button.data('id');
 
-            // إضافة log لتتبع الـ postId
-            console.log("Opening post with ID: " + postId); // سيظهر الـ postId في الكونسول
+            console.log("Opening post with ID: " + postId);
 
-            // تنظيف محتوى الـ Modal قبل تحميل البيانات الجديدة
             $('#postModal').find('.modal-body').html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</div>');
 
-            // إرسال Ajax لاسترجاع محتوى البوست بناءً على الـ ID
             $.ajax({
                 url: '@Url.Action("Detail", "Post")/' + postId,
                 type: 'GET',
                 success: function (response) {
-                    // تحديث محتوى الـ Modal بالبيانات المسترجعة
                     $('#postModal .modal-body').html(response);
+
+                    // بعد تحميل المحتوى بنفّذ تهيئة اللايك + اتصال SignalR (لأن المحتوى تغير)
+                    initLikeFeature(postId);
                 },
                 error: function () {
                     $('#postModal .modal-body').html('<p class="text-danger">Failed to load post details.</p>');
@@ -183,14 +187,66 @@ else
             });
         });
 
-        // عند إغلاق الـ Modal
+        // تنظيف المحتوى عند إغلاق المودال
         $('#postModal').on('hidden.bs.modal', function () {
-            var modalBody = $(this).find('.modal-body');
-            modalBody.html(''); // تنظيف المحتوى عند إغلاق الـ Modal
+            $(this).find('.modal-body').html('');
         });
 
+        // اتصال SignalR للبوست اللايك
+        let postLikeConnection;
 
-            //Search
+        function initLikeFeature(postId) {
+            // إلغاء الاتصال القديم إذا موجود
+            if (postLikeConnection) {
+                postLikeConnection.stop();
+            }
+
+            // إنشاء اتصال جديد مع الهب
+            postLikeConnection = new signalR.HubConnectionBuilder()
+                .withUrl(`/postHub?postId=${postId}`)
+                .build();
+
+            // استقبال تحديثات اللايك
+            postLikeConnection.on("ReceiveLike", function (receivedPostId, likesCount) {
+                if (receivedPostId === postId) {
+                    $('#likesCount-' + postId).text(likesCount);
+                    // يمكنك تحديث لون الايقونة هنا إذا أردت
+                }
+            });
+
+            postLikeConnection.start().catch(err => console.error(err.toString()));
+
+            // تفعيل زر اللايك (لو عندك زر داخل المودال)
+            $('#likeButton-' + postId).off('click').on('click', function () {
+                toggleLike(postId);
+            });
+        }
+
+        // دالة اللايك بإرسال طلب ajax
+        function toggleLike(postId) {
+            console.log("Sending like request for postId:", postId);
+
+            $.ajax({
+                url: '/Post/Like',
+                type: 'POST',
+                data: { postId: postId },
+                success: function (response) {
+                    if (response.success) {
+                        $('#likesCount-' + postId).text(response.likesCount);
+                        $('#likeIcon-' + postId).css('color', response.userLiked ? 'red' : 'gray');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function (xhr) {
+                    console.log("Like error:", xhr.responseText);
+                    alert('An error occurred while processing your request.');
+                }
+            });
+        }
+
+
+        // هنا كود البحث autocomplete حسب طلبك (موجود عندك)
         const categories = @Html.Raw(Json.Serialize(ViewBag.Categories));
 
         $("#categorySearchInput").autocomplete({
@@ -203,7 +259,6 @@ else
             $(this).autocomplete("search", "");
         });
 
-        // search
         function searchCategory() {
             const inputVal = $("#categorySearchInput").val().toLowerCase().trim();
             if (!inputVal) return;
@@ -217,12 +272,10 @@ else
             }
         }
 
-        // Button click
         $("#searchCategoryBtn").on("click", function () {
             searchCategory();
         });
 
-        // Enter key press
         $("#categorySearchInput").on("keypress", function (e) {
             if (e.which === 13) {
                 searchCategory();
@@ -230,6 +283,31 @@ else
             }
         });
 
+
+        //update page defult when make like
+                // ⭐ الاتصال العام بـ SignalR لتحديث كل البوستات الظاهرة على الصفحة
+        const globalLikeConnection = new signalR.HubConnectionBuilder()
+            .withUrl("/postHub")
+            .build();
+
+        globalLikeConnection.start().then(function () {
+            console.log("Connected to global like hub.");
+
+            // اجمع جميع postId الظاهرة على الصفحة من الأزرار
+            $('[id^=likeButton-]').each(function () {
+                const postId = $(this).attr('id').split('-')[1];
+                globalLikeConnection.invoke("JoinGroup", postId);
+            });
+        }).catch(function (err) {
+            console.error("SignalR connection error:", err.toString());
+        });
+
+        // استقبال التحديثات
+        globalLikeConnection.on("ReceiveLike", function (postId, likesCount) {
+            $('#likesCount-' + postId).text(likesCount);
+        });
+
     </script>
+
 }
 

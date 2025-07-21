@@ -34,17 +34,17 @@
 
     <hr>
     <div class="post-date">Published on @Model.Post.CreatedAt.ToString("MMMM dd, yyyy")</div>
- 
+
     <hr />
 
-    <button id="likeButton" class="btn btn-light mb-2" onclick="toggleLike(@Model.Post.Id)">
-        <i class="fa fa-heart" id="likeIcon"
+    <button id="likeButton-@Model.Post.Id" class="btn btn-light mb-2" onclick="toggleLike(@Model.Post.Id)">
+        <i class="fa fa-heart" id="likeIcon-@Model.Post.Id"
            style="color: @(Model.UserLikedPost ? "red" : "gray")">
         </i>
-
-        <span id="likesCount">@Model.Post.LikesCount</span>
+        <span id="likesCount-@Model.Post.Id">@Model.Post.LikesCount</span>
         Like
     </button>
+
 
     <!-- هذا حقل مخفي لتخزين حالة الاعجاب -->
     <input type="hidden" id="userLikedPost" value="@Model.UserLikedPost" />
@@ -92,87 +92,3 @@
     }
 </div>
 
-
-@section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
-    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
-
-    <script>
-        const postId = @Model.Post.Id;
-
-        const connection = new signalR.HubConnectionBuilder()
-            .withUrl(`/commentHub?postId=${postId}`)
-            .build();
-
-        connection.on("ReceiveComment", function (userName, content, commentDate) {
-            $('.no-comments').remove();
-
-            if ($('.comments-section').length === 0) {
-                $('.post-content').after('<div class="comments-section mb-5"></div>');
-            }
-
-            $('.comments-section').append(`
-                <div class="card mb-3 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">${userName}</h5>
-                        <p class="comment-date"><small>${commentDate}</small></p>
-                        <p class="card-text">${content}</p>
-                    </div>
-                </div>
-            `);
-        });
-
-        connection.start().catch(function (err) {
-            return console.error(err.toString());
-        });
-
-        $(document).ready(function () {
-            $('#commentForm').on('submit', function (event) {
-                event.preventDefault();
-
-                const content = $('#Content').val();
-
-                connection.invoke("BroadcastComment", content, postId)
-                    .then(() => {
-                        $('#commentForm')[0].reset();
-                    })
-                    .catch(function (err) {
-                        return console.error(err.toString());
-                    });
-            });
-        });
-
-                const postId = @Model.Post.Id;
-
-        const postConnection = new signalR.HubConnectionBuilder()
-            .withUrl(`/postHub?postId=${postId}`)
-            .build();
-
-        postConnection.on("ReceiveLike", function (postId, likesCount) {
-            $('#likesCount').text(likesCount);
-        });
-
-        postConnection.start().catch(err => console.error(err.toString()));
-
-        function toggleLike(postId) {
-            $.ajax({
-                url: '@Url.Action("Like", "Post")',
-                type: 'POST',
-                data: { postId: postId },
-                success: function (response) {
-                    if (response.success) {
-                        $('#likesCount').text(response.likesCount);
-                        $('#likeIcon').css('color', response.userLiked ? 'red' : 'gray');
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function () {
-                    alert('An error occurred while processing your request.');
-                }
-            });
-        }
-
-    </script>
-}

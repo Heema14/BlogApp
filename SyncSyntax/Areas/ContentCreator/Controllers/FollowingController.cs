@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
+using SyncSyntax.Models.Hubs;
 using System.Security.Claims;
 
 [Authorize(Roles = "ContentCreator, Admin")]
@@ -13,12 +15,14 @@ public class FollowingController : Controller
     private readonly AppDbContext _context;
     private readonly ILogger<FollowingController> _logger;
     private readonly UserManager<AppUser> _userManager;
+    private readonly IHubContext<PostLikeHub> _postlikeHub;
 
-    public FollowingController(AppDbContext context, ILogger<FollowingController> logger, UserManager<AppUser> userManager)
+    public FollowingController(AppDbContext context, ILogger<FollowingController> logger, UserManager<AppUser> userManager, IHubContext<PostLikeHub> postlikeHub)
     {
         _context = context;
         _logger = logger;
         _userManager = userManager;
+        _postlikeHub = postlikeHub;
     }
 
     public IActionResult FollowingPosts(int? categoryId)
@@ -180,5 +184,69 @@ public class FollowingController : Controller
 
         return View(users);
     }
+
+
+    [HttpPost]
+    [Authorize]
+    public async Task<IActionResult> Like(int postId)
+    {
+        try
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userId))
+            {
+                return Json(new { success = false, message = "You must be logged in." });
+            }
+
+            var post = _context.Posts
+                .Include(p => p.PostLikes)
+                .FirstOrDefault(p => p.Id == postId);
+
+            if (post == null)
+            {
+                return Json(new { success = false, message = "Post not found." });
+            }
+
+            var existingLike = post.PostLikes.FirstOrDefault(l => l.UserId == userId);
+            bool userLiked;
+
+            if (existingLike != null)
+            {
+                _context.PostLikes.Remove(existingLike);
+                post.LikesCount = Math.Max(0, post.LikesCount - 1);
+                userLiked = false;
+            }
+            else
+            {
+                _context.PostLikes.Add(new PostLike
+                {
+                    PostId = postId,
+                    UserId = userId,
+                    LikedAt = DateTime.UtcNow
+                });
+                post.LikesCount += 1;
+                userLiked = true;
+            }
+
+            await _context.SaveChangesAsync();
+
+            // إرسال تحديث اللايك عبر SignalR
+            await _postlikeHub.Clients.Group(postId.ToString())
+                .SendAsync("ReceiveLike", postId, post.LikesCount);
+
+            return Json(new
+            {
+                success = true,
+                likesCount = post.LikesCount,
+                userLiked = userLiked
+            });
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = "Server error: " + ex.Message });
+        }
+    }
+
 
 }
