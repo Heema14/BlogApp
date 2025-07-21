@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using SyncSyntax.Data;
@@ -9,6 +10,7 @@ using SyncSyntax.Models.Hubs;
 using SyncSyntax.Models.IServices;
 
 var builder = WebApplication.CreateBuilder(args);
+//builder.Services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
 
 builder.Services.Configure<FormOptions>(options =>
 {
