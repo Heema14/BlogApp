@@ -28,13 +28,28 @@ namespace SyncSyntax.Hubs
                 SenderId = senderUser.Id,
                 ReceiverId = receiverId,
                 Content = message,
-                SentAt = DateTime.UtcNow
+                SentAt = DateTime.UtcNow,
+                IsRead = false // جديد، تأكد أن الحقل موجود في الموديل
             };
 
             _context.Messages.Add(newMessage);
             await _context.SaveChangesAsync();
 
-            await Clients.User(receiverId).SendAsync("ReceiveMessage", senderUserName, message);
+            // إرسال لجميع الأطراف (المرسل والمستقبل) حتى يحدث عند كلا الطرفين فوراً
+            await Clients.User(receiverId).SendAsync("ReceiveMessage",
+                senderUserName,
+                newMessage.Content,
+                newMessage.Id,
+                newMessage.SentAt,
+                newMessage.IsRead);
+
+            await Clients.User(senderUser.Id).SendAsync("ReceiveMessage",
+                senderUserName,
+                newMessage.Content,
+                newMessage.Id,
+                newMessage.SentAt,
+                newMessage.IsRead);
         }
+
     }
 }

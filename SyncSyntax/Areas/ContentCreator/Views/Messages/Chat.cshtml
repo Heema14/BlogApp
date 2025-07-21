@@ -20,11 +20,29 @@
         @foreach (var message in Model)
         {
             <div class="message @(message.SenderId == currentUserId ? "sent" : "received")">
+                <div class="message-header">
+                    <div class="dropdown message-options">
+                        <button class="dots-btn" data-bs-toggle="dropdown" aria-expanded="false">⋮</button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item edit-message" data-id="@message.Id" href="#">Edit</a></li>
+                            <li><a class="dropdown-item delete-message" data-id="@message.Id" href="#">Delete</a></li>
+                            <li><a class="dropdown-item info-message" data-id="@message.Id" href="#">Info</a></li>
+                        </ul>
+                    </div>
+                </div>
                 <p>@message.Content</p>
-                <small>@message.SentAt.ToString("HH:mm")</small>
+                <small>
+                    @message.SentAt.ToLocalTime().ToString("HH:mm")
+                    @if (message.SenderId == currentUserId && message.IsRead)
+                    {
+                        <span title="Read">✅</span>
+                    }
+                </small>
             </div>
         }
+
     </div>
+
 
     <div class="chat-input">
         <input type="text" id="messageInput" placeholder="Write a message..." required />
@@ -34,10 +52,86 @@
 
 
 </div>
- 
+
+
+<div class="modal fade" id="editMessageModal" tabindex="-1" aria-labelledby="editMessageLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editMessageLabel">Edit Message</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <input type="text" id="editMessageInput" class="form-control" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">UnSave</button>
+                <button type="button" id="saveEditBtn" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div id="messageInfoBox" class="alert alert-info d-none position-relative" style="margin-top: 20px;">
+    <button type="button" class="btn-close position-absolute top-0 end-0 m-2" id="closeInfoBox" aria-label="close"></button>
+    <div id="infoContent"></div>
+</div>
 
 
 <style>
+    .edit-box,
+    .info-box {
+        background-color: #f0f4f8;
+        border-left: 5px solid #0d6efd;
+        padding: 15px;
+        margin: 10px 0;
+        border-radius: 8px;
+        position: relative;
+        max-width: 400px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+
+
+    .close-btn {
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        border: none;
+        background: none;
+        font-size: 20px;
+        color: #333;
+        cursor: pointer;
+    }
+
+    .d-none {
+        display: none;
+    }
+
+    .message {
+        position: relative;
+        padding: 10px;
+        margin: 10px;
+        border-radius: 10px;
+    }
+
+    .message-header {
+        display: flex;
+        justify-content: flex-end;
+    }
+
+    .dots-btn {
+        background: none;
+        border: none;
+        font-size: 18px;
+        cursor: pointer;
+    }
+
+    .message-options .dropdown-menu {
+        direction: rtl;
+    }
+
     .chat-container {
         width: 100%;
         max-width: 600px;
@@ -142,31 +236,28 @@
 
     /* Make the chat container responsive */
     @@media (max-width: 600px) {
-        .chat-container
+        .chat-container {
+            max-width: 100%;
+        }
 
-    {
-        max-width: 100%;
-    }
+        .chat-header h4 {
+            font-size: 14px;
+        }
 
-    .chat-header h4 {
-        font-size: 14px;
-    }
+        .chat-input input {
+            font-size: 12px;
+        }
 
-    .chat-input input {
-        font-size: 12px;
-    }
-
-    .chat-input button {
-        font-size: 12px;
-    }
-
+        .chat-input button {
+            font-size: 12px;
+        }
     }
 </style>
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
 
 <script>
-    
+
     var connection = new signalR.HubConnectionBuilder()
         .withUrl("/chathub")
         .build();
@@ -179,21 +270,42 @@
     });
 
 
-    
-    connection.on("ReceiveMessage", function (sender, message) {
+
+       connection.on("ReceiveMessage", function (sender, message, messageId, sentAt, isRead) {
         var messageContainer = document.getElementById("messagesContainer");
         var messageElement = document.createElement("div");
 
-        
-        messageElement.classList.add(sender === document.getElementById("senderId").value ? "sent" : "received");
-        messageElement.innerHTML = `<p>${message}</p><small>من: ${sender}</small>`;
+        var currentUserId = document.getElementById("senderId").value;
 
-        
+        var isSent = sender === currentUserId;
+
+        messageElement.classList.add("message");
+        messageElement.classList.add(isSent ? "sent" : "received");
+
+        messageElement.innerHTML = `
+            <div class="message-header">
+                <div class="dropdown message-options">
+                    <button class="dots-btn" data-bs-toggle="dropdown" aria-expanded="false">⋮</button>
+                    <ul class="dropdown-menu" style="direction: rtl;">
+                        ${isSent ? `
+                        <li><a class="dropdown-item edit-message" data-id="${messageId}" href="#">Edit</a></li>
+                        <li><a class="dropdown-item delete-message" data-id="${messageId}" href="#">Delete</a></li>
+                        ` : ""}
+                        <li><a class="dropdown-item info-message" data-id="${messageId}" href="#">Info</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p>${message}</p>
+            <small>
+                ${new Date(sentAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                ${isSent && isRead ? '<span title="Read">✅</span>' : ''}
+            </small>
+        `;
+
         messageContainer.appendChild(messageElement);
-        messageContainer.scrollTop = messageContainer.scrollHeight;  
-
-        console.log(`New message from ${sender}: ${message}`);
+        messageContainer.scrollTop = messageContainer.scrollHeight;
     });
+
 
        document.getElementById("sendButton").addEventListener("click", function () {
         var messageContent = document.getElementById("messageInput").value.trim();
@@ -209,13 +321,13 @@
         connection.invoke("SendMessage", sender, receiver, messageContent)
             .catch(err => console.error(err));
 
-        // أضف الرسالة للواجهة فوراً
-        var messageContainer = document.getElementById("messagesContainer");
-        var messageElement = document.createElement("div");
-        messageElement.classList.add("sent");
-        messageElement.innerHTML = `<p>${messageContent}</p><small>${new Date().toLocaleTimeString()}</small>`;
-        messageContainer.appendChild(messageElement);
-        messageContainer.scrollTop = messageContainer.scrollHeight;
+        // // أضف الرسالة للواجهة فوراً
+        // var messageContainer = document.getElementById("messagesContainer");
+        // var messageElement = document.createElement("div");
+        // messageElement.classList.add("sent");
+        // messageElement.innerHTML = `<p>${messageContent}</p><small>${new Date().toLocaleTimeString()}</small>`;
+        // messageContainer.appendChild(messageElement);
+        // messageContainer.scrollTop = messageContainer.scrollHeight;
 
         document.getElementById("messageInput").value = "";
     });
@@ -227,40 +339,103 @@
 <script src="https://unpkg.com/picmo@latest/dist/umd/index.js"></script>
 <link rel="stylesheet" href="https://unpkg.com/picmo@latest/dist/styles.css">
 <script type="module">
-  import 'https://cdn.jsdelivr.net/npm/emoji-picker-element@@^1/index.js';
+    import 'https://cdn.jsdelivr.net/npm/emoji-picker-element@@^1/index.js';
 
-  document.addEventListener('DOMContentLoaded', () => {
-    const picker = document.createElement('emoji-picker');
-    picker.style.position = 'absolute';
-    picker.style.bottom = '60px';
-    picker.style.right = '20px';
-    picker.style.zIndex = '1000';
-    picker.style.display = 'none';
+    document.addEventListener('DOMContentLoaded', () => {
+      const picker = document.createElement('emoji-picker');
+      picker.style.position = 'absolute';
+      picker.style.bottom = '60px';
+      picker.style.right = '20px';
+      picker.style.zIndex = '1000';
+      picker.style.display = 'none';
 
-    document.body.appendChild(picker);
+      document.body.appendChild(picker);
 
-    const input = document.querySelector('#messageInput');
-    const emojiBtn = document.querySelector('#emojiBtn');
+      const input = document.querySelector('#messageInput');
+      const emojiBtn = document.querySelector('#emojiBtn');
 
-    emojiBtn.addEventListener('click', () => {
-      picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+      emojiBtn.addEventListener('click', () => {
+        picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+      });
+
+      picker.addEventListener('emoji-click', event => {
+        const emoji = event.detail.unicode;
+        const start = input.selectionStart;
+        const end = input.selectionEnd;
+        input.value = input.value.slice(0, start) + emoji + input.value.slice(end);
+        input.focus();
+        input.selectionStart = input.selectionEnd = start + emoji.length;
+        // لا نغلق البوكس هنا!
+      });
+
+      // إغلاق البوكس فقط إذا المستخدم ضغط خارج الزر والإيموجي
+      document.addEventListener('click', (e) => {
+        if (!picker.contains(e.target) && e.target !== emojiBtn) {
+          picker.style.display = 'none';
+        }
+      });
     });
+</script>
+<script>
+    let editingMessageId = null;
 
-    picker.addEventListener('emoji-click', event => {
-      const emoji = event.detail.unicode;
-      const start = input.selectionStart;
-      const end = input.selectionEnd;
-      input.value = input.value.slice(0, start) + emoji + input.value.slice(end);
-      input.focus();
-      input.selectionStart = input.selectionEnd = start + emoji.length;
-      // لا نغلق البوكس هنا!
-    });
 
-    // إغلاق البوكس فقط إذا المستخدم ضغط خارج الزر والإيموجي
-    document.addEventListener('click', (e) => {
-      if (!picker.contains(e.target) && e.target !== emojiBtn) {
-        picker.style.display = 'none';
-      }
-    });
-  });
+     $(document).on('click', '.delete-message', function (e) {
+         e.preventDefault();
+         const messageId = $(this).data('id');
+
+         if (confirm("Are you sure you want to delete the message?")) {
+             $.post('/ContentCreator/Messages/DeleteMessage', { id: messageId }, function () {
+                 location.reload();
+             });
+         }
+     });
+
+     $(document).on('click', '.edit-message', function (e) {
+         e.preventDefault();
+         const messageId = $(this).data('id');
+         const messageElement = $(this).closest('.message');
+         const originalContent = messageElement.find('p').text();
+
+         $('#editMessageInput').val(originalContent);
+         editingMessageId = messageId;
+
+         const modal = new bootstrap.Modal(document.getElementById('editMessageModal'));
+         modal.show();
+     });
+
+     $(document).on('click', '#saveEditBtn', function () {
+         const newContent = $('#editMessageInput').val();
+
+         if (!newContent.trim()) {
+             alert('The message cannot be empty.');
+             return;
+         }
+
+         $.post('/ContentCreator/Messages/EditMessage', {
+             id: editingMessageId,
+             content: newContent
+         }, function () {
+             location.reload();
+         });
+     });
+
+
+     $(document).on('click', '.info-message', function (e) {
+         e.preventDefault();
+         const messageId = $(this).data('id');
+
+         $.get('/ContentCreator/Messages/MessageInfo', { id: messageId }, function (data) {
+             $('#infoContent').html(
+                 `<strong>Sent:</strong> ${data.sentAt}<br><strong>State:</strong> ${data.isRead ?'✔️ Read' : '📭 Unread'}`
+             );
+             $('#messageInfoBox').removeClass('d-none');
+         });
+     });
+
+
+     $(document).on('click', '#closeInfoBox', function () {
+         $('#messageInfoBox').addClass('d-none');
+     });
+
 </script>

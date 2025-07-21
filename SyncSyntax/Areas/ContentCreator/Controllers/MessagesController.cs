@@ -15,13 +15,13 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
     {
         private readonly AppDbContext _context;
         private readonly UserManager<AppUser> _userManager;
-        private readonly IHubContext<ChatHub> _hubContext;   
+        private readonly IHubContext<ChatHub> _hubContext;
         private readonly ILogger<PostController> _logger;
         public MessagesController(AppDbContext context, UserManager<AppUser> userManager, IHubContext<ChatHub> hubContext, ILogger<PostController> logger)
         {
             _context = context;
             _userManager = userManager;
-            _hubContext = hubContext;   
+            _hubContext = hubContext;
             _logger = logger;
         }
 
@@ -44,7 +44,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 ViewData["Message"] = "لا توجد محادثات حالياً.";
             }
 
-             
+
             var otherUserIds = conversations
                 .Select(c => c.SenderId == user.Id ? c.ReceiverId : c.SenderId)
                 .Distinct()
@@ -70,21 +70,58 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-           
+
             var chatMessages = await _context.Messages
                 .Where(m => (m.SenderId == user.Id && m.ReceiverId == userId) || (m.ReceiverId == user.Id && m.SenderId == userId))
-                .OrderBy(m => m.SentAt)   
+                .OrderBy(m => m.SentAt)
                 .ToListAsync();
 
             var chatUser = await _context.Users.FindAsync(userId);
 
-            
+
             ViewBag.ChatUser = chatUser;
 
             return View(chatMessages);
         }
 
-     
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteMessage(int id)
+        {
+            var message = await _context.Messages.FindAsync(id);
+            if (message != null)
+            {
+                _context.Messages.Remove(message);
+                await _context.SaveChangesAsync();
+            }
+            return Ok();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> EditMessage(int id, string content)
+        {
+            var message = await _context.Messages.FindAsync(id);
+            if (message != null)
+            {
+                message.Content = content;
+                await _context.SaveChangesAsync();
+            }
+            return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> MessageInfo(int id)
+        {
+            var message = await _context.Messages.FindAsync(id);
+            if (message == null)
+                return NotFound();
+
+            return Json(new
+            {
+                sentAt = message.SentAt.ToLocalTime().ToString("yyyy-MM-dd HH:mm"),
+                isRead = message.IsRead ? "Read" : "UnRead"
+            });
+        }
 
 
 
