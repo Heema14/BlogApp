@@ -61,13 +61,6 @@
                 </div>
             </div>
 
-        @*     <!-- Description -->
-            <div class="form-group">
-                <label for="description">Article Description</label>
-                <textarea class="form-control" id="description" name="description" rows="5" placeholder="Enter the article description" required>@Model.Description</textarea>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div> *@
-
             <!-- Content -->
             <div class="form-group">
                 <label for="content">Article Content</label>
@@ -96,7 +89,7 @@
                 <button type="submit" class="btn btn-primary">
                     @(Model.Id == 0 ? "Save" : "Save Changes")
                 </button>
-                <a asp-action="MyPosts" asp-area="ContentCreator" asp-controller="Post" class="btn btn-danger">Back to Posts</a>
+                <a asp-action="FollowingPosts" asp-area="ContentCreator" asp-controller="Following" class="btn btn-danger">Back to Home</a>
             </div>
 
         </form>

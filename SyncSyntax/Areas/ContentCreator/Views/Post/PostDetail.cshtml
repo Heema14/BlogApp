@@ -140,28 +140,36 @@
             });
         });
 
-               function toggleLike(postId) {
+                const postId = @Model.Post.Id;
+
+        const postConnection = new signalR.HubConnectionBuilder()
+            .withUrl(`/postHub?postId=${postId}`)
+            .build();
+
+        postConnection.on("ReceiveLike", function (postId, likesCount) {
+            $('#likesCount').text(likesCount);
+        });
+
+        postConnection.start().catch(err => console.error(err.toString()));
+
+        function toggleLike(postId) {
             $.ajax({
-                url: '@Url.Action("Like", "Post")/',
+                url: '@Url.Action("Like", "Post")',
                 type: 'POST',
                 data: { postId: postId },
-                success: function(response) {
+                success: function (response) {
                     if (response.success) {
                         $('#likesCount').text(response.likesCount);
-
-                        if (response.userLiked) {
-                            $('#likeIcon').css('color', 'gray');
-                        } else {
-                            $('#likeIcon').css('color', 'red');
-                        }
+                        $('#likeIcon').css('color', response.userLiked ? 'red' : 'gray');
                     } else {
                         alert(response.message);
                     }
                 },
-                error: function() {
+                error: function () {
                     alert('An error occurred while processing your request.');
                 }
             });
         }
+
     </script>
 }

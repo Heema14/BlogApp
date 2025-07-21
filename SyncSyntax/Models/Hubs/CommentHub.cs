@@ -4,12 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
 using System.Security.Claims;
-using System.Text.RegularExpressions;
 
 public class CommentHub : Hub
 {
     private readonly AppDbContext _context;
-    private readonly UserManager<AppUser> _userManager; 
+    private readonly UserManager<AppUser> _userManager;
 
     public CommentHub(AppDbContext context, UserManager<AppUser> userManager)
     {
