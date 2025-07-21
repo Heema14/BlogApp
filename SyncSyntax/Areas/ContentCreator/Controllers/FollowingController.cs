@@ -186,67 +186,65 @@ public class FollowingController : Controller
     }
 
 
-    [HttpPost]
     [Authorize]
+    [HttpPost]
     public async Task<IActionResult> Like(int postId)
     {
         try
         {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = _userManager.GetUserId(User);
 
-            if (string.IsNullOrEmpty(userId))
-            {
-                return Json(new { success = false, message = "You must be logged in." });
-            }
-
-            var post = _context.Posts
-                .Include(p => p.PostLikes)
-                .FirstOrDefault(p => p.Id == postId);
-
+            var post = await _context.Posts.FindAsync(postId);
             if (post == null)
             {
-                return Json(new { success = false, message = "Post not found." });
+                return NotFound();
             }
 
-            var existingLike = post.PostLikes.FirstOrDefault(l => l.UserId == userId);
+            var existingLike = await _context.PostLikes
+                .FirstOrDefaultAsync(l => l.PostId == postId && l.UserId == userId);
+
             bool userLiked;
 
-            if (existingLike != null)
+            if (existingLike == null)
             {
-                _context.PostLikes.Remove(existingLike);
-                post.LikesCount = Math.Max(0, post.LikesCount - 1);
-                userLiked = false;
-            }
-            else
-            {
-                _context.PostLikes.Add(new PostLike
+                // Add like
+                var like = new PostLike
                 {
                     PostId = postId,
                     UserId = userId,
-                    LikedAt = DateTime.UtcNow
-                });
-                post.LikesCount += 1;
+                    LikedAt = DateTime.Now
+                };
+
+                _context.PostLikes.Add(like);
+                post.LikesCount++;
                 userLiked = true;
             }
-
+            else
+            {
+                try
+                {
+                    // Remove like
+                    _context.PostLikes.Remove(existingLike);
+                    post.LikesCount--;
+                    userLiked = false;
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    return Json(new { success = false, message = "The like you tried to remove no longer exists." });
+                }
+            }
             await _context.SaveChangesAsync();
 
-            // إرسال تحديث اللايك عبر SignalR
+            // بث تحديث اللايك بالـ SignalR
             await _postlikeHub.Clients.Group(postId.ToString())
                 .SendAsync("ReceiveLike", postId, post.LikesCount);
 
-            return Json(new
-            {
-                success = true,
-                likesCount = post.LikesCount,
-                userLiked = userLiked
-            });
+            return Json(new { success = true, likesCount = post.LikesCount, userLiked });
         }
         catch (Exception ex)
         {
-            return Json(new { success = false, message = "Server error: " + ex.Message });
+            return Json(new { success = false, ex.Message });
         }
+
     }
-
-
 }

@@ -216,10 +216,6 @@ else
 
             postLikeConnection.start().catch(err => console.error(err.toString()));
 
-            // تفعيل زر اللايك (لو عندك زر داخل المودال)
-            $('#likeButton-' + postId).off('click').on('click', function () {
-                toggleLike(postId);
-            });
         }
 
         // دالة اللايك بإرسال طلب ajax
@@ -227,7 +223,7 @@ else
             console.log("Sending like request for postId:", postId);
 
             $.ajax({
-                url: '/Post/Like',
+                url: '@Html.Raw(Url.Action("Like", "Post"))',
                 type: 'POST',
                 data: { postId: postId },
                 success: function (response) {
