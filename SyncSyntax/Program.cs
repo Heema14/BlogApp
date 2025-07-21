@@ -95,6 +95,7 @@ app.MapStaticAssets();
 app.MapHub<CommentHub>("/commentHub");
 app.MapHub<PostLikeHub>("/postHub");
 
+app.MapHub<ChatHub>("/chathub");
 
 app.MapAreaControllerRoute(
     name: "admin",
