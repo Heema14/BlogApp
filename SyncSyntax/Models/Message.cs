@@ -17,4 +17,5 @@ public class Message
     public DateTime SentAt { get; set; } = DateTime.Now;
 
     public bool IsRead { get; set; } = false;
+    public DateTime? ReadAt { get; set; }
 }

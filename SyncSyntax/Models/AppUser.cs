@@ -29,6 +29,7 @@ namespace SyncSyntax.Models
         public string? PhoneNumber { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? LastSeen { get; set; }  
 
         public ICollection<PostLike> PostLikes { get; set; }
 

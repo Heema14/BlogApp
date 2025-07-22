@@ -18,9 +18,9 @@ namespace SyncSyntax.Hubs
             _userManager = userManager;
         }
 
-        public async Task SendMessage(string senderUserName, string receiverId, string message)
+        public async Task SendMessage(string senderId, string receiverId, string message)
         {
-            var senderUser = await _userManager.FindByNameAsync(senderUserName);
+            var senderUser = await _userManager.FindByIdAsync(senderId);
             if (senderUser == null) return;
 
             var newMessage = new Message
@@ -29,27 +29,19 @@ namespace SyncSyntax.Hubs
                 ReceiverId = receiverId,
                 Content = message,
                 SentAt = DateTime.UtcNow,
-                IsRead = false // جديد، تأكد أن الحقل موجود في الموديل
+                IsRead = false
             };
 
             _context.Messages.Add(newMessage);
             await _context.SaveChangesAsync();
 
-            // إرسال لجميع الأطراف (المرسل والمستقبل) حتى يحدث عند كلا الطرفين فوراً
-            await Clients.User(receiverId).SendAsync("ReceiveMessage",
-                senderUserName,
-                newMessage.Content,
-                newMessage.Id,
-                newMessage.SentAt,
-                newMessage.IsRead);
+            // إرسال الرسالة للمستلم
+            await Clients.User(receiverId).SendAsync("ReceiveMessage", senderUser.Id, message, newMessage.Id, newMessage.SentAt, newMessage.IsRead);
 
-            await Clients.User(senderUser.Id).SendAsync("ReceiveMessage",
-                senderUserName,
-                newMessage.Content,
-                newMessage.Id,
-                newMessage.SentAt,
-                newMessage.IsRead);
+            // إرسال للمُرسل
+            await Clients.User(senderUser.Id).SendAsync("ReceiveMessage", senderUser.Id, message, newMessage.Id, newMessage.SentAt, newMessage.IsRead);
         }
+
 
     }
 }

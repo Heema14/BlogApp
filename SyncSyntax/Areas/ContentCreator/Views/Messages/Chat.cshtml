@@ -1,32 +1,62 @@
 ﻿@model List<Message>
 @{
-    var currentUserId = User.Identity.Name;
+    var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
     var chatUser = ViewBag.ChatUser;
 }
 
 
 <div class="chat-container">
     <div class="chat-header">
-        <input type="hidden" id="senderId" value="@User.Identity.Name" />
+        <input type="hidden" id="senderId" value="@currentUserId" />
         <input type="hidden" id="receiverId" value="@chatUser.Id" />
 
         <div class="profile">
             <img src="@chatUser.ProfilePicture" alt="Profile Picture" class="profile-img" />
+            @{
+                var lastSeen = chatUser.LastSeen;
+                string lastSeenText = "Last seen unknown";
+
+                // لا تحتاج تحقق null لأن DateTime غير nullable
+                var diff = DateTime.UtcNow - lastSeen;
+
+                if (diff.TotalSeconds < 1)  // less than one second difference
+                {
+                    lastSeenText = "Online now";
+                }
+                else if (diff.TotalMinutes < 5)
+                {
+                    lastSeenText = $"Last seen {Math.Floor(diff.TotalMinutes)} minutes ago";
+                }
+                else if (diff.TotalDays < 1)
+                {
+                    lastSeenText = $"Last seen today at {lastSeen.ToLocalTime():HH:mm}";
+                }
+                else
+                {
+                    lastSeenText = $"Last seen on {lastSeen.ToLocalTime():yyyy-MM-dd HH:mm}";
+                }
+            }
+
             <h4>@chatUser.FirstName @chatUser.LastName</h4>
+            <small class="text-muted">@lastSeenText</small>
+
         </div>
     </div>
 
     <div id="messagesContainer" class="chat-messages">
         @foreach (var message in Model)
         {
-            <div class="message @(message.SenderId == currentUserId ? "sent" : "received")">
+            <div class="message @(message.SenderId == currentUserId ? "sent" : "received")" data-id="@message.Id">
                 <div class="message-header">
                     <div class="dropdown message-options">
                         <button class="dots-btn" data-bs-toggle="dropdown" aria-expanded="false">⋮</button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item edit-message" data-id="@message.Id" href="#">Edit</a></li>
                             <li><a class="dropdown-item delete-message" data-id="@message.Id" href="#">Delete</a></li>
-                            <li><a class="dropdown-item info-message" data-id="@message.Id" href="#">Info</a></li>
+                            @if (message.SenderId == currentUserId)
+                            {
+                                <li><a class="dropdown-item info-message" data-id="@message.Id" href="#">Info</a></li>
+                            }
                         </ul>
                     </div>
                 </div>
@@ -40,8 +70,8 @@
                 </small>
             </div>
         }
-
     </div>
+
 
 
     <div class="chat-input">
@@ -271,7 +301,7 @@
 
 
 
-       connection.on("ReceiveMessage", function (sender, message, messageId, sentAt, isRead) {
+         connection.on("ReceiveMessage", function (sender, message, messageId, sentAt, isRead) {
         var messageContainer = document.getElementById("messagesContainer");
         var messageElement = document.createElement("div");
 
@@ -282,6 +312,9 @@
         messageElement.classList.add("message");
         messageElement.classList.add(isSent ? "sent" : "received");
 
+        // مهم جدًا: تعيين data-id على العنصر الرئيسي للرسالة
+        messageElement.setAttribute('data-id', messageId);
+
         messageElement.innerHTML = `
             <div class="message-header">
                 <div class="dropdown message-options">
@@ -290,8 +323,8 @@
                         ${isSent ? `
                         <li><a class="dropdown-item edit-message" data-id="${messageId}" href="#">Edit</a></li>
                         <li><a class="dropdown-item delete-message" data-id="${messageId}" href="#">Delete</a></li>
-                        ` : ""}
                         <li><a class="dropdown-item info-message" data-id="${messageId}" href="#">Info</a></li>
+                        ` : ""}
                     </ul>
                 </div>
             </div>
@@ -308,26 +341,17 @@
 
 
        document.getElementById("sendButton").addEventListener("click", function () {
-        var messageContent = document.getElementById("messageInput").value.trim();
-        var sender = document.getElementById("senderId").value.trim();
-        var receiver = document.getElementById("receiverId").value.trim();
+           var sender = document.getElementById("senderId").value.trim(); // هذا هو ال Id
+    var receiver = document.getElementById("receiverId").value.trim();
+    var messageContent = document.getElementById("messageInput").value.trim();
 
         if (!messageContent || !sender || !receiver) {
             alert("Please provide Sender, Receiver, and Message.");
             return;
         }
 
-        // أرسل عبر SignalR فقط
-        connection.invoke("SendMessage", sender, receiver, messageContent)
-            .catch(err => console.error(err));
-
-        // // أضف الرسالة للواجهة فوراً
-        // var messageContainer = document.getElementById("messagesContainer");
-        // var messageElement = document.createElement("div");
-        // messageElement.classList.add("sent");
-        // messageElement.innerHTML = `<p>${messageContent}</p><small>${new Date().toLocaleTimeString()}</small>`;
-        // messageContainer.appendChild(messageElement);
-        // messageContainer.scrollTop = messageContainer.scrollHeight;
+       connection.invoke("SendMessage", sender, receiver, messageContent)
+    .catch(err => console.error(err));
 
         document.getElementById("messageInput").value = "";
     });
@@ -380,17 +404,18 @@
     let editingMessageId = null;
 
 
-     $(document).on('click', '.delete-message', function (e) {
-         e.preventDefault();
-         const messageId = $(this).data('id');
+        $(document).on('click', '.delete-message', function (e) {
+        e.preventDefault();
+        const messageId = $(this).data('id');
+        const messageElement = $(this).closest('.message');
 
-         if (confirm("Are you sure you want to delete the message?")) {
-             $.post('/ContentCreator/Messages/DeleteMessage', { id: messageId }, function () {
-                 location.reload();
-             });
-         }
-     });
-
+        if (confirm("Are you sure you want to delete the message?")) {
+            $.post('/ContentCreator/Messages/DeleteMessage', { id: messageId }, function () {
+                // حذف الرسالة من الصفحة بدون إعادة تحميل
+                messageElement.remove();
+            });
+        }
+    });
      $(document).on('click', '.edit-message', function (e) {
          e.preventDefault();
          const messageId = $(this).data('id');
@@ -404,31 +429,41 @@
          modal.show();
      });
 
-     $(document).on('click', '#saveEditBtn', function () {
-         const newContent = $('#editMessageInput').val();
+       $(document).on('click', '#saveEditBtn', function () {
+        const newContent = $('#editMessageInput').val();
 
-         if (!newContent.trim()) {
-             alert('The message cannot be empty.');
-             return;
-         }
+        if (!newContent.trim()) {
+            alert('The message cannot be empty.');
+            return;
+        }
 
-         $.post('/ContentCreator/Messages/EditMessage', {
-             id: editingMessageId,
-             content: newContent
-         }, function () {
-             location.reload();
-         });
-     });
+        $.post('/ContentCreator/Messages/EditMessage', {
+            id: editingMessageId,
+            content: newContent
+        }, function () {
+            // تحديث النص في الرسالة المعروضة مباشرة بدون إعادة تحميل الصفحة
+            const messageElement = $(`.message[data-id="${editingMessageId}"]`);
+            messageElement.find('p').text(newContent);
 
+            // إخفاء المودال بعد التعديل
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editMessageModal'));
+            modal.hide();
+
+            // مسح متغير الرسالة التي يتم تعديلها
+            editingMessageId = null;
+        });
+    });
 
      $(document).on('click', '.info-message', function (e) {
          e.preventDefault();
          const messageId = $(this).data('id');
 
          $.get('/ContentCreator/Messages/MessageInfo', { id: messageId }, function (data) {
-             $('#infoContent').html(
-                 `<strong>Sent:</strong> ${data.sentAt}<br><strong>State:</strong> ${data.isRead ?'✔️ Read' : '📭 Unread'}`
-             );
+                $('#infoContent').html(
+        `<strong>Sent:</strong> ${data.sentAt}<br>
+         <strong>State:</strong> ${data.isRead ? `✔️ Read<br><strong>Read At:</strong> ${data.readAt}` : '📭 Unread'}`
+    );
+
              $('#messageInfoBox').removeClass('d-none');
          });
      });
@@ -439,3 +474,4 @@
      });
 
 </script>
+

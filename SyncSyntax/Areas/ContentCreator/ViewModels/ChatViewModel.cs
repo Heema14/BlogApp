@@ -7,4 +7,6 @@ public class ChatViewModel
     public List<Message> Conversations { get; set; }
     public List<AppUser> OtherUsers { get; set; }
     public List<AppUser> AvailableUsers { get; set; }
+
+     
 }
