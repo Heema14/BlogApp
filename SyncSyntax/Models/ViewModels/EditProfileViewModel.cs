@@ -17,6 +17,9 @@ namespace SyncSyntax.Models.ViewModels
         [MinLength(3)]
         public string? NameUser { get; set; }
 
+        [MaxLength(50), MinLength(10)]
+        public string? Bio { get; set; }
+
         [MinLength(2)]
         public string? Major { get; set; }
 

@@ -156,7 +156,6 @@
                             @ViewBag.UnreadNotificationsCount
                         </span>
                     }
-
                 </a>
                 <a asp-action="Create" asp-controller="Post"><i class="bi bi-plus-circle"></i><span> Create</span></a>
                 <a asp-controller="Following"
@@ -171,10 +170,6 @@
                 <a asp-controller="Auth" asp-area="" asp-action="SignOut" class="text-danger">
                     <i class="bi bi-box-arrow-right"></i><span> Sign Out</span>
                 </a>
-
-
-
-
             </nav>
 
             <!-- Main content -->
@@ -186,19 +181,37 @@
 
     <!-- Bottom nav for mobile -->
     <div class="sidebar-bottom d-flex d-md-none">
-        <a asp-action="MyPosts" asp-controller="Post"><i class="bi bi-house-door"></i></a>
+        <a asp-action="FollowingPosts" asp-controller="Following"><i class="bi bi-house-door"></i></a>
         <a href="#"><i class="bi bi-search"></i></a>
-        <a asp-action="Index" asp-controller="Post"><i class="bi bi-arrow-repeat"></i></a>
-        <a href="#"><i class="bi bi-envelope"></i></a>
-        <a href="#"><i class="bi bi-bell"></i></a>
+        <a asp-action="Explore" asp-controller="Post"><i class="bi bi-arrow-repeat"></i></a>
+        <a href="@Url.Action("Index", "Messages")">
+            <i class="bi bi-envelope"></i><span></span>
+            @if (ViewBag.UnreadCount != null && (int)ViewBag.UnreadCount > 0)
+            {
+                <span class="unread-count">@ViewBag.UnreadCount</span>
+            }
+        </a>
+        <a href="@Url.Action("Index", "Notification")">
+            <i class="bi bi-bell"></i>
+            @if (ViewBag.UnreadNotificationsCount > 0)
+            {
+                <span class="notification-badge">
+                    @ViewBag.UnreadNotificationsCount
+                </span>
+            }
+        </a>
         <a asp-action="Create" asp-controller="Post"><i class="bi bi-plus-circle"></i></a>
-        <a href="#"><i class="bi bi-person"></i></a>
+        <a asp-controller="Following"
+           asp-area="ContentCreator"
+           asp-action="Profile"
+           asp-route-userId="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
+            <i class="bi bi-person"></i>
+        </a>
     </div>
 
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     @RenderSection("Scripts", required: false)
-
 </body>
 </html>

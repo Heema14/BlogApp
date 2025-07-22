@@ -35,7 +35,9 @@ namespace SyncSyntax.Models
       
         public ICollection<Following> FollowedUsers { get; set; }
 
+        [MaxLength(50), MinLength(10)]
         public string? Bio { get; set; }
+
         public ICollection<Following> Followers { get; set; }
         public ICollection<Notification> Notifications { get; set; }
        

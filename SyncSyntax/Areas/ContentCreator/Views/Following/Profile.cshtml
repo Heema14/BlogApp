@@ -107,13 +107,13 @@
 </style>
 
 <div class="profile-header">
-    <img src="@Model.User.ProfilePicture" alt="Profile Picture" class="profile-picture">
+    <img src="@(!string.IsNullOrEmpty(Model.User.ProfilePicture) ? Model.User.ProfilePicture : "~/images/uploadImgs/default-image.jpg")" alt="Profile Picture" class="profile-picture">
 
     <div class="profile-username">@Model.User.UserName</div>
     <div class="profile-bio">
         <div>@Model.User.Bio</div>
-
     </div>
+
 @if (currentUserId == Model.User.UserName)
     {
     <div class="profile-actions">
@@ -121,13 +121,13 @@
     </div>
     }
     <div class="profile-stats">
-        <span>@Model.PostsCount Articles</span>
-        <span>@Model.FollowersCount Followers</span>
-        <span>@Model.FollowingCount Following</span>
+        <strong><span>@Model.PostsCount Articles</span></strong>
+        <strong><span>@Model.FollowersCount Followers</span></strong>
+        <strong><span>@Model.FollowingCount Following</span></strong>
     </div>
-
-   
 </div>
+
+
 @if (currentUserId == Model.User.UserName)
     {
 <div class="text-end mb-4">
@@ -136,6 +136,7 @@
     </a>
 </div>
     }
+
 @* <div style="text-align:center; font-weight: bold;">Share Articles</div> *@
 
 <div class="nav-tabs-custom">
@@ -170,13 +171,6 @@
                     <div class="card-body">
                         <!-- User Info (Above Title) -->
                         <div class="d-flex align-items-center justify-content-between mb-3">
-                       @*      <div class="d-flex align-items-center gap-2">
-                                <span>
-                                    <img src="@post.UserImageUrl" alt="User" class="rounded-circle" style="width: 30px; height: 30px;">
-                                </span>
-                                <span>@post.UserName</span>
-                             </div>
- *@
 
                             <div class="d-flex align-items-center gap-2 actions">
                                 @if (post.UserId == Model.CurrentUserId)

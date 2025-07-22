@@ -71,7 +71,13 @@
                     <input asp-for="Major" class="form-control" placeholder="major..." />
                     <span asp-validation-for="Major" class="text-danger"></span>
                 </div>
-                
+
+                <div class="mb-3">
+                    <label asp-for="Bio" class="form-label"></label>
+                    <input asp-for="Bio" class="form-control" placeholder="Bio..." />
+                    <span asp-validation-for="Bio" class="text-danger"></span>
+                </div>
+
                 <div class="mb-3">
                     <label asp-for="DateOfBirth" class="form-label"></label>
                     <input type="date" asp-for="DateOfBirth" class="form-control" placeholder="DateOfBirth..." />
