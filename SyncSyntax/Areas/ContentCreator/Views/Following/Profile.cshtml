@@ -107,7 +107,7 @@
 </style>
 
 <div class="profile-header">
-    <img src="@(!string.IsNullOrEmpty(Model.User.ProfilePicture) ? Model.User.ProfilePicture : "~/images/uploadImgs/default-image.jpg")" alt="Profile Picture" class="profile-picture">
+    <img src="@(!string.IsNullOrEmpty(Model.User.ProfilePicture) ? Model.User.ProfilePicture : "/images/uploadImgs/default-image.jpg")" alt="Profile Picture" class="profile-picture">
 
     <div class="profile-username">@Model.User.UserName</div>
     <div class="profile-bio">
@@ -251,6 +251,10 @@
         </div>
     </div>
 </section>
+
+
+
+@section Scripts {
 <script>
     function confirmDelete(postId) {
         Swal.fire({
@@ -267,8 +271,9 @@
             }
         });
     }
-</script>
-<script>
+
+
+
     $(document).ready(function () {
         $('#postModal').on('show.bs.modal', function (e) {
             var button = $(e.relatedTarget);
@@ -317,3 +322,4 @@
     }
 
 </script>
+}

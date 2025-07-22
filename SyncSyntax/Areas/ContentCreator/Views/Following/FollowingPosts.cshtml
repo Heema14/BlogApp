@@ -163,7 +163,6 @@ else
 
 
     <script>
-        // تحميل تفاصيل البوست داخل المودال عند الضغط على الزر
         $(document).on('click', '[data-bs-toggle="modal"]', function (e) {
             var button = $(e.currentTarget);
             var postId = button.data('id');
@@ -177,8 +176,6 @@ else
                 type: 'GET',
                 success: function (response) {
                     $('#postModal .modal-body').html(response);
-
-                    // بعد تحميل المحتوى بنفّذ تهيئة اللايك + اتصال SignalR (لأن المحتوى تغير)
                     initLikeFeature(postId);
                 },
                 error: function () {
@@ -192,7 +189,6 @@ else
             $(this).find('.modal-body').html('');
         });
 
-        // اتصال SignalR للبوست اللايك
         let postLikeConnection;
 
         function initLikeFeature(postId) {

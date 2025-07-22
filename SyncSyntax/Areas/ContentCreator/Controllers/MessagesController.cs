@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
-using SyncSyntax.Hubs;  // تأكد من استيراد الـ ChatHub
+using SyncSyntax.Hubs;
 
 namespace SyncSyntax.Areas.ContentCreator.Controllers
 {
@@ -41,7 +41,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             if (conversations == null || !conversations.Any())
             {
-                ViewData["Message"] = "لا توجد محادثات حالياً.";
+                ViewData["Message"] = "That not fount any chats yet!!";
             }
 
 
