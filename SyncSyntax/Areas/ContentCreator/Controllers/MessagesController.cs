@@ -70,11 +70,9 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
-            // تحديث آخر ظهور للمستخدم الحالي
             user.LastSeen = DateTime.UtcNow;
             await _userManager.UpdateAsync(user);
 
-            // تحديث الرسائل غير المقروءة كما عندك...
             var unreadMessages = await _context.Messages
                 .Where(m => m.SenderId == userId && m.ReceiverId == user.Id && !m.IsRead)
                 .ToListAsync();
@@ -84,24 +82,31 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 message.IsRead = true;
                 message.ReadAt = DateTime.UtcNow;
             }
-
             if (unreadMessages.Any())
                 await _context.SaveChangesAsync();
 
-            var chatMessages = await _context.Messages
+             var chatMessages = await _context.Messages
                 .Where(m => (m.SenderId == user.Id && m.ReceiverId == userId) ||
                             (m.ReceiverId == user.Id && m.SenderId == userId))
                 .OrderBy(m => m.SentAt)
                 .ToListAsync();
 
+             var pinnedMessage = await _context.Messages
+                .Where(m => ((m.SenderId == user.Id && m.ReceiverId == userId) ||
+                             (m.SenderId == userId && m.ReceiverId == user.Id)) &&
+                             m.IsPinned == true)
+                .FirstOrDefaultAsync();
+
             var chatUser = await _context.Users.FindAsync(userId);
 
             ViewBag.ChatUser = chatUser;
+            ViewBag.PinnedMessage = pinnedMessage;
 
             return View(chatMessages);
         }
 
- 
+
+
         [HttpPost]
         public async Task<IActionResult> DeleteMessage(int id, string scope)
         {
@@ -238,6 +243,72 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             _context.SaveChanges();
             return Ok();
+        }
+
+
+        public class PinMessageRequest
+        {
+            public int MessageId { get; set; }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> TogglePinMessage([FromBody] PinMessageRequest request)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var message = await _context.Messages.FindAsync(request.MessageId);
+
+                if (message == null) return NotFound("Message not found");
+                if (message.SenderId != user.Id) return Forbid("You are not allowed");
+
+                if (!message.IsPinned)
+                {
+                    // إذا كانت غير مثبتة، ثبتها بعد إلغاء أي رسالة أخرى مثبتة
+                    var existingPinned = await _context.Messages
+                        .Where(m => m.IsPinned &&
+                               ((m.SenderId == message.SenderId && m.ReceiverId == message.ReceiverId) ||
+                                (m.SenderId == message.ReceiverId && m.ReceiverId == message.SenderId)))
+                        .ToListAsync();
+
+                    foreach (var pinnedMsg in existingPinned)
+                    {
+                        pinnedMsg.IsPinned = false;
+                    }
+
+                    message.IsPinned = true;
+                }
+                else
+                {
+                    // إذا كانت مثبتة، فقط الغِ التثبيت عنها
+                    message.IsPinned = false;
+                }
+
+                _context.Messages.Update(message);
+                await _context.SaveChangesAsync();
+
+                if (!message.IsPinned)
+                {
+                    // لا توجد رسالة مثبتة حالياً
+                    return Ok(new { success = true, message = (object)null });
+                }
+
+                return Ok(new
+                {
+                    success = true,
+                    message = new
+                    {
+                        id = message.Id,
+                        content = message.Content,
+                        isPinned = message.IsPinned
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { success = false, error = ex.Message });
+            }
         }
 
 

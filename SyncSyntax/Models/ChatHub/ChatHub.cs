@@ -35,11 +35,22 @@ namespace SyncSyntax.Hubs
             _context.Messages.Add(newMessage);
             await _context.SaveChangesAsync();
 
-            // إرسال الرسالة للمستلم
-            await Clients.User(receiverId).SendAsync("ReceiveMessage", senderUser.Id, message, newMessage.Id, newMessage.SentAt, newMessage.IsRead);
 
-            // إرسال للمُرسل
-            await Clients.User(senderUser.Id).SendAsync("ReceiveMessage", senderUser.Id, message, newMessage.Id, newMessage.SentAt, newMessage.IsRead);
+            await Clients.User(receiverId).SendAsync("ReceiveMessage",
+                senderUser.Id,
+                message,
+                newMessage.Id,
+                newMessage.SentAt,
+                newMessage.IsRead,
+                newMessage.IsPinned);
+
+            await Clients.User(senderUser.Id).SendAsync("ReceiveMessage",
+                senderUser.Id,
+                message,
+                newMessage.Id,
+                newMessage.SentAt,
+                newMessage.IsRead,
+                newMessage.IsPinned);
         }
 
 

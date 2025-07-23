@@ -1,9 +1,14 @@
-﻿.message.selected {
-    background-color: #d0ebff; /* لون خلفية للرسالة المحددة */
+﻿.pinned-message {
+    border: 2px solid gold;
+    background-color: #fff9db;
+}
+
+.message.selected {
+    background-color: #d0ebff;  
 }
 
 .message-select-checkbox {
-    display: none; /* تظهر فقط في وضع التحديد */
+    display: none; 
 }
 
 .select-mode .message-select-checkbox {

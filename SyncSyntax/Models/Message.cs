@@ -18,4 +18,6 @@ public class Message
 
     public bool IsRead { get; set; } = false;
     public DateTime? ReadAt { get; set; }
+    public bool IsPinned { get; set; } = false;
+
 }
