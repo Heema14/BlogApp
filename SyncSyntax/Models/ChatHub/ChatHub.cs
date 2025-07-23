@@ -4,6 +4,7 @@ using SyncSyntax.Data;
 using SyncSyntax.Models;
 using System;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace SyncSyntax.Hubs
 {
@@ -53,6 +54,53 @@ namespace SyncSyntax.Hubs
                 newMessage.IsPinned);
         }
 
+        public async Task SendReaction(string userId, int messageId, string reaction)
+        {
+            var existingReaction = await _context.MessageReactions
+                .FirstOrDefaultAsync(r => r.UserId == userId && r.MessageId == messageId);
+
+            if (existingReaction == null)
+            {
+                // إضافة تفاعل جديد
+                var newReaction = new MessageReaction
+                {
+                    UserId = userId,
+                    MessageId = messageId,
+                    Reaction = reaction,
+                    ReactedAt = DateTime.UtcNow
+                };
+                _context.MessageReactions.Add(newReaction);
+            }
+            else
+            {
+                if (existingReaction.Reaction == reaction)
+                {
+                    // حذف التفاعل (toggle off)
+                    _context.MessageReactions.Remove(existingReaction);
+                }
+                else
+                {
+                    // تغيير التفاعل
+                    existingReaction.Reaction = reaction;
+                    existingReaction.ReactedAt = DateTime.UtcNow;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+            // إرسال تحديث لكل الأطراف
+            var updatedReactions = await _context.MessageReactions
+                .Where(r => r.MessageId == messageId)
+                .GroupBy(r => r.Reaction)
+                .Select(g => new { Reaction = g.Key, Count = g.Count() })
+                .ToListAsync();
+
+            await Clients.Group(messageId.ToString()).SendAsync("ReceiveReactionUpdate", messageId, updatedReactions);
+        }
+        public async Task JoinMessageGroup(int messageId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, messageId.ToString());
+        }
 
     }
 }

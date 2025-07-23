@@ -112,6 +112,34 @@
                     </div>
                 </div>
                 <p>@message.Content</p>
+
+                @if (ViewBag.MessageReactions != null && ViewBag.MessageReactions.ContainsKey(message.Id))
+                {
+                    var reactions = ViewBag.MessageReactions[message.Id];
+                    <div class="reactions-container">
+                        @foreach (var r in reactions)
+                        {
+                            <span class="reaction-bubble" data-message-id="@message.Id" data-emoji="@r.Emoji" title="@string.Join(", ", r.Users)">
+                                @r.Emoji @r.Count
+                            </span>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="reactions-container"></div> <!-- مهم تظل موجودة -->
+                }
+
+                <div class="reaction-bar">
+                    <span class="emoji-option">👍</span>
+                    <span class="emoji-option">❤️</span>
+                    <span class="emoji-option">😂</span>
+                    <span class="emoji-option">😮</span>
+                    <span class="emoji-option">😢</span>
+                    <span class="emoji-option emoji-plus">➕</span>
+                </div>
+
+
                 <small>
                     @message.SentAt.ToLocalTime().ToString("HH:mm")
                     @if (message.SenderId == currentUserId && message.IsRead)

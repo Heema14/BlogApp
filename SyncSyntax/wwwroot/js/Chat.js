@@ -1,15 +1,25 @@
-﻿document.addEventListener('DOMContentLoaded', function () {
+﻿
+document.addEventListener('DOMContentLoaded', function () {
  
 var connection = new signalR.HubConnectionBuilder()
     .withUrl("/chathub")
     .build();
 
 
-connection.start().then(function () {
-    console.log("Connected to SignalR Hub!");
-}).catch(function (err) {
-    console.error("SignalR connection failed: " + err.toString());
-});
+    connection.start()
+        .then(() => {
+            console.log("SignalR connected");
+
+            // انضمام المستخدم لكل مجموعة رسائل
+            document.querySelectorAll('.message').forEach(msg => {
+                const messageId = msg.getAttribute('data-id');
+                connection.invoke("JoinMessageGroup", parseInt(messageId))
+                    .then(() => console.log(`Joined group for message ${messageId}`))
+                    .catch(err => console.error(`Failed to join group for message ${messageId}:`, err.toString()));
+            });
+        })
+        .catch(err => console.error("SignalR connection failed:", err.toString()));
+
 
 
     connection.on("ReceiveMessage", function (sender, message, messageId, sentAt, isRead, isPinned) {
@@ -51,6 +61,14 @@ connection.start().then(function () {
                 </div>
             </div>
             <p>${message}</p>
+            <div class="reaction-bar">
+                    <span class="emoji-option">👍</span>
+                    <span class="emoji-option">❤️</span>
+                    <span class="emoji-option">😂</span>
+                    <span class="emoji-option">😮</span>
+                    <span class="emoji-option">😢</span>
+                    <span class="emoji-option emoji-plus">➕</span>
+                </div>
             <small>
                 ${new Date(sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                 ${isSent && isRead ? '<span title="Read">✅</span>' : ''}
@@ -403,4 +421,109 @@ document.addEventListener('click', async (e) => {
         });
     }
 
+    const messageContainer = document.getElementById("messagesContainer");
+
+    // إنشاء البيكر مرة وحدة
+    const picker = document.createElement('emoji-picker');
+    picker.style.position = 'absolute';
+    picker.style.zIndex = '10000';
+    picker.style.display = 'none';
+    document.body.appendChild(picker);
+
+    // إخفاء البيكر لما نضغط برة
+    document.addEventListener('click', (e) => {
+        if (!picker.contains(e.target) && !e.target.classList.contains('emoji-plus')) {
+            picker.style.display = 'none';
+        }
+    });
+
+    messageContainer.addEventListener('click', (e) => {
+        if (e.target.classList.contains('emoji-option') && !e.target.classList.contains('emoji-plus')) {
+            const messageDiv = e.target.closest('.message');
+            const messageId = messageDiv.getAttribute('data-id');
+            const reaction = e.target.textContent;
+
+            sendReaction(messageId, reaction);
+        }
+
+        if (e.target.classList.contains('emoji-plus')) {
+            const messageDiv = e.target.closest('.message');
+            const rect = e.target.getBoundingClientRect();
+
+            picker.style.top = `${rect.bottom + window.scrollY}px`;
+            picker.style.left = `${rect.left}px`;
+            picker.style.display = 'block';
+
+            picker.dataset.messageId = messageDiv.getAttribute('data-id');
+        }
+    });
+
+    picker.addEventListener('emoji-click', event => {
+        const emoji = event.detail.unicode;
+        const messageId = picker.dataset.messageId;
+        picker.style.display = 'none';
+        sendReaction(messageId, emoji);
+    });
+
+    function sendReaction(messageId, emoji) {
+        const currentUserId = document.getElementById('senderId').value;
+
+        connection.invoke("SendReaction", currentUserId, parseInt(messageId), emoji)
+
+            .then(() => {
+                console.log('Reacted via SignalR!');
+            })
+            .catch(err => console.error('SignalR react failed:', err.toString()));
+    }
+    connection.on("ReceiveReactionUpdate", (messageId, updatedReactions) => {
+        // مثال: تحديث قائمة التفاعلات تحت الرسالة بالمعرف messageId
+        const messageDiv = document.querySelector(`.message[data-id='${messageId}']`);
+        if (!messageDiv) return;
+
+        const reactionsContainer = messageDiv.querySelector('.reactions-container');
+        if (!reactionsContainer) {
+            // إذا ما عندك حاوية خاصة للتفاعلات، أنشئها وأرفقها بالرسالة
+            // لازم تضيف في html حاوية مثل <div class="reactions-container"></div>
+            return;
+        }
+
+        // نظف الحاوية
+        reactionsContainer.innerHTML = '';
+
+        // أضف كل التفاعلات الجديدة
+        updatedReactions.forEach(r => {
+            const span = document.createElement('span');
+            span.classList.add('reaction-bubble');
+            span.setAttribute('data-message-id', messageId);
+            span.setAttribute('data-emoji', r.reaction);
+            span.textContent = `${r.reaction} ${r.count}`;
+            reactionsContainer.appendChild(span);
+        });
+    });
+
+
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('reaction-bubble')) {
+            const messageId = e.target.getAttribute('data-message-id');
+            const emoji = e.target.getAttribute('data-emoji');
+
+            fetch('/ContentCreator/Messages/ToggleReaction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+                },
+                body: JSON.stringify({
+                    messageId: parseInt(messageId),
+                    reaction: emoji
+                })
+            })
+                .then(res => {
+                    if (res.ok) {
+                        location.reload(); // أو تحديث الرسالة فقط لو بدك تحسن الأداء
+                    }
+                });
+        }
+    });
+  
 });

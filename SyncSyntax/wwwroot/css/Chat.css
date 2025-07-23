@@ -1,4 +1,54 @@
-﻿.pinned-message {
+﻿.reaction-bar {
+    margin-top: 5px;
+    display: none;
+    gap: 6px;
+    padding: 3px 0;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.message:hover .reaction-bar {
+    display: flex;
+}
+
+.emoji-option {
+    transition: transform 0.2s;
+}
+
+    .emoji-option:hover {
+        transform: scale(1.2);
+    }
+ 
+
+.reaction-bubble {
+    background-color: #f0f0f0;
+    border-radius: 12px;
+    padding: 2px 8px;
+    display: inline-flex;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid #ddd;
+    transition: background-color 0.2s;
+}
+
+    .reaction-bubble:hover {
+        background-color: #e0e0e0;
+    }
+.reaction-summary {
+    margin-top: 5px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+    .reaction-summary span {
+        margin-right: 8px;
+        background: #f1f1f1;
+        border-radius: 12px;
+        padding: 2px 8px;
+        display: inline-block;
+    }
+
+.pinned-message {
     border: 2px solid gold;
     background-color: #fff9db;
 }
