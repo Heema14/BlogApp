@@ -195,6 +195,51 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             await _context.SaveChangesAsync();
         }
+        [HttpPost]
+        public async Task<IActionResult> DeleteMultipleMessagesForMe([FromBody] List<int> ids)
+        {
+            var currentUserId = _userManager.GetUserId(User);
+
+            var alreadyDeleted = await _context.MessageDeletions
+                .Where(d => ids.Contains(d.MessageId) && d.UserId == currentUserId)
+                .Select(d => d.MessageId)
+                .ToListAsync();
+
+            var toDelete = ids.Except(alreadyDeleted);
+
+            foreach (var id in toDelete)
+            {
+                _context.MessageDeletions.Add(new MessageDeletion
+                {
+                    UserId = currentUserId,
+                    MessageId = id
+                });
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+        [HttpPost]
+        public IActionResult DeleteMultipleMessagesForAll([FromBody] List<int> ids)
+        {
+            var currentUserId = _userManager.GetUserId(User);
+
+            var messages = _context.Messages
+                .Where(m => ids.Contains(m.Id))
+                .ToList();
+
+            foreach (var msg in messages)
+            {
+                if (msg.SenderId == currentUserId)
+                {
+                    _context.Messages.Remove(msg);
+                }
+            }
+
+            _context.SaveChanges();
+            return Ok();
+        }
+
 
 
     }
