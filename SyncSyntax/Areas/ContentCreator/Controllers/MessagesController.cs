@@ -261,12 +261,12 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 var message = await _context.Messages.FindAsync(request.MessageId);
 
                 if (message == null) return NotFound("Message not found");
-                if (message.SenderId != user.Id) return Forbid("You are not allowed");
+                if (message.SenderId != user.Id && message.ReceiverId != user.Id)
+                    return Forbid("You are not allowed");
 
                 if (!message.IsPinned)
                 {
-                    // إذا كانت غير مثبتة، ثبتها بعد إلغاء أي رسالة أخرى مثبتة
-                    var existingPinned = await _context.Messages
+                     var existingPinned = await _context.Messages
                         .Where(m => m.IsPinned &&
                                ((m.SenderId == message.SenderId && m.ReceiverId == message.ReceiverId) ||
                                 (m.SenderId == message.ReceiverId && m.ReceiverId == message.SenderId)))
@@ -281,8 +281,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 }
                 else
                 {
-                    // إذا كانت مثبتة، فقط الغِ التثبيت عنها
-                    message.IsPinned = false;
+                     message.IsPinned = false;
                 }
 
                 _context.Messages.Update(message);
@@ -290,8 +289,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
                 if (!message.IsPinned)
                 {
-                    // لا توجد رسالة مثبتة حالياً
-                    return Ok(new { success = true, message = (object)null });
+                     return Ok(new { success = true, message = (object)null });
                 }
 
                 return Ok(new

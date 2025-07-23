@@ -41,8 +41,10 @@ connection.start().then(function () {
                             <li><a class="dropdown-item delete-message" data-id="${messageId}" data-scope="me" href="#">Delete for me</a></li>
                             <li><a class="dropdown-item delete-message" data-id="${messageId}" data-scope="all" href="#">Delete for everyone</a></li>
                             <li><a class="dropdown-item info-message" data-id="${messageId}" href="#">Info</a></li>
-                            <li><a class="dropdown-item pin-message" data-id="${messageId}" href="#">${isPinned ? "Unpin" : "Pin"}</a></li>
                         ` : `
+                            <li><a class="dropdown-item pin-message" data-id="${messageId}" href="#">${isPinned ? "Unpin" : "Pin"}</a></li>
+                            <li><a class="dropdown-item copy-message" data-id="@message.Id" href="#">Copy</a></li>
+
                             <li><a class="dropdown-item delete-message" data-id="${messageId}" data-scope="me" href="#">Delete for me</a></li>
                         `}
                     </ul>
@@ -182,29 +184,34 @@ toggleSelectModeBtn.addEventListener('click', () => {
             const dotsBtn = msg.querySelector('.dots-btn');
             if (dotsBtn) dotsBtn.style.display = 'none';
         });
+        document.getElementById('cancelSelectBtn').style.display = 'inline-block';
+
     } else {
         cancelSelection();
     }
 });
 
 
-function cancelSelection() {
-    selectMode = false;
-    document.body.classList.remove('select-mode');
-    bulkActions.style.display = 'none';
-    toggleSelectModeBtn.style.display = 'inline-block';
+    function cancelSelection() {
+        selectMode = false;
+        document.body.classList.remove('select-mode');
+        bulkActions.style.display = 'none';
+        toggleSelectModeBtn.style.display = 'inline-block';
 
-    document.querySelectorAll('.message').forEach(msg => {
-        const checkbox = msg.querySelector('.message-select-checkbox');
-        if (checkbox) {
-            checkbox.checked = false;
-            checkbox.style.display = 'none';
-        }
-        msg.classList.remove('selected');
-        const dotsBtn = msg.querySelector('.dots-btn');
-        if (dotsBtn) dotsBtn.style.display = 'inline-block';
-    });
-}
+        document.querySelectorAll('.message').forEach(msg => {
+            const checkbox = msg.querySelector('.message-select-checkbox');
+            if (checkbox) {
+                checkbox.checked = false;
+                checkbox.style.display = 'none';
+            }
+            msg.classList.remove('selected');
+            const dotsBtn = msg.querySelector('.dots-btn');
+            if (dotsBtn) dotsBtn.style.display = 'inline-block';
+        });
+
+     
+        document.getElementById('cancelSelectBtn').style.display = 'none';
+    }
 
 
 document.getElementById('cancelSelectBtn').addEventListener('click', cancelSelection);
@@ -302,6 +309,21 @@ document.getElementById('bulkCopy').addEventListener('click', () => {
         });
     }
 });
+document.addEventListener('click', async (e) => {
+        const target = e.target;
+        if (!target.classList.contains('copy-message')) return;
+
+        e.preventDefault();
+
+        const messageId = target.getAttribute('data-id');
+        const messageElement = document.querySelector(`.message[data-id="${messageId}"] p`);
+
+        if (messageElement) {
+            const textToCopy = messageElement.textContent;
+            await navigator.clipboard.writeText(textToCopy);
+            alert('Message copied to clipboard!');
+        }
+    });
 
  
 document.addEventListener('click', async (e) => {

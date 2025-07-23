@@ -101,10 +101,11 @@
                                 <li><a class="dropdown-item delete-message" data-id="@message.Id" data-scope="me" href="#">Delete for me</a></li>
                                 <li><a class="dropdown-item delete-message" data-id="@message.Id" data-scope="all" href="#">Delete for everyone</a></li>
                                 <li><a class="dropdown-item info-message" data-id="@message.Id" href="#">Info</a></li>
-                                <li><a class="dropdown-item pin-message" data-id="@message.Id" href="#">@(message.IsPinned ? "Unpin" : "Pin")</a></li>
                             }
                             else
                             {
+                                <li><a class="dropdown-item pin-message" data-id="@message.Id" href="#">@(message.IsPinned ? "Unpin" : "Pin")</a></li>
+                                <li><a class="dropdown-item copy-message" data-id="@message.Id" href="#">Copy</a></li>
                                 <li><a class="dropdown-item delete-message" data-id="@message.Id" data-scope="me" href="#">Delete for me</a></li>
                             }
                         </ul>
