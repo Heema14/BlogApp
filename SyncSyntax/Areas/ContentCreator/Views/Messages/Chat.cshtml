@@ -16,10 +16,10 @@
                 DateTime lastSeen = Convert.ToDateTime(chatUser.LastSeen);
                 string lastSeenText = "Last seen unknown";
 
-                // لا تحتاج تحقق null لأن DateTime غير nullable
+                 
                 var diff = DateTime.UtcNow - lastSeen;
 
-                if (diff.TotalSeconds < 1)  // less than one second difference
+                if (diff.TotalSeconds < 1)   
                 {
                     lastSeenText = "Online now";
                 }
@@ -50,17 +50,19 @@
         {
             <div class="message @(message.SenderId == currentUserId ? "sent" : "received")" data-id="@message.Id">
                 <div class="message-header">
+                    @if (message.SenderId == currentUserId)
+                    {
                     <div class="dropdown message-options">
                         <button class="dots-btn text-black" data-bs-toggle="dropdown" aria-expanded="false">⋮</button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item edit-message" data-id="@message.Id" href="#">Edit</a></li>
                             <li><a class="dropdown-item delete-message" data-id="@message.Id" href="#">Delete</a></li>
-                            @if (message.SenderId == currentUserId)
-                            {
+
                                 <li><a class="dropdown-item info-message" data-id="@message.Id" href="#">Info</a></li>
-                            }
+                            
                         </ul>
                     </div>
+                    }
                 </div>
                 <p>@message.Content</p>
                 <small>
@@ -327,36 +329,38 @@
             messageElement.classList.add("message");
             messageElement.classList.add(isSent ? "sent" : "received");
 
-            // مهم جدًا: تعيين data-id على العنصر الرئيسي للرسالة
+             
             messageElement.setAttribute('data-id', messageId);
 
-            messageElement.innerHTML = `
-                <div class="message-header">
-                    <div class="dropdown message-options">
-                        <button class="dots-btn" data-bs-toggle="dropdown" aria-expanded="false">⋮</button>
-                        <ul class="dropdown-menu" style="direction: rtl;">
-                            ${isSent ? `
-                            <li><a class="dropdown-item edit-message" data-id="${messageId}" href="#">Edit</a></li>
-                            <li><a class="dropdown-item delete-message" data-id="${messageId}" href="#">Delete</a></li>
-                            <li><a class="dropdown-item info-message" data-id="${messageId}" href="#">Info</a></li>
-                            ` : ""}
-                        </ul>
-                    </div>
+                messageElement.innerHTML = `
+            <div class="message-header">
+                <div class="dropdown message-options">
+                    <button class="dots-btn text-black" data-bs-toggle="dropdown" aria-expanded="false">⋮</button>
+                    <ul class="dropdown-menu" style="direction: rtl;">
+                        ${isSent ? `
+                        <li><a class="dropdown-item edit-message" data-id="${messageId}" href="#">Edit</a></li>
+                        <li><a class="dropdown-item delete-message" data-id="${messageId}" href="#">Delete</a></li>
+                        <li><a class="dropdown-item info-message" data-id="${messageId}" href="#">Info</a></li>
+                        ` : ""}
+                    </ul>
                 </div>
-                <p>${message}</p>
-                <small>
-                    ${new Date(sentAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                    ${isSent && isRead ? '<span title="Read">✅</span>' : ''}
-                </small>
-            `;
+            </div>
+            <p>${message}</p>
+            <small>
+                ${new Date(sentAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                ${isSent && isRead ? '<span title="Read">✅</span>' : ''}
+            </small>
+        `;
 
-            messageContainer.appendChild(messageElement);
-            messageContainer.scrollTop = messageContainer.scrollHeight;
+        messageContainer.appendChild(messageElement);
+        bootstrap.Dropdown.getOrCreateInstance(messageElement.querySelector('[data-bs-toggle="dropdown"]'));
+        messageContainer.scrollTop = messageContainer.scrollHeight;
+
         });
 
 
            document.getElementById("sendButton").addEventListener("click", function () {
-               var sender = document.getElementById("senderId").value.trim(); // هذا هو ال Id
+               var sender = document.getElementById("senderId").value.trim();  
         var receiver = document.getElementById("receiverId").value.trim();
         var messageContent = document.getElementById("messageInput").value.trim();
 
@@ -403,10 +407,10 @@
             input.value = input.value.slice(0, start) + emoji + input.value.slice(end);
             input.focus();
             input.selectionStart = input.selectionEnd = start + emoji.length;
-            // لا نغلق البوكس هنا!
+           
           });
 
-          // إغلاق البوكس فقط إذا المستخدم ضغط خارج الزر والإيموجي
+          
           document.addEventListener('click', (e) => {
             if (!picker.contains(e.target) && e.target !== emojiBtn) {
               picker.style.display = 'none';
@@ -415,6 +419,12 @@
         });
 
 
+
+
+
+    </script>
+
+    <script>
 
         let editingMessageId = null;
 
@@ -425,7 +435,7 @@
 
             if (confirm("Are you sure you want to delete the message?")) {
                 $.post('/ContentCreator/Messages/DeleteMessage', { id: messageId }, function () {
-                    // حذف الرسالة من الصفحة بدون إعادة تحميل
+
                     messageElement.remove();
                 });
             }
@@ -456,15 +466,15 @@
                 id: editingMessageId,
                 content: newContent
             }, function () {
-                // تحديث النص في الرسالة المعروضة مباشرة بدون إعادة تحميل الصفحة
+
                 const messageElement = $(`.message[data-id="${editingMessageId}"]`);
                 messageElement.find('p').text(newContent);
 
-                // إخفاء المودال بعد التعديل
+
                 const modal = bootstrap.Modal.getInstance(document.getElementById('editMessageModal'));
                 modal.hide();
 
-                // مسح متغير الرسالة التي يتم تعديلها
+
                 editingMessageId = null;
             });
         });
@@ -488,12 +498,10 @@
             });
         });
 
-        // زر الإغلاق اليدوي مع أنيميشن
+
         $('#closeInfoBox').on('click', function () {
             $('#messageInfoBox').fadeOut(300);
         });
-
-
     </script>
 
 }
