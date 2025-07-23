@@ -18,6 +18,8 @@ namespace SyncSyntax.Data
         public DbSet<Following> Followings { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<MessageDeletion> MessageDeletions { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

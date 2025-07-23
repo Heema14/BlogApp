@@ -50,19 +50,26 @@
         {
             <div class="message @(message.SenderId == currentUserId ? "sent" : "received")" data-id="@message.Id">
                 <div class="message-header">
-                    @if (message.SenderId == currentUserId)
-                    {
+                  
                     <div class="dropdown message-options">
                         <button class="dots-btn text-black" data-bs-toggle="dropdown" aria-expanded="false">⋮</button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item edit-message" data-id="@message.Id" href="#">Edit</a></li>
-                            <li><a class="dropdown-item delete-message" data-id="@message.Id" href="#">Delete</a></li>
-
+                            @if (message.SenderId == currentUserId)
+                            {
+                                <li><a class="dropdown-item edit-message" data-id="@message.Id" href="#">Edit</a></li>
+                                <li><a class="dropdown-item delete-message" data-id="@message.Id" data-scope="me" href="#">Delete for me</a></li>
+                                <li><a class="dropdown-item delete-message" data-id="@message.Id" data-scope="all" href="#">Delete for everyone</a></li>
                                 <li><a class="dropdown-item info-message" data-id="@message.Id" href="#">Info</a></li>
-                            
+                            }
+                            else
+                            {
+                                <li><a class="dropdown-item delete-message" data-id="@message.Id" data-scope="me" href="#">Delete for me</a></li>
+                            }
                         </ul>
+
+
                     </div>
-                    }
+                   
                 </div>
                 <p>@message.Content</p>
                 <small>
@@ -332,16 +339,19 @@
              
             messageElement.setAttribute('data-id', messageId);
 
-                messageElement.innerHTML = `
+                     messageElement.innerHTML = `
             <div class="message-header">
                 <div class="dropdown message-options">
                     <button class="dots-btn text-black" data-bs-toggle="dropdown" aria-expanded="false">⋮</button>
                     <ul class="dropdown-menu" style="direction: rtl;">
                         ${isSent ? `
-                        <li><a class="dropdown-item edit-message" data-id="${messageId}" href="#">Edit</a></li>
-                        <li><a class="dropdown-item delete-message" data-id="${messageId}" href="#">Delete</a></li>
-                        <li><a class="dropdown-item info-message" data-id="${messageId}" href="#">Info</a></li>
-                        ` : ""}
+                            <li><a class="dropdown-item edit-message" data-id="${messageId}" href="#">Edit</a></li>
+                            <li><a class="dropdown-item delete-message" data-id="${messageId}" data-scope="me" href="#">Delete for me</a></li>
+                            <li><a class="dropdown-item delete-message" data-id="${messageId}" data-scope="all" href="#">Delete for everyone</a></li>
+                            <li><a class="dropdown-item info-message" data-id="${messageId}" href="#">Info</a></li>
+                        ` : `
+                            <li><a class="dropdown-item delete-message" data-id="${messageId}" data-scope="me" href="#">Delete for me</a></li>
+                        `}
                     </ul>
                 </div>
             </div>
@@ -351,6 +361,7 @@
                 ${isSent && isRead ? '<span title="Read">✅</span>' : ''}
             </small>
         `;
+
 
         messageContainer.appendChild(messageElement);
         bootstrap.Dropdown.getOrCreateInstance(messageElement.querySelector('[data-bs-toggle="dropdown"]'));
@@ -428,18 +439,24 @@
 
         let editingMessageId = null;
 
-            $(document).on('click', '.delete-message', function (e) {
+                          $(document).on('click', '.delete-message', function (e) {
             e.preventDefault();
             const messageId = $(this).data('id');
+            const deleteScope = $(this).data('scope'); // "me" or "all"
             const messageElement = $(this).closest('.message');
 
-            if (confirm("Are you sure you want to delete the message?")) {
-                $.post('/ContentCreator/Messages/DeleteMessage', { id: messageId }, function () {
+            let confirmText = deleteScope === "all"
+                ? "Are you sure you want to delete this message for everyone?"
+                : "Are you sure you want to delete this message for yourself only?";
 
+            if (confirm(confirmText)) {
+                $.post('/ContentCreator/Messages/DeleteMessage', { id: messageId, scope: deleteScope }, function () {
                     messageElement.remove();
                 });
             }
         });
+
+
 
          $(document).on('click', '.edit-message', function (e) {
              e.preventDefault();

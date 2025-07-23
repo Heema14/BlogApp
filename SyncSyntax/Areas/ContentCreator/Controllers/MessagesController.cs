@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
 using SyncSyntax.Hubs;
+using System.Security.Claims;
 
 namespace SyncSyntax.Areas.ContentCreator.Controllers
 {
@@ -30,7 +31,8 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             var user = await _userManager.GetUserAsync(User);
 
             var conversations = await _context.Messages
-                .Where(m => m.SenderId == user.Id || m.ReceiverId == user.Id)
+                .Where(m => (m.SenderId == user.Id || m.ReceiverId == user.Id)
+                            && !_context.MessageDeletions.Any(d => d.UserId == user.Id && d.MessageId == m.Id))
                 .GroupBy(m => m.SenderId == user.Id ? m.ReceiverId : m.SenderId)
                 .Select(g => g.OrderByDescending(m => m.SentAt).FirstOrDefault())
                 .ToListAsync();
@@ -41,9 +43,8 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             if (conversations == null || !conversations.Any())
             {
-                ViewData["Message"] = "That not fount any chats yet!!";
+                ViewData["Message"] = "That not found any chats yet!!";
             }
-
 
             var otherUserIds = conversations
                 .Select(c => c.SenderId == user.Id ? c.ReceiverId : c.SenderId)
@@ -61,7 +62,6 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 OtherUsers = otherUsers,
                 AvailableUsers = availableUsers
             };
-
 
             return View(model);
         }
@@ -101,31 +101,68 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             return View(chatMessages);
         }
 
-
-
+ 
         [HttpPost]
-        public async Task<IActionResult> DeleteMessage(int id)
+        public async Task<IActionResult> DeleteMessage(int id, string scope)
         {
+            var currentUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var message = await _context.Messages.FindAsync(id);
-            if (message != null)
+
+            if (message == null || currentUserId == null)
+                return NotFound();
+
+            if (scope == "all")
             {
-                _context.Messages.Remove(message);
-                await _context.SaveChangesAsync();
+                if (message.SenderId == currentUserId)
+                {
+                    _context.Messages.Remove(message);
+                    await _context.SaveChangesAsync();
+                    return Ok();
+                }
+                else
+                {
+                    return Forbid(); // المستقبل لا يمكنه حذف الرسالة للجميع
+                }
             }
-            return Ok();
+            else if (scope == "me")
+            {
+                // تحقق إذا تم حذفها مسبقًا
+                var alreadyDeleted = await _context.MessageDeletions
+                    .AnyAsync(d => d.UserId == currentUserId && d.MessageId == message.Id);
+
+                if (!alreadyDeleted)
+                {
+                    var deletion = new MessageDeletion
+                    {
+                        UserId = currentUserId,
+                        MessageId = message.Id
+                    };
+
+                    _context.MessageDeletions.Add(deletion);
+                    await _context.SaveChangesAsync();
+                }
+
+                return Ok();
+            }
+
+            return BadRequest();
         }
 
         [HttpPost]
         public async Task<IActionResult> EditMessage(int id, string content)
         {
+            var currentUserId = _userManager.GetUserId(User);
             var message = await _context.Messages.FindAsync(id);
-            if (message != null)
-            {
-                message.Content = content;
-                await _context.SaveChangesAsync();
-            }
+
+            if (message == null || message.SenderId != currentUserId)
+                return Forbid();   
+
+            message.Content = content;
+            await _context.SaveChangesAsync();
+
             return Ok();
         }
+
 
         [HttpGet]
         public IActionResult MessageInfo(int id)
@@ -134,7 +171,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             var currentUserId = _userManager.GetUserId(User);
 
             if (message == null || message.SenderId != currentUserId)
-                return Forbid(); // أو Unauthorized()
+                return Forbid();  
 
             return Json(new
             {
@@ -153,7 +190,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             foreach (var msg in unreadMessages)
             {
                 msg.IsRead = true;
-                msg.ReadAt = DateTime.UtcNow; // 👈 هنا بنسجل وقت القراءة
+                msg.ReadAt = DateTime.UtcNow;  
             }
 
             await _context.SaveChangesAsync();
