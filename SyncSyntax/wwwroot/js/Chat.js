@@ -188,6 +188,8 @@ let selectMode = false;
 const toggleSelectModeBtn = document.getElementById('toggleSelectModeBtn');
 const bulkActions = document.getElementById('bulkActions');
 const messagesContainer = document.getElementById('messagesContainer');
+ const reaction = document.querySelector('.reaction-bar');
+
 
 toggleSelectModeBtn.addEventListener('click', () => {
     selectMode = !selectMode;
@@ -195,7 +197,7 @@ toggleSelectModeBtn.addEventListener('click', () => {
         document.body.classList.add('select-mode');
         bulkActions.style.display = 'block';
         toggleSelectModeBtn.style.display = 'none';
-
+        reaction.style.display = 'none';
         document.querySelectorAll('.message').forEach(msg => {
             const checkbox = msg.querySelector('.message-select-checkbox');
             if (checkbox) checkbox.style.display = 'inline-block';
@@ -458,5 +460,36 @@ document.addEventListener('click', async (e) => {
         messageElement.appendChild(summaryDiv);
     });
 
-  
+    document.getElementById('bulkExport')?.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        const selectedMessages = [...document.querySelectorAll('.message-select-checkbox:checked')]
+            .map(checkbox => {
+                const messageElement = checkbox.closest('.message');
+
+                if (!messageElement) return null;
+
+                const senderId = messageElement.getAttribute('data-sender-id') || "Unknown";
+                const messageText = messageElement.querySelector('p')?.innerText.trim() || "";
+                const timeText = messageElement.querySelector('small')?.innerText.trim() || "";
+
+                return `Sender ID: ${senderId}\nTime: ${timeText}\nMessage: ${messageText}`;
+            })
+            .filter(msg => msg);
+
+        if (selectedMessages.length === 0) {
+            alert('No messages selected.');
+            return;
+        }
+
+        const content = selectedMessages.join('\n\n-------------------------\n\n');
+
+        const blob = new Blob([content], { type: 'text/plain' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'chat-export.txt';
+        a.click();
+        URL.revokeObjectURL(url);
+    });
 });
