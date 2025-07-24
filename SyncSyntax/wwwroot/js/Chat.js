@@ -10,19 +10,12 @@ var connection = new signalR.HubConnectionBuilder()
         .then(() => {
             console.log("SignalR connected");
 
-            // انضمام المستخدم لكل مجموعة رسائل
-            document.querySelectorAll('.message').forEach(msg => {
-                const messageId = msg.getAttribute('data-id');
-                connection.invoke("JoinMessageGroup", parseInt(messageId))
-                    .then(() => console.log(`Joined group for message ${messageId}`))
-                    .catch(err => console.error(`Failed to join group for message ${messageId}:`, err.toString()));
-            });
         })
         .catch(err => console.error("SignalR connection failed:", err.toString()));
 
 
 
-    connection.on("ReceiveMessage", function (sender, message, messageId, sentAt, isRead, isPinned) {
+    connection.on("ReceiveMessage", function (sender, message, messageId, sentAt, isRead, isPinned, reactions) {
         console.log("Message received from SignalR:", sender, message);
 
         try {
@@ -41,39 +34,47 @@ var connection = new signalR.HubConnectionBuilder()
             messageElement.setAttribute('data-id', messageId);
             messageElement.setAttribute('data-sender-id', sender);
             messageElement.innerHTML = `
-            <input type="checkbox" class="message-select-checkbox" style="display:none;" />
-            <div class="message-header">
-                <div class="dropdown message-options">
-                    <button class="dots-btn text-black" data-bs-toggle="dropdown" aria-expanded="false">⋮</button>
-                    <ul class="dropdown-menu" style="direction: rtl;">
-                        ${isSent ? `
-                            <li><a class="dropdown-item edit-message" data-id="${messageId}" href="#">Edit</a></li>
-                            <li><a class="dropdown-item delete-message" data-id="${messageId}" data-scope="me" href="#">Delete for me</a></li>
-                            <li><a class="dropdown-item delete-message" data-id="${messageId}" data-scope="all" href="#">Delete for everyone</a></li>
-                            <li><a class="dropdown-item info-message" data-id="${messageId}" href="#">Info</a></li>
-                        ` : `
-                            <li><a class="dropdown-item pin-message" data-id="${messageId}" href="#">${isPinned ? "Unpin" : "Pin"}</a></li>
-                            <li><a class="dropdown-item copy-message" data-id="@message.Id" href="#">Copy</a></li>
+    <input type="checkbox" class="message-select-checkbox" style="display:none;" />
+    <div class="message-header">
+        <div class="dropdown message-options">
+            <button class="dots-btn text-black" data-bs-toggle="dropdown" aria-expanded="false">⋮</button>
+            <ul class="dropdown-menu" style="direction: rtl;">
+                ${isSent ? `
+                    <li><a class="dropdown-item edit-message" data-id="${messageId}" href="#">Edit</a></li>
+                    <li><a class="dropdown-item delete-message" data-id="${messageId}" data-scope="me" href="#">Delete for me</a></li>
+                    <li><a class="dropdown-item delete-message" data-id="${messageId}" data-scope="all" href="#">Delete for everyone</a></li>
+                    <li><a class="dropdown-item info-message" data-id="${messageId}" href="#">Info</a></li>
+                ` : `
+                    <li><a class="dropdown-item pin-message" data-id="${messageId}" href="#">${isPinned ? "Unpin" : "Pin"}</a></li>
+                    <li><a class="dropdown-item copy-message" data-id="${messageId}" href="#">Copy</a></li>
+                    <li><a class="dropdown-item delete-message" data-id="${messageId}" data-scope="me" href="#">Delete for me</a></li>
+                `}
+            </ul>
+        </div>
+    </div>
+    <p>${message}</p>
 
-                            <li><a class="dropdown-item delete-message" data-id="${messageId}" data-scope="me" href="#">Delete for me</a></li>
-                        `}
-                    </ul>
-                </div>
-            </div>
-            <p>${message}</p>
-            <div class="reaction-bar">
-                    <span class="emoji-option">👍</span>
-                    <span class="emoji-option">❤️</span>
-                    <span class="emoji-option">😂</span>
-                    <span class="emoji-option">😮</span>
-                    <span class="emoji-option">😢</span>
-                    <span class="emoji-option emoji-plus">➕</span>
-                </div>
-            <small>
-                ${new Date(sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                ${isSent && isRead ? '<span title="Read">✅</span>' : ''}
-            </small>
-        `;
+    <div class="reaction-summary">
+      ${reactions && reactions.length > 0
+                    ? reactions.map(r => `<span class="reaction-count">${r.reaction} ${r.count}</span>`).join('')
+                    : ''}
+    </div>
+
+    <div class="reaction-bar">
+        <span class="emoji-option">👍</span>
+        <span class="emoji-option">❤️</span>
+        <span class="emoji-option">😂</span>
+        <span class="emoji-option">😮</span>
+        <span class="emoji-option">😢</span>
+        <span class="emoji-option emoji-plus">➕</span>
+    </div>
+
+    <small>
+        ${new Date(sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        ${isSent && isRead ? '<span title="Read">✅</span>' : ''}
+    </small>
+`;
+
 
             messageContainer.appendChild(messageElement);
             bootstrap.Dropdown.getOrCreateInstance(messageElement.querySelector('[data-bs-toggle="dropdown"]'));
@@ -100,7 +101,8 @@ document.getElementById("sendButton").addEventListener("click", function () {
 
     document.getElementById("messageInput").value = "";
 });
-let editingMessageId = null;
+
+    let editingMessageId = null;
 
 $(document).on('click', '.delete-message', function (e) {
     e.preventDefault();
@@ -210,7 +212,7 @@ toggleSelectModeBtn.addEventListener('click', () => {
 });
 
 
-    function cancelSelection() {
+function cancelSelection() {
         selectMode = false;
         document.body.classList.remove('select-mode');
         bulkActions.style.display = 'none';
@@ -421,109 +423,40 @@ document.addEventListener('click', async (e) => {
         });
     }
 
-    const messageContainer = document.getElementById("messagesContainer");
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("emoji-option")) {
+            const emoji = e.target.textContent.trim();
+            const messageDiv = e.target.closest(".message");
+            const messageId = parseInt(messageDiv.getAttribute("data-id"));
+            const senderId = document.getElementById("senderId").value;
 
-    // إنشاء البيكر مرة وحدة
-    const picker = document.createElement('emoji-picker');
-    picker.style.position = 'absolute';
-    picker.style.zIndex = '10000';
-    picker.style.display = 'none';
-    document.body.appendChild(picker);
-
-    // إخفاء البيكر لما نضغط برة
-    document.addEventListener('click', (e) => {
-        if (!picker.contains(e.target) && !e.target.classList.contains('emoji-plus')) {
-            picker.style.display = 'none';
+            connection.invoke("SendReaction", senderId, messageId, emoji)
+                .catch(err => console.error("Error sending reaction:", err));
         }
     });
+    connection.on("ReceiveReactionUpdate", function (messageId, updatedReactions) {
+        const messageElement = document.querySelector(`.message[data-id='${messageId}']`);
+        if (!messageElement) return;
 
-    messageContainer.addEventListener('click', (e) => {
-        if (e.target.classList.contains('emoji-option') && !e.target.classList.contains('emoji-plus')) {
-            const messageDiv = e.target.closest('.message');
-            const messageId = messageDiv.getAttribute('data-id');
-            const reaction = e.target.textContent;
-
-            sendReaction(messageId, reaction);
+        
+        let existingReactionSummary = messageElement.querySelector(".reaction-summary");
+        if (existingReactionSummary) {
+            existingReactionSummary.remove();
         }
 
-        if (e.target.classList.contains('emoji-plus')) {
-            const messageDiv = e.target.closest('.message');
-            const rect = e.target.getBoundingClientRect();
+      
+        const summaryDiv = document.createElement("div");
+        summaryDiv.className = "reaction-summary";
 
-            picker.style.top = `${rect.bottom + window.scrollY}px`;
-            picker.style.left = `${rect.left}px`;
-            picker.style.display = 'block';
-
-            picker.dataset.messageId = messageDiv.getAttribute('data-id');
-        }
-    });
-
-    picker.addEventListener('emoji-click', event => {
-        const emoji = event.detail.unicode;
-        const messageId = picker.dataset.messageId;
-        picker.style.display = 'none';
-        sendReaction(messageId, emoji);
-    });
-
-    function sendReaction(messageId, emoji) {
-        const currentUserId = document.getElementById('senderId').value;
-
-        connection.invoke("SendReaction", currentUserId, parseInt(messageId), emoji)
-
-            .then(() => {
-                console.log('Reacted via SignalR!');
-            })
-            .catch(err => console.error('SignalR react failed:', err.toString()));
-    }
-    connection.on("ReceiveReactionUpdate", (messageId, updatedReactions) => {
-        // مثال: تحديث قائمة التفاعلات تحت الرسالة بالمعرف messageId
-        const messageDiv = document.querySelector(`.message[data-id='${messageId}']`);
-        if (!messageDiv) return;
-
-        const reactionsContainer = messageDiv.querySelector('.reactions-container');
-        if (!reactionsContainer) {
-            // إذا ما عندك حاوية خاصة للتفاعلات، أنشئها وأرفقها بالرسالة
-            // لازم تضيف في html حاوية مثل <div class="reactions-container"></div>
-            return;
-        }
-
-        // نظف الحاوية
-        reactionsContainer.innerHTML = '';
-
-        // أضف كل التفاعلات الجديدة
         updatedReactions.forEach(r => {
-            const span = document.createElement('span');
-            span.classList.add('reaction-bubble');
-            span.setAttribute('data-message-id', messageId);
-            span.setAttribute('data-emoji', r.reaction);
+            const span = document.createElement("span");
             span.textContent = `${r.reaction} ${r.count}`;
-            reactionsContainer.appendChild(span);
+            span.className = "reaction-count";
+            summaryDiv.appendChild(span);
         });
+
+        messageElement.appendChild(summaryDiv);
     });
 
-
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('reaction-bubble')) {
-            const messageId = e.target.getAttribute('data-message-id');
-            const emoji = e.target.getAttribute('data-emoji');
-
-            fetch('/ContentCreator/Messages/ToggleReaction', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
-                },
-                body: JSON.stringify({
-                    messageId: parseInt(messageId),
-                    reaction: emoji
-                })
-            })
-                .then(res => {
-                    if (res.ok) {
-                        location.reload(); // أو تحديث الرسالة فقط لو بدك تحسن الأداء
-                    }
-                });
-        }
-    });
   
 });

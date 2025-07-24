@@ -103,16 +103,16 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             var messageIds = chatMessages.Select(m => m.Id).ToList();
 
             var reactions = await _context.MessageReactions
-                .Where(r => messageIds.Contains(r.MessageId))
-                .Include(r => r.User) // ✅ هذا صار شغال
-                .ToListAsync();
+     .Where(r => messageIds.Contains(r.MessageId))
+     .Include(r => r.User)
+     .ToListAsync();
 
-            // ترتيب التفاعلات حسب الرسالة والإيموجي
             var groupedReactions = reactions
                 .GroupBy(r => r.MessageId)
                 .ToDictionary(
                     g => g.Key,
-                    g => g.GroupBy(r => r.Reaction).Select(rg => new {
+                    g => g.GroupBy(r => r.Reaction).Select(rg => new
+                    {
                         Emoji = rg.Key,
                         Count = rg.Count(),
                         Users = rg.Select(u => u.User.FirstName).ToList()

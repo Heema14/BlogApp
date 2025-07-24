@@ -36,14 +36,27 @@ namespace SyncSyntax.Hubs
             _context.Messages.Add(newMessage);
             await _context.SaveChangesAsync();
 
+            // أضف المستخدمين لمجموعة الرسالة الجديدة
+            await Groups.AddToGroupAsync(Context.ConnectionId, newMessage.Id.ToString()); // للمستخدم الحالي (المرسل)
 
+            // ملاحظة: المستخدم المستقبل قد لا يكون متصل بنفس الاتصال، لذلك نرسل له رسالة مباشرة
+            // أو يمكن تعيين منطق إضافي في OnConnectedAsync ليضيف المستخدم تلقائيًا لكل مجموعات الرسائل الخاصة به
+
+            var reactions = await _context.MessageReactions
+                .Where(r => r.MessageId == newMessage.Id)
+                .GroupBy(r => r.Reaction)
+                .Select(g => new { Reaction = g.Key, Count = g.Count() })
+                .ToListAsync();
+
+            // إرسال للمستقبل والمُرسل
             await Clients.User(receiverId).SendAsync("ReceiveMessage",
                 senderUser.Id,
                 message,
                 newMessage.Id,
                 newMessage.SentAt,
                 newMessage.IsRead,
-                newMessage.IsPinned);
+                newMessage.IsPinned,
+                reactions);
 
             await Clients.User(senderUser.Id).SendAsync("ReceiveMessage",
                 senderUser.Id,
@@ -51,8 +64,27 @@ namespace SyncSyntax.Hubs
                 newMessage.Id,
                 newMessage.SentAt,
                 newMessage.IsRead,
-                newMessage.IsPinned);
+                newMessage.IsPinned,
+                reactions);
         }
+        public override async Task OnConnectedAsync()
+        {
+            var userId = Context.UserIdentifier; // تأكد أن الـ UserIdentifier معرف في إعدادات SignalR
+
+            // جلب كل رسائل المستخدم (مرسلة أو مستقبلة)
+            var messageIds = await _context.Messages
+                .Where(m => m.SenderId == userId || m.ReceiverId == userId)
+                .Select(m => m.Id.ToString())
+                .ToListAsync();
+
+            foreach (var msgId in messageIds)
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, msgId);
+            }
+
+            await base.OnConnectedAsync();
+        }
+
 
         public async Task SendReaction(string userId, int messageId, string reaction)
         {
@@ -97,10 +129,7 @@ namespace SyncSyntax.Hubs
 
             await Clients.Group(messageId.ToString()).SendAsync("ReceiveReactionUpdate", messageId, updatedReactions);
         }
-        public async Task JoinMessageGroup(int messageId)
-        {
-            await Groups.AddToGroupAsync(Context.ConnectionId, messageId.ToString());
-        }
+       
 
     }
 }

@@ -4,5 +4,6 @@
     {
         public int MessageId { get; set; }
         public string Reaction { get; set; }
+
     }
 }

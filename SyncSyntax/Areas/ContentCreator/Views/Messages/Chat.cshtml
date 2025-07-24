@@ -116,10 +116,12 @@
                 @if (ViewBag.MessageReactions != null && ViewBag.MessageReactions.ContainsKey(message.Id))
                 {
                     var reactions = ViewBag.MessageReactions[message.Id];
-                    <div class="reactions-container">
+                    <div class="reaction-summary">
                         @foreach (var r in reactions)
                         {
-                            <span class="reaction-bubble" data-message-id="@message.Id" data-emoji="@r.Emoji" title="@string.Join(", ", r.Users)">
+@*                             <span class="reaction-count">${r.reaction} ${r.count}</span>
+ *@
+                             <span class="reaction-count" data-message-id="@message.Id" data-emoji="@r.Emoji" title="@string.Join(", ", r.Users)">
                                 @r.Emoji @r.Count
                             </span>
                         }
@@ -127,7 +129,7 @@
                 }
                 else
                 {
-                    <div class="reactions-container"></div> <!-- مهم تظل موجودة -->
+                    <div class="reaction-summary"></div>
                 }
 
                 <div class="reaction-bar">
