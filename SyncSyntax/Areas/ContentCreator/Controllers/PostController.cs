@@ -186,7 +186,6 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         [HttpGet]
         public IActionResult Explore(int? categoryId)
         {
-
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var postQuery = _context.Posts
@@ -203,20 +202,23 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 .AsNoTracking()
                 .ToList();
 
-
             var postOwnerIds = posts.Select(p => p.UserId).Distinct().ToList();
-
 
             var followingIds = _context.Followings
                 .Where(f => f.FollowerId == currentUserId && postOwnerIds.Contains(f.FollowingId))
                 .Select(f => f.FollowingId)
                 .ToHashSet();
 
+            var savedPostIds = _context.SavedPosts
+                .Where(sp => sp.UserId == currentUserId && posts.Select(p => p.Id).Contains(sp.PostId))
+                .Select(sp => sp.PostId)
+                .ToHashSet();
 
             var viewModelList = posts.Select(post => new PostWithFollowStatusViewModel
             {
                 Post = post,
-                IsFollowing = followingIds.Contains(post.UserId)
+                IsFollowing = followingIds.Contains(post.UserId),
+                IsSaved = savedPostIds.Contains(post.Id)  // هذي الخاصية
             }).ToList();
 
             ViewData["Categories"] = _context.Categories.ToList();
@@ -225,46 +227,46 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 .Where(n => n.UserId == currentUserId && !n.IsRead)
                 .Count();
 
-
             ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
 
             return View(viewModelList);
         }
 
+
         [HttpGet]
         public IActionResult MyPosts(int? categoryId)
         {
-            // الحصول على اسم المستخدم من المصادقة
-            var userName = User.Identity.Name; // استخدم User.Identity.Name للحصول على الـ UserName من الـ Claims
+           
+            var userName = User.Identity.Name; 
 
             if (string.IsNullOrEmpty(userName))
             {
-                // إذا لم يكن المستخدم مسجل دخول
+               
                 _logger.LogWarning("User is not authenticated.");
-                return RedirectToAction("Login", "Account"); // إعادة التوجيه إلى صفحة تسجيل الدخول
+                return RedirectToAction("Login", "Account"); 
             }
 
-            // استعلام البوستات الخاصة بالمستخدم بناءً على UserName
+            
             var postQuery = _context.Posts
-                                    .Where(p => p.UserName == userName) // تصفية البوستات بناءً على الـ UserName
-                                    .Include(p => p.Category) // إذا كنت بحاجة لعرض الفئة
+                                    .Where(p => p.UserName == userName) 
+                                    .Include(p => p.Category) 
                                     .AsQueryable();
 
             if (categoryId.HasValue)
             {
-                // تصفية إضافية حسب الـ CategoryId
+              
                 postQuery = postQuery.Where(p => p.CategoryId == categoryId);
             }
 
-            var posts = postQuery.AsNoTracking().ToList(); // جلب البوستات دون تتبع التغييرات
+            var posts = postQuery.AsNoTracking().ToList(); 
 
-            // إرسال الفئات إلى الـ View (إذا كنت بحاجة إليها لعرضها في قائمة الفئات مثلاً)
+            
             ViewBag.Categories = _context.Categories
                 .AsNoTracking()
                 .Select(c => new { id = c.Id, name = c.Name })
                 .ToList();
 
-            return View(posts); // عرض البوستات في الـ View
+            return View(posts); 
         }
 
         public async Task<IActionResult> Detail(int id)
@@ -337,7 +339,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
 
         [HttpPost]
-        [Authorize]
+
         public async Task<IActionResult> Like(int postId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -388,6 +390,63 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 userLiked = userLiked
             });
         }
+        public async Task<IActionResult> Saved()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var savedPosts = await _context.SavedPosts
+                .Where(sp => sp.UserId == userId)
+                .Include(sp => sp.Post)
+                    .ThenInclude(p => p.Category)
+                .Include(sp => sp.Post)
+                    .ThenInclude(p => p.Comments)
+                .ToListAsync();
+
+            return View(savedPosts);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ToggleSave(int postId, string returnPage)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var postExists = await _context.Posts.AnyAsync(p => p.Id == postId);
+            if (!postExists)
+            {
+                return NotFound("Post not found.");
+            }
+
+            var existing = await _context.SavedPosts
+                .FirstOrDefaultAsync(sp => sp.PostId == postId && sp.UserId == userId);
+
+            if (existing != null)
+            {
+                var toRemove = new SavedPost { PostId = postId, UserId = userId };
+                _context.SavedPosts.Attach(toRemove);
+                _context.SavedPosts.Remove(toRemove);
+            }
+            else
+            {
+                var saved = new SavedPost { UserId = userId, PostId = postId };
+                _context.SavedPosts.Add(saved);
+            }
+
+            await _context.SaveChangesAsync();
+
+            if (returnPage == "FollowingPosts")
+            {
+                return RedirectToAction("FollowingPosts", "Following", new { area = "ContentCreator" });
+            }
+            else if (returnPage == "Explore")
+            {
+                return RedirectToAction("Explore", "Post", new { area = "ContentCreator" });
+            }
+            else
+            {
+                return RedirectToAction("Detail", "Post", new { area = "ContentCreator", id = postId });
+            }
+        }
+
+
 
     }
 }

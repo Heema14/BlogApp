@@ -20,9 +20,7 @@ public class Post
     public string Content { get; set; }
 
     [Required(ErrorMessage = "Please enter the description")]
-    //[StringLength(5000, ErrorMessage = "Description must not exceed 5000 characters.")]
-    //public string? Description { get; set; }
-
+ 
     [DataType(DataType.DateTime)]
     public DateTime CreatedAt { get; set; } = DateTime.Now;
 
@@ -51,5 +49,7 @@ public class Post
     [ValidateNever]
     public ICollection<Comment> Comments { get; set; } = new List<Comment>();
     public ICollection<PostLike> PostLikes { get; set; }
+    public ICollection<SavedPost> SavedByUsers { get; set; }
+ 
 
 }

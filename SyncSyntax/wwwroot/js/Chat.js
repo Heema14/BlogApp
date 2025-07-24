@@ -460,7 +460,8 @@ document.addEventListener('click', async (e) => {
         messageElement.appendChild(summaryDiv);
     });
 
-    document.getElementById('bulkExport')?.addEventListener('click', function (e) {
+//Export
+document.getElementById('bulkExport')?.addEventListener('click', function (e) {
         e.preventDefault();
 
         const selectedMessages = [...document.querySelectorAll('.message-select-checkbox:checked')]

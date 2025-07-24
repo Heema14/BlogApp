@@ -164,6 +164,9 @@
                    asp-route-userId="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
                     <i class="bi bi-person"></i><span> Profile</span>
                 </a>
+                <a asp-action="Saved" asp-controller="Post" asp-area="ContentCreator">
+                    <i class="bi bi-bookmark"></i><span> Saved</span>
+                </a>
 
                 <hr class="text-white" />
 

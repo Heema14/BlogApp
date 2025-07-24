@@ -5,7 +5,24 @@
     ViewData["Title"] = "Blog Posts";
 }
 <link href="~/css/sidebar.css" rel="stylesheet" />
+ 
+<style>
+    <style >
+    .save-toggle-btn {
+        background: transparent;
+        border: none;
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: #555;
+        transition: color 0.3s ease;
+    }
 
+    .save-toggle-btn.saved {
+        color: #007bff;
+    }
+</style>
+
+</style>
 <!-- Category Search -->
 <div class="my-4 text-center">
     <div class="input-group w-50 mx-auto">
@@ -91,6 +108,17 @@ else
                                     }
                                 }
 
+                                <button class="btn save-toggle-btn" data-post-id="@post.Post.Id" data-return-page="FollowingPosts"
+                                        aria-label="@(post.IsSaved ? "Unsave post" : "Save post")">
+                                    <i class="bi @(post.IsSaved ? "bi-bookmark-fill" : "bi-bookmark")"></i>
+                                </button>
+
+                                <form id="antiForgeryForm" style="display:none;">
+                                    @Html.AntiForgeryToken()
+                                </form>
+
+                                
+                                
                             </div>
 
                         </div>
@@ -154,6 +182,7 @@ else
 
 
 @section Scripts {
+    <script src="~/js/SavePost.js"></script>
     <!-- jQuery and jQuery UI -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>

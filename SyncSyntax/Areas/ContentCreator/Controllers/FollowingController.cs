@@ -55,21 +55,27 @@ public class FollowingController : Controller
             .Select(f => f.FollowingId)
             .ToHashSet();
 
+        // جلب قائمة الـ SavedPosts الخاصة بالمستخدم الحالي:
+        var savedPostIds = _context.SavedPosts
+            .Where(sp => sp.UserId == userId)
+            .Select(sp => sp.PostId)
+            .ToHashSet();
+
         var viewModelList = posts.Select(post => new PostWithFollowStatusViewModel
         {
             Post = post,
-            IsFollowing = followingIds.Contains(post.UserId)
+            IsFollowing = followingIds.Contains(post.UserId),
+            IsSaved = savedPostIds.Contains(post.Id)  // هنا تحدد اذا المنشور محفوظ
         }).ToList();
 
         ViewData["Categories"] = _context.Categories.ToList();
 
-        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
         var unreadNotificationsCount = _context.Notifications
-            .Where(n => n.UserId == currentUserId && !n.IsRead)
+            .Where(n => n.UserId == userId && !n.IsRead)
             .Count();
 
         ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
+
         return View(viewModelList);
     }
 

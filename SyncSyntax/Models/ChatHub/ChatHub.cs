@@ -36,19 +36,17 @@ namespace SyncSyntax.Hubs
             _context.Messages.Add(newMessage);
             await _context.SaveChangesAsync();
 
-            // أضف المستخدمين لمجموعة الرسالة الجديدة
-            await Groups.AddToGroupAsync(Context.ConnectionId, newMessage.Id.ToString()); // للمستخدم الحالي (المرسل)
+            
+            await Groups.AddToGroupAsync(Context.ConnectionId, newMessage.Id.ToString());   
 
-            // ملاحظة: المستخدم المستقبل قد لا يكون متصل بنفس الاتصال، لذلك نرسل له رسالة مباشرة
-            // أو يمكن تعيين منطق إضافي في OnConnectedAsync ليضيف المستخدم تلقائيًا لكل مجموعات الرسائل الخاصة به
-
+             
             var reactions = await _context.MessageReactions
                 .Where(r => r.MessageId == newMessage.Id)
                 .GroupBy(r => r.Reaction)
                 .Select(g => new { Reaction = g.Key, Count = g.Count() })
                 .ToListAsync();
 
-            // إرسال للمستقبل والمُرسل
+         
             await Clients.User(receiverId).SendAsync("ReceiveMessage",
                 senderUser.Id,
                 message,
@@ -69,10 +67,9 @@ namespace SyncSyntax.Hubs
         }
         public override async Task OnConnectedAsync()
         {
-            var userId = Context.UserIdentifier; // تأكد أن الـ UserIdentifier معرف في إعدادات SignalR
+            var userId = Context.UserIdentifier; 
 
-            // جلب كل رسائل المستخدم (مرسلة أو مستقبلة)
-            var messageIds = await _context.Messages
+             var messageIds = await _context.Messages
                 .Where(m => m.SenderId == userId || m.ReceiverId == userId)
                 .Select(m => m.Id.ToString())
                 .ToListAsync();
@@ -93,7 +90,7 @@ namespace SyncSyntax.Hubs
 
             if (existingReaction == null)
             {
-                // إضافة تفاعل جديد
+               
                 var newReaction = new MessageReaction
                 {
                     UserId = userId,
@@ -107,12 +104,12 @@ namespace SyncSyntax.Hubs
             {
                 if (existingReaction.Reaction == reaction)
                 {
-                    // حذف التفاعل (toggle off)
+                     
                     _context.MessageReactions.Remove(existingReaction);
                 }
                 else
                 {
-                    // تغيير التفاعل
+                     
                     existingReaction.Reaction = reaction;
                     existingReaction.ReactedAt = DateTime.UtcNow;
                 }
@@ -120,7 +117,7 @@ namespace SyncSyntax.Hubs
 
             await _context.SaveChangesAsync();
 
-            // إرسال تحديث لكل الأطراف
+         
             var updatedReactions = await _context.MessageReactions
                 .Where(r => r.MessageId == messageId)
                 .GroupBy(r => r.Reaction)

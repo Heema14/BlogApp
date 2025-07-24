@@ -378,6 +378,33 @@ namespace SyncSyntax.Migrations
                     b.ToTable("PostLikes");
                 });
 
+            modelBuilder.Entity("SavedPost", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PostId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("SavedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PostId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("SavedPosts");
+                });
+
             modelBuilder.Entity("SyncSyntax.Models.AppUser", b =>
                 {
                     b.Property<string>("Id")
@@ -744,6 +771,25 @@ namespace SyncSyntax.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("SavedPost", b =>
+                {
+                    b.HasOne("Post", "Post")
+                        .WithMany("SavedByUsers")
+                        .HasForeignKey("PostId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SyncSyntax.Models.AppUser", "User")
+                        .WithMany("SavedPosts")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Post");
+
+                    b.Navigation("User");
+                });
+
             modelBuilder.Entity("SyncSyntax.Models.Comment", b =>
                 {
                     b.HasOne("Post", "Post")
@@ -785,6 +831,8 @@ namespace SyncSyntax.Migrations
                     b.Navigation("Comments");
 
                     b.Navigation("PostLikes");
+
+                    b.Navigation("SavedByUsers");
                 });
 
             modelBuilder.Entity("SyncSyntax.Models.AppUser", b =>
@@ -796,6 +844,8 @@ namespace SyncSyntax.Migrations
                     b.Navigation("Notifications");
 
                     b.Navigation("PostLikes");
+
+                    b.Navigation("SavedPosts");
                 });
 
             modelBuilder.Entity("SyncSyntax.Models.Category", b =>
