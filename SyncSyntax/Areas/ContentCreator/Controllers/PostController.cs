@@ -310,11 +310,16 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 UserLikedPost = userLikedPost
             };
 
-            // التأكد من أن الـ Request هو Ajax
+ 
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("PostDetail", viewModel);  // ارجع الـ Partial View
+                post.Views += 1;
+                _context.Posts.Update(post);
+                await _context.SaveChangesAsync();
+
+                return PartialView("PostDetail", viewModel);  
             }
+
 
             return View(viewModel);
         }
