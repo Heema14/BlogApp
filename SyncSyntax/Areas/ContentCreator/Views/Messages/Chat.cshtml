@@ -115,34 +115,6 @@
                 </div>
                 <p>@message.Content</p>
 
-                @if (ViewBag.MessageReactions != null && ViewBag.MessageReactions.ContainsKey(message.Id))
-                {
-                    var reactions = ViewBag.MessageReactions[message.Id];
-                    <div class="reaction-summary">
-                        @foreach (var r in reactions)
-                        {
-@*                             <span class="reaction-count">${r.reaction} ${r.count}</span>
- *@
-                             <span class="reaction-count" data-message-id="@message.Id" data-emoji="@r.Emoji" title="@string.Join(", ", r.Users)">
-                                @r.Emoji @r.Count
-                            </span>
-                        }
-                    </div>
-                }
-                else
-                {
-                    <div class="reaction-summary"></div>
-                }
-
-                <div class="reaction-bar">
-                    <span class="emoji-option">👍</span>
-                    <span class="emoji-option">❤️</span>
-                    <span class="emoji-option">😂</span>
-                    <span class="emoji-option">😮</span>
-                    <span class="emoji-option">😢</span>
-                    <span class="emoji-option emoji-plus">➕</span>
-                </div>
-
 
                 <small>
                     @message.SentAt.ToLocalTime().ToString("HH:mm")

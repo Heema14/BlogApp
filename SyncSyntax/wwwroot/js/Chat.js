@@ -15,7 +15,7 @@ var connection = new signalR.HubConnectionBuilder()
 
 
 
-    connection.on("ReceiveMessage", function (sender, message, messageId, sentAt, isRead, isPinned, reactions) {
+    connection.on("ReceiveMessage", function (sender, message, messageId, sentAt, isRead, isPinned) {
         console.log("Message received from SignalR:", sender, message);
 
         try {
@@ -54,21 +54,7 @@ var connection = new signalR.HubConnectionBuilder()
     </div>
     <p>${message}</p>
 
-    <div class="reaction-summary">
-      ${reactions && reactions.length > 0
-                    ? reactions.map(r => `<span class="reaction-count">${r.reaction} ${r.count}</span>`).join('')
-                    : ''}
-    </div>
-
-    <div class="reaction-bar">
-        <span class="emoji-option">👍</span>
-        <span class="emoji-option">❤️</span>
-        <span class="emoji-option">😂</span>
-        <span class="emoji-option">😮</span>
-        <span class="emoji-option">😢</span>
-        <span class="emoji-option emoji-plus">➕</span>
-    </div>
-
+   
     <small>
         ${new Date(sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         ${isSent && isRead ? '<span title="Read">✅</span>' : ''}
@@ -425,40 +411,6 @@ document.addEventListener('click', async (e) => {
         });
     }
 
-    document.addEventListener("click", function (e) {
-        if (e.target.classList.contains("emoji-option")) {
-            const emoji = e.target.textContent.trim();
-            const messageDiv = e.target.closest(".message");
-            const messageId = parseInt(messageDiv.getAttribute("data-id"));
-            const senderId = document.getElementById("senderId").value;
-
-            connection.invoke("SendReaction", senderId, messageId, emoji)
-                .catch(err => console.error("Error sending reaction:", err));
-        }
-    });
-    connection.on("ReceiveReactionUpdate", function (messageId, updatedReactions) {
-        const messageElement = document.querySelector(`.message[data-id='${messageId}']`);
-        if (!messageElement) return;
-
-        
-        let existingReactionSummary = messageElement.querySelector(".reaction-summary");
-        if (existingReactionSummary) {
-            existingReactionSummary.remove();
-        }
-
-      
-        const summaryDiv = document.createElement("div");
-        summaryDiv.className = "reaction-summary";
-
-        updatedReactions.forEach(r => {
-            const span = document.createElement("span");
-            span.textContent = `${r.reaction} ${r.count}`;
-            span.className = "reaction-count";
-            summaryDiv.appendChild(span);
-        });
-
-        messageElement.appendChild(summaryDiv);
-    });
 
 //Export
 document.getElementById('bulkExport')?.addEventListener('click', function (e) {

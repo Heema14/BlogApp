@@ -102,24 +102,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             var messageIds = chatMessages.Select(m => m.Id).ToList();
 
-            var reactions = await _context.MessageReactions
-     .Where(r => messageIds.Contains(r.MessageId))
-     .Include(r => r.User)
-     .ToListAsync();
-
-            var groupedReactions = reactions
-                .GroupBy(r => r.MessageId)
-                .ToDictionary(
-                    g => g.Key,
-                    g => g.GroupBy(r => r.Reaction).Select(rg => new
-                    {
-                        Emoji = rg.Key,
-                        Count = rg.Count(),
-                        Users = rg.Select(u => u.User.FirstName).ToList()
-                    }).ToList()
-                );
-
-            ViewBag.MessageReactions = groupedReactions;
+          
 
             ViewBag.ChatUser = chatUser;
             ViewBag.PinnedMessage = pinnedMessage;
@@ -331,71 +314,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             }
         }
 
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> React([FromBody] ReactionRequestVM request)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var message = await _context.Messages.FindAsync(request.MessageId);
-            if (message == null) return NotFound();
-
-            var existing = await _context.MessageReactions
-                .FirstOrDefaultAsync(r => r.MessageId == request.MessageId && r.UserId == user.Id);
-
-            if (existing != null)
-            {
-                existing.Reaction = request.Reaction; // Update reaction
-            }
-            else
-            {
-                _context.MessageReactions.Add(new MessageReaction
-                {
-                    MessageId = request.MessageId,
-                    UserId = user.Id,
-                    Reaction = request.Reaction
-                });
-            }
-
-            await _context.SaveChangesAsync();
-            return Ok(new { success = true });
-        }
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> ToggleReaction([FromBody] ReactionRequestVM request)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            var existing = await _context.MessageReactions
-                .FirstOrDefaultAsync(r => r.MessageId == request.MessageId && r.UserId == user.Id && r.Reaction == request.Reaction);
-
-            if (existing != null)
-            {
-                _context.MessageReactions.Remove(existing);
-            }
-            else
-            {
-                _context.MessageReactions.Add(new MessageReaction
-                {
-                    MessageId = request.MessageId,
-                    UserId = user.Id,
-                    Reaction = request.Reaction
-                });
-            }
-
-            await _context.SaveChangesAsync();
-            return Ok();
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> GetReactionsForMessage(int id)
-        {
-            var reactions = await _context.MessageReactions
-                .Where(r => r.MessageId == id)
-                .Select(r => new { r.Reaction, r.UserId })   
-                .ToListAsync();
-
-            return Ok(reactions);
-        }
+    
 
 
     }

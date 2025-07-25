@@ -53,8 +53,8 @@ namespace SyncSyntax.Hubs
                 newMessage.Id,
                 newMessage.SentAt,
                 newMessage.IsRead,
-                newMessage.IsPinned,
-                reactions);
+                newMessage.IsPinned
+                );
 
             await Clients.User(senderUser.Id).SendAsync("ReceiveMessage",
                 senderUser.Id,
@@ -62,8 +62,8 @@ namespace SyncSyntax.Hubs
                 newMessage.Id,
                 newMessage.SentAt,
                 newMessage.IsRead,
-                newMessage.IsPinned,
-                reactions);
+                newMessage.IsPinned
+                );
         }
         public override async Task OnConnectedAsync()
         {
@@ -83,50 +83,7 @@ namespace SyncSyntax.Hubs
         }
 
 
-        public async Task SendReaction(string userId, int messageId, string reaction)
-        {
-            var existingReaction = await _context.MessageReactions
-                .FirstOrDefaultAsync(r => r.UserId == userId && r.MessageId == messageId);
-
-            if (existingReaction == null)
-            {
-               
-                var newReaction = new MessageReaction
-                {
-                    UserId = userId,
-                    MessageId = messageId,
-                    Reaction = reaction,
-                    ReactedAt = DateTime.UtcNow
-                };
-                _context.MessageReactions.Add(newReaction);
-            }
-            else
-            {
-                if (existingReaction.Reaction == reaction)
-                {
-                     
-                    _context.MessageReactions.Remove(existingReaction);
-                }
-                else
-                {
-                     
-                    existingReaction.Reaction = reaction;
-                    existingReaction.ReactedAt = DateTime.UtcNow;
-                }
-            }
-
-            await _context.SaveChangesAsync();
-
-         
-            var updatedReactions = await _context.MessageReactions
-                .Where(r => r.MessageId == messageId)
-                .GroupBy(r => r.Reaction)
-                .Select(g => new { Reaction = g.Key, Count = g.Count() })
-                .ToListAsync();
-
-            await Clients.Group(messageId.ToString()).SendAsync("ReceiveReactionUpdate", messageId, updatedReactions);
-        }
-       
+      
 
     }
 }
