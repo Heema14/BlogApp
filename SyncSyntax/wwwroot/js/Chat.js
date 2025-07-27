@@ -1,9 +1,9 @@
 ﻿
 document.addEventListener('DOMContentLoaded', function () {
- 
-var connection = new signalR.HubConnectionBuilder()
-    .withUrl("/chathub")
-    .build();
+    //Start Connection
+    var connection = new signalR.HubConnectionBuilder()
+        .withUrl("/chathub")
+        .build();
 
 
     connection.start()
@@ -13,9 +13,9 @@ var connection = new signalR.HubConnectionBuilder()
         })
         .catch(err => console.error("SignalR connection failed:", err.toString()));
 
+        //Recieve Message
 
-
-    connection.on("ReceiveMessage", function (sender, message, messageId, sentAt, isRead, isPinned) {
+    connection.on("ReceiveMessage", function (sender, message, messageId, sentAt, isRead, isPinned, reactions) {
         console.log("Message received from SignalR:", sender, message);
 
         try {
@@ -54,7 +54,18 @@ var connection = new signalR.HubConnectionBuilder()
     </div>
     <p>${message}</p>
 
-   
+        <div class="reaction-summary" data-loaded="false"></div>
+
+
+    <div class="reaction-bar">
+        <span class="emoji-option">👍</span>
+        <span class="emoji-option">❤️</span>
+        <span class="emoji-option">😂</span>
+        <span class="emoji-option">😮</span>
+        <span class="emoji-option">😢</span>
+       
+    </div>
+
     <small>
         ${new Date(sentAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         ${isSent && isRead ? '<span title="Read">✅</span>' : ''}
@@ -63,6 +74,30 @@ var connection = new signalR.HubConnectionBuilder()
 
 
             messageContainer.appendChild(messageElement);
+            //For Get Reaction
+            // بعد messageElement.appendChild(messageElement);
+ 
+                fetch(`/ContentCreator/Messages/GetReactionsForMessage/${messageId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const summaryDiv = messageElement.querySelector(".reaction-summary");
+                        summaryDiv.innerHTML = "";  
+
+                        const reactionGroups = {};
+                        data.forEach(r => {
+                            if (!reactionGroups[r.reaction]) reactionGroups[r.reaction] = 0;
+                            reactionGroups[r.reaction]++;
+                        });
+
+                        for (let emoji in reactionGroups) {
+                            const span = document.createElement("span");
+                            span.textContent = `${emoji} ${reactionGroups[emoji]}`;
+                            span.className = "reaction-count";
+                            summaryDiv.appendChild(span);
+                        }
+
+                    })
+                    .catch(err => console.error("Error fetching reactions:", err));
             bootstrap.Dropdown.getOrCreateInstance(messageElement.querySelector('[data-bs-toggle="dropdown"]'));
             messageContainer.scrollTop = messageContainer.scrollHeight;
 
@@ -71,136 +106,136 @@ var connection = new signalR.HubConnectionBuilder()
         }
     });
 
+    //Send Button
+    document.getElementById("sendButton").addEventListener("click", function () {
+        var sender = document.getElementById("senderId").value.trim();
+        var receiver = document.getElementById("receiverId").value.trim();
+        var messageContent = document.getElementById("messageInput").value.trim();
 
-document.getElementById("sendButton").addEventListener("click", function () {
-    var sender = document.getElementById("senderId").value.trim();
-    var receiver = document.getElementById("receiverId").value.trim();
-    var messageContent = document.getElementById("messageInput").value.trim();
+        if (!messageContent || !sender || !receiver) {
+            alert("Please provide Sender, Receiver, and Message.");
+            return;
+        }
 
-    if (!messageContent || !sender || !receiver) {
-        alert("Please provide Sender, Receiver, and Message.");
-        return;
-    }
+        connection.invoke("SendMessage", sender, receiver, messageContent)
+            .catch(err => console.error(err));
 
-    connection.invoke("SendMessage", sender, receiver, messageContent)
-        .catch(err => console.error(err));
-
-    document.getElementById("messageInput").value = "";
-});
+        document.getElementById("messageInput").value = "";
+    });
 
     let editingMessageId = null;
+    //Delete Message
+    $(document).on('click', '.delete-message', function (e) {
+        e.preventDefault();
+        const messageId = $(this).data('id');
+        const deleteScope = $(this).data('scope');
+        const messageElement = $(this).closest('.message');
 
-$(document).on('click', '.delete-message', function (e) {
-    e.preventDefault();
-    const messageId = $(this).data('id');
-    const deleteScope = $(this).data('scope');
-    const messageElement = $(this).closest('.message');
+        let confirmText = deleteScope === "all"
+            ? "Are you sure you want to delete this message for everyone?"
+            : "Are you sure you want to delete this message for yourself only?";
 
-    let confirmText = deleteScope === "all"
-        ? "Are you sure you want to delete this message for everyone?"
-        : "Are you sure you want to delete this message for yourself only?";
-
-    if (confirm(confirmText)) {
-        $.post('/ContentCreator/Messages/DeleteMessage', { id: messageId, scope: deleteScope }, function () {
-            messageElement.remove();
-        });
-    }
-});
-
-
-
-$(document).on('click', '.edit-message', function (e) {
-    e.preventDefault();
-    const messageId = $(this).data('id');
-    const messageElement = $(this).closest('.message');
-    const originalContent = messageElement.find('p').text();
-
-    $('#editMessageInput').val(originalContent);
-    editingMessageId = messageId;
-
-    const modal = new bootstrap.Modal(document.getElementById('editMessageModal'));
-    modal.show();
-});
-
-$(document).on('click', '#saveEditBtn', function () {
-    const newContent = $('#editMessageInput').val();
-
-    if (!newContent.trim()) {
-        alert('The message cannot be empty.');
-        return;
-    }
-
-    $.post('/ContentCreator/Messages/EditMessage', {
-        id: editingMessageId,
-        content: newContent
-    }, function () {
-
-        const messageElement = $(`.message[data-id="${editingMessageId}"]`);
-        messageElement.find('p').text(newContent);
-
-
-        const modal = bootstrap.Modal.getInstance(document.getElementById('editMessageModal'));
-        modal.hide();
-
-
-        editingMessageId = null;
+        if (confirm(confirmText)) {
+            $.post('/ContentCreator/Messages/DeleteMessage', { id: messageId, scope: deleteScope }, function () {
+                messageElement.remove();
+            });
+        }
     });
-});
 
-$(document).on('click', '.info-message', function (e) {
-    e.preventDefault();
-    const messageId = $(this).data('id');
 
-    $.get('/ContentCreator/Messages/MessageInfo', { id: messageId }, function (data) {
-        $('#infoContent').html(
-            `<strong>Sent:</strong> ${data.sentAt}<br>
+    //Edit Message
+    $(document).on('click', '.edit-message', function (e) {
+        e.preventDefault();
+        const messageId = $(this).data('id');
+        const messageElement = $(this).closest('.message');
+        const originalContent = messageElement.find('p').text();
+
+        $('#editMessageInput').val(originalContent);
+        editingMessageId = messageId;
+
+        const modal = new bootstrap.Modal(document.getElementById('editMessageModal'));
+        modal.show();
+    });
+
+    $(document).on('click', '#saveEditBtn', function () {
+        const newContent = $('#editMessageInput').val();
+
+        if (!newContent.trim()) {
+            alert('The message cannot be empty.');
+            return;
+        }
+
+        $.post('/ContentCreator/Messages/EditMessage', {
+            id: editingMessageId,
+            content: newContent
+        }, function () {
+
+            const messageElement = $(`.message[data-id="${editingMessageId}"]`);
+            messageElement.find('p').text(newContent);
+
+
+            const modal = bootstrap.Modal.getInstance(document.getElementById('editMessageModal'));
+            modal.hide();
+
+
+            editingMessageId = null;
+        });
+    });
+    //Info
+    $(document).on('click', '.info-message', function (e) {
+        e.preventDefault();
+        const messageId = $(this).data('id');
+
+        $.get('/ContentCreator/Messages/MessageInfo', { id: messageId }, function (data) {
+            $('#infoContent').html(
+                `<strong>Sent:</strong> ${data.sentAt}<br>
                      <strong>State:</strong> ${data.isRead ? `✔️ Read<br><strong>Read At:</strong> ${data.readAt}` : '📭 Unread'}`
-        );
+            );
 
-        const box = $('#messageInfoBox');
-        box.stop(true, true).fadeIn(300);
+            const box = $('#messageInfoBox');
+            box.stop(true, true).fadeIn(300);
 
-        setTimeout(() => {
-            box.fadeOut(300);
-        }, 3000);
-    });
-});
-
-
-$('#closeInfoBox').on('click', function () {
-    $('#messageInfoBox').fadeOut(300);
-});
-let selectMode = false;
-const toggleSelectModeBtn = document.getElementById('toggleSelectModeBtn');
-const bulkActions = document.getElementById('bulkActions');
-const messagesContainer = document.getElementById('messagesContainer');
- const reaction = document.querySelector('.reaction-bar');
-
-
-toggleSelectModeBtn.addEventListener('click', () => {
-    selectMode = !selectMode;
-    if (selectMode) {
-        document.body.classList.add('select-mode');
-        bulkActions.style.display = 'block';
-        toggleSelectModeBtn.style.display = 'none';
-        reaction.style.display = 'none';
-        document.querySelectorAll('.message').forEach(msg => {
-            const checkbox = msg.querySelector('.message-select-checkbox');
-            if (checkbox) checkbox.style.display = 'inline-block';
-
-
-            const dotsBtn = msg.querySelector('.dots-btn');
-            if (dotsBtn) dotsBtn.style.display = 'none';
+            setTimeout(() => {
+                box.fadeOut(300);
+            }, 3000);
         });
-        document.getElementById('cancelSelectBtn').style.display = 'inline-block';
+    });
 
-    } else {
-        cancelSelection();
-    }
-});
+    //Close Info
+    $('#closeInfoBox').on('click', function () {
+        $('#messageInfoBox').fadeOut(300);
+    });
+    let selectMode = false;
+    const toggleSelectModeBtn = document.getElementById('toggleSelectModeBtn');
+    const bulkActions = document.getElementById('bulkActions');
+    const messagesContainer = document.getElementById('messagesContainer');
+    const reaction = document.querySelector('.reaction-bar');
+
+    //Select Button
+    toggleSelectModeBtn.addEventListener('click', () => {
+        selectMode = !selectMode;
+        if (selectMode) {
+            document.body.classList.add('select-mode');
+            bulkActions.style.display = 'block';
+            toggleSelectModeBtn.style.display = 'none';
+            reaction.style.display = 'none';
+            document.querySelectorAll('.message').forEach(msg => {
+                const checkbox = msg.querySelector('.message-select-checkbox');
+                if (checkbox) checkbox.style.display = 'inline-block';
 
 
-function cancelSelection() {
+                const dotsBtn = msg.querySelector('.dots-btn');
+                if (dotsBtn) dotsBtn.style.display = 'none';
+            });
+            document.getElementById('cancelSelectBtn').style.display = 'inline-block';
+
+        } else {
+            cancelSelection();
+        }
+    });
+
+    //Cancel Selection
+    function cancelSelection() {
         selectMode = false;
         document.body.classList.remove('select-mode');
         bulkActions.style.display = 'none';
@@ -217,107 +252,111 @@ function cancelSelection() {
             if (dotsBtn) dotsBtn.style.display = 'inline-block';
         });
 
-     
+
         document.getElementById('cancelSelectBtn').style.display = 'none';
     }
 
 
-document.getElementById('cancelSelectBtn').addEventListener('click', cancelSelection);
-
-messagesContainer.addEventListener('change', (e) => {
-    if (e.target.classList.contains('message-select-checkbox')) {
-        const msgDiv = e.target.closest('.message');
-        if (e.target.checked) {
-            msgDiv.classList.add('selected');
-        } else {
-            msgDiv.classList.remove('selected');
+    document.getElementById('cancelSelectBtn').addEventListener('click', cancelSelection);
+    //Message CheckBox
+    messagesContainer.addEventListener('change', (e) => {
+        if (e.target.classList.contains('message-select-checkbox')) {
+            const msgDiv = e.target.closest('.message');
+            if (e.target.checked) {
+                msgDiv.classList.add('selected');
+            } else {
+                msgDiv.classList.remove('selected');
+            }
+            updateBulkActionsUI();
         }
-        updateBulkActionsUI();
+    });
+
+
+    //Delete Selected For Me
+    document.getElementById('deleteSelectedMe').addEventListener('click', () => {
+        const selectedIds = Array.from(document.querySelectorAll('.message-select-checkbox:checked'))
+            .map(cb => cb.closest('.message').getAttribute('data-id'));
+
+        if (selectedIds.length === 0) return;
+
+        if (confirm("Are you sure you want to delete selected messages for you?")) {
+            $.ajax({
+                url: '/ContentCreator/Messages/DeleteMultipleMessagesForMe',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(selectedIds),
+                success: () => {
+                    selectedIds.forEach(id => document.querySelector(`.message[data-id="${id}"]`).remove());
+                    cancelSelection();
+                }
+            });
+        }
+    });
+
+    //Delete Selected For All
+    document.getElementById('deleteSelectedAll').addEventListener('click', () => {
+        const selectedIds = Array.from(document.querySelectorAll('.message-select-checkbox:checked'))
+            .map(cb => cb.closest('.message').getAttribute('data-id'));
+
+        if (selectedIds.length === 0) return;
+
+        if (confirm("Are you sure you want to delete selected messages for everyone?")) {
+            $.ajax({
+                url: '/ContentCreator/Messages/DeleteMultipleMessagesForAll',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(selectedIds),
+                success: () => {
+                    selectedIds.forEach(id => document.querySelector(`.message[data-id="${id}"]`).remove());
+                    cancelSelection();
+                }
+            });
+        }
+    });
+    //Update Bulk Actions
+    function updateBulkActionsUI() {
+        const currentUserId = document.getElementById('senderId').value;
+        const selectedMessages = Array.from(document.querySelectorAll('.message-select-checkbox:checked'))
+            .map(cb => cb.closest('.message'));
+
+        const bulkDeleteAll = document.getElementById('bulkDeleteAll');
+        const cancelSelectBtn = document.getElementById('cancelSelectBtn');
+
+        if (selectedMessages.length === 0) {
+            bulkDeleteAll.style.display = 'none';
+            cancelSelectBtn.style.display = 'none';
+            return;
+        }
+
+        let allFromMe = selectedMessages.every(msg => msg.dataset.senderId === currentUserId);
+
+        bulkDeleteAll.style.display = allFromMe ? 'block' : 'none';
+        cancelSelectBtn.style.display = 'inline-block';
     }
-});
+    //Bulk Delete for me
+    document.getElementById('bulkDeleteMe').addEventListener('click', () => {
+        document.getElementById('deleteSelectedMe').click();
+    });
+    //Bulk Delete All
+    document.getElementById('bulkDeleteAll').addEventListener('click', () => {
+        document.getElementById('deleteSelectedAll').click();
+    });
 
+    //Bulk Copy
+    document.getElementById('bulkCopy').addEventListener('click', () => {
+        const selectedTexts = Array.from(document.querySelectorAll('.message-select-checkbox:checked'))
+            .map(cb => cb.closest('.message').querySelector('p')?.innerText || '')
+            .join('\n\n');
 
+        if (selectedTexts) {
+            navigator.clipboard.writeText(selectedTexts).then(() => {
+                alert("Messages copied to clipboard!");
+            });
+        }
+    });
 
-document.getElementById('deleteSelectedMe').addEventListener('click', () => {
-    const selectedIds = Array.from(document.querySelectorAll('.message-select-checkbox:checked'))
-        .map(cb => cb.closest('.message').getAttribute('data-id'));
-
-    if (selectedIds.length === 0) return;
-
-    if (confirm("Are you sure you want to delete selected messages for you?")) {
-        $.ajax({
-            url: '/ContentCreator/Messages/DeleteMultipleMessagesForMe',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(selectedIds),
-            success: () => {
-                selectedIds.forEach(id => document.querySelector(`.message[data-id="${id}"]`).remove());
-                cancelSelection();
-            }
-        });
-    }
-});
-
-
-document.getElementById('deleteSelectedAll').addEventListener('click', () => {
-    const selectedIds = Array.from(document.querySelectorAll('.message-select-checkbox:checked'))
-        .map(cb => cb.closest('.message').getAttribute('data-id'));
-
-    if (selectedIds.length === 0) return;
-
-    if (confirm("Are you sure you want to delete selected messages for everyone?")) {
-        $.ajax({
-            url: '/ContentCreator/Messages/DeleteMultipleMessagesForAll',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(selectedIds),
-            success: () => {
-                selectedIds.forEach(id => document.querySelector(`.message[data-id="${id}"]`).remove());
-                cancelSelection();
-            }
-        });
-    }
-});
-function updateBulkActionsUI() {
-    const currentUserId = document.getElementById('senderId').value;
-    const selectedMessages = Array.from(document.querySelectorAll('.message-select-checkbox:checked'))
-        .map(cb => cb.closest('.message'));
-
-    const bulkDeleteAll = document.getElementById('bulkDeleteAll');
-    const cancelSelectBtn = document.getElementById('cancelSelectBtn');
-
-    if (selectedMessages.length === 0) {
-        bulkDeleteAll.style.display = 'none';
-        cancelSelectBtn.style.display = 'none';
-        return;
-    }
-
-    let allFromMe = selectedMessages.every(msg => msg.dataset.senderId === currentUserId);
-
-    bulkDeleteAll.style.display = allFromMe ? 'block' : 'none';
-    cancelSelectBtn.style.display = 'inline-block';
-}
-
-document.getElementById('bulkDeleteMe').addEventListener('click', () => {
-    document.getElementById('deleteSelectedMe').click();
-});
-
-document.getElementById('bulkDeleteAll').addEventListener('click', () => {
-    document.getElementById('deleteSelectedAll').click();
-});
-
-document.getElementById('bulkCopy').addEventListener('click', () => {
-    const selectedTexts = Array.from(document.querySelectorAll('.message-select-checkbox:checked'))
-        .map(cb => cb.closest('.message').querySelector('p')?.innerText || '')
-        .join('\n\n');
-
-    if (selectedTexts) {
-        navigator.clipboard.writeText(selectedTexts).then(() => {
-            alert("Messages copied to clipboard!");
-        });
-    }
-});
-document.addEventListener('click', async (e) => {
+    //Copy Message
+    document.addEventListener('click', async (e) => {
         const target = e.target;
         if (!target.classList.contains('copy-message')) return;
 
@@ -333,8 +372,8 @@ document.addEventListener('click', async (e) => {
         }
     });
 
- 
-document.addEventListener('click', async (e) => {
+    //Pin Message
+    document.addEventListener('click', async (e) => {
         const target = e.target;
         if (!target.classList.contains('pin-message')) return;
 
@@ -366,7 +405,7 @@ document.addEventListener('click', async (e) => {
         if (result.success) {
             updatePinnedMessageContainer(result.message);
 
-             if (result.message && result.message.id == messageId) {
+            if (result.message && result.message.id == messageId) {
                 target.textContent = "Unpin";
             } else {
                 target.textContent = "Pin";
@@ -382,7 +421,7 @@ document.addEventListener('click', async (e) => {
         const container = document.getElementById('pinnedMessageContainer');
 
         if (!pinnedMessage || !pinnedMessage.isPinned) {
-           
+
             container.style.display = 'none';
             container.innerHTML = '';
             return;
@@ -398,7 +437,6 @@ document.addEventListener('click', async (e) => {
     `;
     }
 
-    
     function escapeHtml(text) {
         return text.replace(/[&<>"']/g, function (m) {
             return ({
@@ -411,9 +449,57 @@ document.addEventListener('click', async (e) => {
         });
     }
 
+    //Message Reaction
 
-//Export
-document.getElementById('bulkExport')?.addEventListener('click', function (e) {
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("emoji-option")) {
+            const emoji = e.target.textContent.trim();
+            const messageDiv = e.target.closest(".message");
+            const messageId = parseInt(messageDiv.getAttribute("data-id"));
+            const senderId = document.getElementById("senderId").value;
+
+            connection.invoke("SendReaction", senderId, messageId, emoji)
+                .catch(err => console.error("Error sending reaction:", err));
+        }
+    });
+    connection.on("ReceiveReactionUpdate", function (messageId) {
+        const messageElement = document.querySelector(`.message[data-id='${messageId}']`);
+        if (!messageElement) return;
+
+      
+        fetch(`/ContentCreator/Messages/GetReactionsForMessage/${messageId}`)
+            .then(response => response.json())
+            .then(data => {
+                let summaryDiv = messageElement.querySelector(".reaction-summary");
+
+                if (!summaryDiv) {
+                    summaryDiv = document.createElement("div");
+                    summaryDiv.className = "reaction-summary";
+                    messageElement.appendChild(summaryDiv);
+                }
+
+                summaryDiv.innerHTML = "";  
+
+                const reactionGroups = {};
+                data.forEach(r => {
+                    if (!reactionGroups[r.reaction]) reactionGroups[r.reaction] = 0;
+                    reactionGroups[r.reaction]++;
+                });
+
+                for (let emoji in reactionGroups) {
+                    const span = document.createElement("span");
+                    span.textContent = `${emoji} ${reactionGroups[emoji]}`;
+                    span.className = "reaction-count";
+
+                    summaryDiv.appendChild(span);
+                }
+            })
+            .catch(err => console.error("Error fetching reactions (update):", err));
+    });
+
+
+    //Export
+    document.getElementById('bulkExport')?.addEventListener('click', function (e) {
         e.preventDefault();
 
         const selectedMessages = [...document.querySelectorAll('.message-select-checkbox:checked')]

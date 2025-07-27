@@ -11,7 +11,7 @@
         <button id="toggleSelectModeBtn" class="btn btn-outline-primary">Select</button>
         <div id="bulkActions" style="display:none;" class="d-flex gap-2 align-items-center">
             <div class="dropdown">
-                 <button id="deleteSelectedMe" style="display:none;"></button>
+                <button id="deleteSelectedMe" style="display:none;"></button>
                 <button id="deleteSelectedAll" style="display:none;"></button>
 
                 <button class="btn btn-light dropdown-toggle" type="button" id="bulkOptionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -21,9 +21,9 @@
                     <li><a class="dropdown-item" id="bulkDeleteMe" href="#">Delete for me</a></li>
                     <li><a class="dropdown-item" id="bulkDeleteAll" href="#">Delete for everyone</a></li>
                     <li><a class="dropdown-item" id="bulkCopy" href="#">Copy</a></li>
-                    <li><a class="dropdown-item" id="bulkExport" href="#">Export Chat</a></li>  
+                    <li><a class="dropdown-item" id="bulkExport" href="#">Export Chat</a></li>
 
-                 </ul>
+                </ul>
             </div>
             <button id="cancelSelectBtn" class="btn btn-secondary" style="display: none;">Cancel</button>
         </div>
@@ -39,10 +39,10 @@
                 DateTime lastSeen = Convert.ToDateTime(chatUser.LastSeen);
                 string lastSeenText = "Last seen unknown";
 
-                 
+
                 var diff = DateTime.UtcNow - lastSeen;
 
-                if (diff.TotalSeconds < 1)   
+                if (diff.TotalSeconds < 1)
                 {
                     lastSeenText = "Online now";
                 }
@@ -67,7 +67,7 @@
 
         </div>
     </div>
-    
+
     @if (Model.Any(m => m.IsPinned))
     {
         var pinnedMsg = Model.First(m => m.IsPinned);
@@ -115,6 +115,34 @@
                 </div>
                 <p>@message.Content</p>
 
+                @if (ViewBag.MessageReactions != null && ViewBag.MessageReactions.ContainsKey(message.Id))
+                {
+                    var reactions = ViewBag.MessageReactions[message.Id];
+                    <div class="reaction-summary">
+                        @foreach (var r in reactions)
+                        {
+                            @*                             <span class="reaction-count">${r.reaction} ${r.count}</span>
+ *@
+                            <span class="reaction-count" data-message-id="@message.Id" data-emoji="@r.Emoji" title="@string.Join(", ", r.Users)">
+                                @r.Emoji @r.Count
+                            </span>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="reaction-summary"></div>
+                }
+
+                <div class="reaction-bar">
+                    <span class="emoji-option">👍</span>
+                    <span class="emoji-option">❤️</span>
+                    <span class="emoji-option">😂</span>
+                    <span class="emoji-option">😮</span>
+                    <span class="emoji-option">😢</span>
+                   
+                </div>
+
 
                 <small>
                     @message.SentAt.ToLocalTime().ToString("HH:mm")
@@ -126,7 +154,7 @@
             </div>
         }
     </div>
-   
+
 
 
 
@@ -173,7 +201,7 @@
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
 
-    
+
 
 
     <!-- مكتبة الإيموجي الجاهزة -->
@@ -206,10 +234,10 @@
             input.value = input.value.slice(0, start) + emoji + input.value.slice(end);
             input.focus();
             input.selectionStart = input.selectionEnd = start + emoji.length;
-           
+
           });
 
-          
+
           document.addEventListener('click', (e) => {
             if (!picker.contains(e.target) && e.target !== emojiBtn) {
               picker.style.display = 'none';
@@ -223,6 +251,6 @@
 
     </script>
 
-   <script src="~/js/Chat.js"></script>
+    <script src="~/js/Chat.js"></script>
 
 }

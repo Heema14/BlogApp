@@ -86,23 +86,40 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             if (unreadMessages.Any())
                 await _context.SaveChangesAsync();
 
-             var chatMessages = await _context.Messages
-                .Where(m => (m.SenderId == user.Id && m.ReceiverId == userId) ||
-                            (m.ReceiverId == user.Id && m.SenderId == userId))
-                .OrderBy(m => m.SentAt)
-                .ToListAsync();
+            var chatMessages = await _context.Messages
+               .Where(m => (m.SenderId == user.Id && m.ReceiverId == userId) ||
+                           (m.ReceiverId == user.Id && m.SenderId == userId))
+               .OrderBy(m => m.SentAt)
+               .ToListAsync();
 
-             var pinnedMessage = await _context.Messages
-                .Where(m => ((m.SenderId == user.Id && m.ReceiverId == userId) ||
-                             (m.SenderId == userId && m.ReceiverId == user.Id)) &&
-                             m.IsPinned == true)
-                .FirstOrDefaultAsync();
+            var pinnedMessage = await _context.Messages
+               .Where(m => ((m.SenderId == user.Id && m.ReceiverId == userId) ||
+                            (m.SenderId == userId && m.ReceiverId == user.Id)) &&
+                            m.IsPinned == true)
+               .FirstOrDefaultAsync();
 
             var chatUser = await _context.Users.FindAsync(userId);
 
             var messageIds = chatMessages.Select(m => m.Id).ToList();
 
-          
+            var reactions = await _context.MessageReactions
+     .Where(r => messageIds.Contains(r.MessageId))
+     .Include(r => r.User)
+     .ToListAsync();
+
+            var groupedReactions = reactions
+                .GroupBy(r => r.MessageId)
+                .ToDictionary(
+                    g => g.Key,
+                    g => g.GroupBy(r => r.Reaction).Select(rg => new
+                    {
+                        Emoji = rg.Key,
+                        Count = rg.Count(),
+                        Users = rg.Select(u => u.User.FirstName).ToList()
+                    }).ToList()
+                );
+
+            ViewBag.MessageReactions = groupedReactions;
 
             ViewBag.ChatUser = chatUser;
             ViewBag.PinnedMessage = pinnedMessage;
@@ -131,12 +148,12 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 }
                 else
                 {
-                    return Forbid(); // المستقبل لا يمكنه حذف الرسالة للجميع
+                    return Forbid();  
                 }
             }
             else if (scope == "me")
             {
-                // تحقق إذا تم حذفها مسبقًا
+                 
                 var alreadyDeleted = await _context.MessageDeletions
                     .AnyAsync(d => d.UserId == currentUserId && d.MessageId == message.Id);
 
@@ -165,7 +182,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             var message = await _context.Messages.FindAsync(id);
 
             if (message == null || message.SenderId != currentUserId)
-                return Forbid();   
+                return Forbid();
 
             message.Content = content;
             await _context.SaveChangesAsync();
@@ -181,7 +198,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             var currentUserId = _userManager.GetUserId(User);
 
             if (message == null || message.SenderId != currentUserId)
-                return Forbid();  
+                return Forbid();
 
             return Json(new
             {
@@ -200,7 +217,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             foreach (var msg in unreadMessages)
             {
                 msg.IsRead = true;
-                msg.ReadAt = DateTime.UtcNow;  
+                msg.ReadAt = DateTime.UtcNow;
             }
 
             await _context.SaveChangesAsync();
@@ -271,11 +288,11 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
                 if (!message.IsPinned)
                 {
-                     var existingPinned = await _context.Messages
-                        .Where(m => m.IsPinned &&
-                               ((m.SenderId == message.SenderId && m.ReceiverId == message.ReceiverId) ||
-                                (m.SenderId == message.ReceiverId && m.ReceiverId == message.SenderId)))
-                        .ToListAsync();
+                    var existingPinned = await _context.Messages
+                       .Where(m => m.IsPinned &&
+                              ((m.SenderId == message.SenderId && m.ReceiverId == message.ReceiverId) ||
+                               (m.SenderId == message.ReceiverId && m.ReceiverId == message.SenderId)))
+                       .ToListAsync();
 
                     foreach (var pinnedMsg in existingPinned)
                     {
@@ -286,7 +303,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 }
                 else
                 {
-                     message.IsPinned = false;
+                    message.IsPinned = false;
                 }
 
                 _context.Messages.Update(message);
@@ -294,7 +311,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
                 if (!message.IsPinned)
                 {
-                     return Ok(new { success = true, message = (object)null });
+                    return Ok(new { success = true, message = (object)null });
                 }
 
                 return Ok(new
@@ -314,7 +331,71 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             }
         }
 
-    
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> React([FromBody] ReactionRequestVM request)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var message = await _context.Messages.FindAsync(request.MessageId);
+            if (message == null) return NotFound();
+
+            var existing = await _context.MessageReactions
+                .FirstOrDefaultAsync(r => r.MessageId == request.MessageId && r.UserId == user.Id);
+
+            if (existing != null)
+            {
+                existing.Reaction = request.Reaction; // Update reaction
+            }
+            else
+            {
+                _context.MessageReactions.Add(new MessageReaction
+                {
+                    MessageId = request.MessageId,
+                    UserId = user.Id,
+                    Reaction = request.Reaction
+                });
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok(new { success = true });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> ToggleReaction([FromBody] ReactionRequestVM request)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            var existing = await _context.MessageReactions
+                .FirstOrDefaultAsync(r => r.MessageId == request.MessageId && r.UserId == user.Id && r.Reaction == request.Reaction);
+
+            if (existing != null)
+            {
+                _context.MessageReactions.Remove(existing);
+            }
+            else
+            {
+                _context.MessageReactions.Add(new MessageReaction
+                {
+                    MessageId = request.MessageId,
+                    UserId = user.Id,
+                    Reaction = request.Reaction
+                });
+            }
+
+            await _context.SaveChangesAsync();
+            return Ok();
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetReactionsForMessage(int id)
+        {
+            var reactions = await _context.MessageReactions
+                .Where(r => r.MessageId == id)
+                .Select(r => new { r.Reaction, r.UserId, r.User.FirstName }) 
+                .ToListAsync();
+
+            return Ok(reactions);
+        }
 
 
     }

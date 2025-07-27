@@ -36,25 +36,25 @@ namespace SyncSyntax.Hubs
             _context.Messages.Add(newMessage);
             await _context.SaveChangesAsync();
 
-            
-            await Groups.AddToGroupAsync(Context.ConnectionId, newMessage.Id.ToString());   
 
-             
+            await Groups.AddToGroupAsync(Context.ConnectionId, newMessage.Id.ToString());
+
+
             var reactions = await _context.MessageReactions
                 .Where(r => r.MessageId == newMessage.Id)
                 .GroupBy(r => r.Reaction)
                 .Select(g => new { Reaction = g.Key, Count = g.Count() })
                 .ToListAsync();
 
-         
+
             await Clients.User(receiverId).SendAsync("ReceiveMessage",
                 senderUser.Id,
                 message,
                 newMessage.Id,
                 newMessage.SentAt,
                 newMessage.IsRead,
-                newMessage.IsPinned
-                );
+                newMessage.IsPinned,
+                reactions);
 
             await Clients.User(senderUser.Id).SendAsync("ReceiveMessage",
                 senderUser.Id,
@@ -62,17 +62,17 @@ namespace SyncSyntax.Hubs
                 newMessage.Id,
                 newMessage.SentAt,
                 newMessage.IsRead,
-                newMessage.IsPinned
-                );
+                newMessage.IsPinned,
+                reactions);
         }
         public override async Task OnConnectedAsync()
         {
-            var userId = Context.UserIdentifier; 
+            var userId = Context.UserIdentifier;
 
-             var messageIds = await _context.Messages
-                .Where(m => m.SenderId == userId || m.ReceiverId == userId)
-                .Select(m => m.Id.ToString())
-                .ToListAsync();
+            var messageIds = await _context.Messages
+               .Where(m => m.SenderId == userId || m.ReceiverId == userId)
+               .Select(m => m.Id.ToString())
+               .ToListAsync();
 
             foreach (var msgId in messageIds)
             {
@@ -83,7 +83,50 @@ namespace SyncSyntax.Hubs
         }
 
 
-      
+        public async Task SendReaction(string userId, int messageId, string reaction)
+        {
+            var existingReaction = await _context.MessageReactions
+                .FirstOrDefaultAsync(r => r.UserId == userId && r.MessageId == messageId);
+
+            if (existingReaction == null)
+            {
+
+                var newReaction = new MessageReaction
+                {
+                    UserId = userId,
+                    MessageId = messageId,
+                    Reaction = reaction,
+                    ReactedAt = DateTime.UtcNow
+                };
+                _context.MessageReactions.Add(newReaction);
+            }
+            else
+            {
+                if (existingReaction.Reaction == reaction)
+                {
+
+                    _context.MessageReactions.Remove(existingReaction);
+                }
+                else
+                {
+
+                    existingReaction.Reaction = reaction;
+                    existingReaction.ReactedAt = DateTime.UtcNow;
+                }
+            }
+
+            await _context.SaveChangesAsync();
+
+
+            var updatedReactions = await _context.MessageReactions
+                .Where(r => r.MessageId == messageId)
+                .GroupBy(r => r.Reaction)
+                .Select(g => new { Reaction = g.Key, Count = g.Count() })
+                .ToListAsync();
+
+            await Clients.Group(messageId.ToString()).SendAsync("ReceiveReactionUpdate", messageId, updatedReactions);
+        }
+
 
     }
 }

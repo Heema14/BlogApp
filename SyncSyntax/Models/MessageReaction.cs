@@ -20,5 +20,5 @@ public class MessageReaction
     public virtual Message Message { get; set; }
 
     // 👇 أضف هذا
-    public  virtual AppUser User { get; set; }
+    public virtual AppUser User { get; set; }
 }
