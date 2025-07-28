@@ -75,6 +75,9 @@ public class FollowingController : Controller
             .Count();
 
         ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
+        var currentUserId = _userManager.GetUserId(User);
+        ViewBag.UnreadCount = _context.Messages
+            .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
 
         return View(viewModelList);
     }
@@ -84,25 +87,27 @@ public class FollowingController : Controller
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var userToFollow = _context.Users.FirstOrDefault(u => u.Id == userId);
+
         if (userToFollow == null)
         {
-            return NotFound("User not found");
+            TempData["Error"] = "The user you're trying to follow was not found.";
+            return RedirectToAction("Explore", "Post", new { area = "ContentCreator" });
         }
 
         if (currentUserId == userId)
         {
+            TempData["Info"] = "You cannot follow yourself.";
             return RedirectToAction("Profile", new { userId = userId });
         }
 
         var follow = new Following { FollowerId = currentUserId, FollowingId = userId };
-
         _context.Followings.Add(follow);
         _context.SaveChanges();
 
         var notification = new Notification
         {
-            UserId = userId,  // الشخص الذي يتم متابعته
-            Message = $"{_userManager.GetUserName(User)} started following you.",  // نرسل إشعارًا للمتابع عليه
+            UserId = userId,
+            Message = $"{_userManager.GetUserName(User)} started following you.",
             IsRead = false,
             CreatedAt = DateTime.Now
         };
@@ -110,6 +115,7 @@ public class FollowingController : Controller
         _context.Notifications.Add(notification);
         _context.SaveChanges();
 
+        TempData["Success"] = $"You are now following {userToFollow.UserName}.";
         return RedirectToAction("Profile", new { userId = userId });
     }
 
@@ -127,11 +133,17 @@ public class FollowingController : Controller
             {
                 _context.Followings.Remove(follow);
                 _context.SaveChanges();
+                TempData["Info"] = "You have unfollowed the user.";
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while unfollowing user");
+                TempData["Error"] = "Something went wrong while trying to unfollow.";
             }
+        }
+        else
+        {
+            TempData["Error"] = "You're not following this user.";
         }
 
         return RedirectToAction("Profile", new { userId = userId });
@@ -164,6 +176,9 @@ public class FollowingController : Controller
 
         var followingCount = _context.Followings
             .Count(f => f.FollowerId == userId);
+        var isFollowing = _context.Followings.Any(f =>
+    f.FollowerId == currentUserId && f.FollowingId == user.Id);
+
 
         var model = new ProfileViewModel
         {
@@ -172,10 +187,19 @@ public class FollowingController : Controller
             FollowingCount = followingCount,
             PostsCount = postsCount,
             Posts = posts,
+            IsFollowing = isFollowing,
             Bio = user.Bio,
-            CurrentUserId = currentUserId // إضافة معرف المستخدم الحالي إلى الـ ViewModel
+            CurrentUserId = currentUserId  
         };
+         
 
+        var unreadNotificationsCount = _context.Notifications
+       .Where(n => n.UserId == currentUserId && !n.IsRead)
+       .Count();
+
+        ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
+        ViewBag.UnreadCount = _context.Messages
+            .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
         return View(model);
     }
 

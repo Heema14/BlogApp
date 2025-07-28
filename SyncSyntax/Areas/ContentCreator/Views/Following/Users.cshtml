@@ -59,7 +59,7 @@
             margin-bottom: 15px;
         }
 
-        .btn-follow {
+       /*  .btn-follow {
             background: #ff7e5f;
             color: white;
             border: none;
@@ -72,7 +72,7 @@
 
             .btn-follow:hover {
                 background: #feb47b;
-            }
+            } */
 
         .user-container {
             display: grid;
@@ -98,7 +98,7 @@
                         <div class="user-bio">@user.Bio</div>  
                         <form asp-action="Follow" asp-controller="Following" method="post">
                             <input type="hidden" name="userId" value="@user.Id" />
-                            <button class="btn-follow">
+                            <button class="modern-btn">
                                 <i class="bi bi-person-plus"></i> Follow
                             </button>
                         </form>

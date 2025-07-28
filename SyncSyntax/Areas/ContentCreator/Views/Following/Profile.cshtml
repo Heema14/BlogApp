@@ -121,6 +121,26 @@
         <a asp-action="EditProfile" asp-area="" asp-controller="Auth">Edit Profile</a>
     </div>
     }
+    else{
+        @if (Model.IsFollowing)
+        {
+            <form asp-controller="Following" asp-action="Unfollow" asp-route-userId="@Model.User.Id" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="modern-btn">
+                    <i class="bi bi-person-dash me-1"></i> Unfollow
+                </button>
+            </form>
+        }
+        else
+        {
+            <form asp-controller="Following" asp-action="Follow" asp-route-userId="@Model.User.Id" method="post">
+                @Html.AntiForgeryToken()
+                <button type="submit" class="modern-btn">
+                    <i class="bi bi-person-plus me-1"></i> Follow
+                </button>
+            </form>
+        }
+    }
     <div class="profile-stats">
         <strong><span>@Model.PostsCount Articles</span></strong>
         <strong><span>@Model.FollowersCount Followers</span></strong>
@@ -308,16 +328,19 @@
                     var iconElement = $("button[data-id='" + postId + "'] i");
 
                     if (response.isPublished) {
+                        toastr.success("Post has been published and notifications sent.");
                         iconElement.removeClass('bi-eye-slash').addClass('bi-eye');
                     } else {
+                        toastr.info("Post has been unpublished.");
                         iconElement.removeClass('bi-eye').addClass('bi-eye-slash');
                     }
                 } else {
-                    alert("An error occurred while changing the post status..");
+                        toastr.error("Something went wrong. Try again.");
                 }
             },
             error: function() {
-                alert("There was an error connecting to the server..");
+                    toastr.error("Server error. Please check your connection.");
+                // alert("There was an error connecting to the server..");
             }
         });
     }

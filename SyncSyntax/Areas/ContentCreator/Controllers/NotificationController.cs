@@ -31,6 +31,14 @@ namespace SyncSyntax.Controllers
                 .OrderByDescending(n => n.CreatedAt)
                 .Include(n => n.User) 
                 .ToListAsync();
+            var unreadNotificationsCount = _context.Notifications
+                       .Where(n => n.UserId == userId && !n.IsRead)
+                       .Count();
+
+            ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
+            var currentUserId = _userManager.GetUserId(User);
+            ViewBag.UnreadCount = _context.Messages
+                .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
 
             return View(notifications);
         }

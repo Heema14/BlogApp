@@ -92,6 +92,16 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         {
             var categories = _context.Categories.ToList();
             ViewBag.Categories = categories;
+            var currentUserId = _userManager.GetUserId(User);
+
+            var unreadNotificationsCount = _context.Notifications
+           .Where(n => n.UserId == currentUserId && !n.IsRead)
+           .Count();
+
+            ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
+            ViewBag.UnreadCount = _context.Messages
+                .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
+
             return View(new Post());
         }
 
@@ -101,13 +111,15 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             var post = await _context.Posts.FindAsync(id);
             if (post == null)
             {
-                return NotFound();
+                TempData["Error"] = "The post you’re trying to edit was not found.";
+                return RedirectToAction("Profile", "Following");
             }
 
             var categories = _context.Categories.ToList();
             ViewBag.Categories = categories;
             return View("Create", post);
         }
+
 
         [HttpPost]
         [RequestSizeLimit(5 * 1024 * 1024)]
@@ -126,13 +138,11 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                     post.UserId = currentUser.Id;
                 }
 
-
                 if (string.IsNullOrEmpty(post.Title) || string.IsNullOrEmpty(post.Content))
                 {
                     ModelState.AddModelError("", "Title and Content are required.");
                     return View(post);
                 }
-
 
                 if (ImageUrl != null && ImageUrl.Length > 0)
                 {
@@ -153,23 +163,24 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 }
                 else if (post.Id == 0 && string.IsNullOrEmpty(post.FeatureImagePath))
                 {
-
                     post.FeatureImagePath = "/images/uploadImgs/default-image.jpg";
                 }
-
 
                 if (post.Id == 0)
                 {
                     post.CreatedAt = DateTime.Now;
                     post.UpdatedAt = null;
                     post.Views = 0;
-
                     _context.Add(post);
+
+                    TempData["Success"] = "Post created successfully 🎉";
                 }
                 else
                 {
                     post.UpdatedAt = DateTime.Now;
                     _context.Update(post);
+
+                    TempData["Success"] = "Post updated successfully ✏️";
                 }
 
                 await _context.SaveChangesAsync();
@@ -178,10 +189,10 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Error saving post: {ex.Message}");
-                return StatusCode(500, "An error occurred while saving the post.");
+                TempData["Error"] = "An unexpected error occurred while saving the post. Please try again.";
+                return RedirectToAction("Profile", "Following");
             }
         }
-
 
         [HttpGet]
         public IActionResult Explore(int? categoryId)
@@ -228,7 +239,10 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 .Count();
 
             ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
-
+           
+             
+            ViewBag.UnreadCount = _context.Messages
+                .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
             return View(viewModelList);
         }
 
@@ -331,14 +345,14 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             if (post == null)
             {
-                return NotFound();
+                TempData["Error"] = "Post not found. It may have already been deleted.";
+                return RedirectToAction("Profile", "Following");
             }
-
 
             _context.Posts.Remove(post);
             _context.SaveChanges();
 
-
+            TempData["Success"] = "Post deleted successfully.";
             return RedirectToAction("Profile", "Following");
         }
 
@@ -406,7 +420,15 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 .Include(sp => sp.Post)
                     .ThenInclude(p => p.Comments)
                 .ToListAsync();
+            var currentUserId = _userManager.GetUserId(User);
 
+            var unreadNotificationsCount = _context.Notifications
+           .Where(n => n.UserId == currentUserId && !n.IsRead)
+           .Count();
+
+            ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
+            ViewBag.UnreadCount = _context.Messages
+                .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
             return View(savedPosts);
         }
         [HttpPost]
@@ -417,7 +439,8 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             var postExists = await _context.Posts.AnyAsync(p => p.Id == postId);
             if (!postExists)
             {
-                return NotFound("Post not found.");
+                TempData["Error"] = "Post not found.";
+                return RedirectToAction("Explore", "Post", new { area = "ContentCreator" });
             }
 
             var existing = await _context.SavedPosts
@@ -428,11 +451,15 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 var toRemove = new SavedPost { PostId = postId, UserId = userId };
                 _context.SavedPosts.Attach(toRemove);
                 _context.SavedPosts.Remove(toRemove);
+
+                TempData["Info"] = "Post removed from your saved list.";
             }
             else
             {
                 var saved = new SavedPost { UserId = userId, PostId = postId };
                 _context.SavedPosts.Add(saved);
+
+                TempData["Success"] = "Post saved successfully!";
             }
 
             await _context.SaveChangesAsync();

@@ -65,12 +65,19 @@ else
                     <div class="card-body">
                         <!-- User Info and Actions -->
                         <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div class="d-flex align-items-center gap-2">
+                            <a asp-action="Profile" asp-controller="Following" asp-route-userId="@post.Post.UserId" class="d-flex align-items-center gap-2 text-decoration-none text-dark">
                                 <img src="@post.Post.UserImageUrl" alt="User" class="rounded-circle" style="width: 30px; height: 30px;">
                                 <span>@post.Post.UserName</span>
-                            </div>
+                            </a>
 
                             <div class="d-flex align-items-center gap-2 actions">
+                                <button class="btn save-toggle-btn"
+                                        data-post-id="@post.Post.Id"
+                                        data-return-page="Explore"
+                                        aria-label="@(post.IsSaved ? "Unsave post" : "Save post")">
+                                    <i class="bi @(post.IsSaved ? "bi-bookmark-fill" : "bi-bookmark")"></i>
+                                </button>
+
                                 @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != post.Post.UserId)
                                 {
                                     if (post.IsFollowing)
@@ -86,20 +93,14 @@ else
                                     {
                                         <form asp-controller="Following" asp-action="Follow" asp-route-userId="@post.Post.UserId" method="post">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-success btn-sm">
+                                            <button type="submit" class="modern-btn">
                                                 <i class="bi bi-person-plus me-1"></i> Follow
                                             </button>
                                         </form>
                                     }
                                 }
 
-                                <button class="btn save-toggle-btn"
-                                        data-post-id="@post.Post.Id"
-                                        data-return-page="Explore"
-                                        aria-label="@(post.IsSaved ? "Unsave post" : "Save post")">
-                                    <i class="bi @(post.IsSaved ? "bi-bookmark-fill" : "bi-bookmark")"></i>
-                                </button>
-
+                              
 
                                 <form id="antiForgeryForm" style="display:none;">
                                     @Html.AntiForgeryToken()
@@ -256,42 +257,42 @@ else
 
 
             //Search
+
+                const users = @Html.Raw(Json.Serialize(ViewBag.Users));
         const categories = @Html.Raw(Json.Serialize(ViewBag.Categories));
+        const posts = @Html.Raw(Json.Serialize(ViewBag.Posts)); // يحتوي على العناوين مثلاً
 
-        $("#categorySearchInput").autocomplete({
-            source: categories.map(c => ({ label: c.name, value: c.id })),
-            minLength: 0,
-            select: function (event, ui) {
-                window.location.href = "?categoryId=" + ui.item.value;
+        function filterPosts() {
+            const query = $("#searchInput").val().toLowerCase().trim();
+            const type = $("#filterType").val();
+
+            let match = null;
+
+            if (type === "user") {
+                match = users.find(u => u.name.toLowerCase().includes(query));
+                if (match) window.location.href = "?userId=" + match.id;
             }
-        }).focus(function () {
-            $(this).autocomplete("search", "");
-        });
+            else if (type === "category") {
+                match = categories.find(c => c.name.toLowerCase().includes(query));
+                if (match) window.location.href = "?categoryId=" + match.id;
+            }
+            else if (type === "title") {
+                match = posts.find(p => p.title.toLowerCase().includes(query));
+                if (match) window.location.href = "?postId=" + match.id;
+            }
 
-
-        // search
-        function searchCategory() {
-            const inputVal = $("#categorySearchInput").val().toLowerCase().trim();
-            if (!inputVal) return;
-
-            const match = categories.find(c => c.name.toLowerCase().includes(inputVal));
-
-            if (match) {
-                window.location.href = "?categoryId=" + match.id;
-            } else {
-                alert("No matching category found.");
+            if (!match) {
+                alert("No matching result found.");
             }
         }
 
-        // Button click
-        $("#searchCategoryBtn").on("click", function () {
-            searchCategory();
+        $("#searchBtn").on("click", function () {
+            filterPosts();
         });
 
-        // Enter key press
-        $("#categorySearchInput").on("keypress", function (e) {
+        $("#searchInput").on("keypress", function (e) {
             if (e.which === 13) {
-                searchCategory();
+                filterPosts();
                 e.preventDefault();
             }
         });

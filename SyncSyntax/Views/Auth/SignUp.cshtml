@@ -29,7 +29,7 @@
         display: inline-block;
         padding: 3px;
         background: rgb(24, 191, 239) !important;
-        ;
+        
         border-radius: 50%;
     }
 
@@ -56,28 +56,7 @@
         background-color: #f8f9fa;
     }
 
-    .modern-btn {
-        background: linear-gradient(135deg, #18bfe7, #0ea5e9);
-        color: white;
-        font-size: 16px;
-        font-weight: 600;
-        padding: 12px 24px;
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-    }
-
-        .modern-btn:hover {
-            background: linear-gradient(135deg, #0ea5e9, #18bfe7);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
-
-        .modern-btn:active {
-            transform: scale(0.98);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-        }
+   
 
     .btn-outline-secondary {
         border-radius: 12px;
@@ -92,11 +71,11 @@
     <div class="form-container">
         <form asp-action="SignUp" enctype="multipart/form-data" method="post" novalidate>
             <div class="position-relative text-center mb-4">
-                <a asp-action="SignIn" asp-controller="Auth" class="position-absolute start-0 top-50 translate-middle-y ms-3" style="color: rgb(24, 191, 239) !important;">
+                <a asp-action="SignIn" asp-controller="Auth" class="position-absolute start-0 top-50 translate-middle-y ms-3 global-color">
 					<h1><i class="bi bi-arrow-left-circle"></i></h1>
                 </a>
 
-                <h3 class="fw-bold d-inline-block" style="color: rgb(24, 191, 239) !important;">
+                <h3 class="fw-bold d-inline-block global-color">
                       Create New Account
                 </h3>
             </div>

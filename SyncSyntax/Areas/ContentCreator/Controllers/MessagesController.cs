@@ -72,6 +72,14 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 OtherUsers = otherUsers,
                 AvailableUsers = availableUsers
             };
+            var unreadNotificationsCount = _context.Notifications
+                       .Where(n => n.UserId == user.Id && !n.IsRead)
+                       .Count();
+
+            ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
+            var currentUserId = _userManager.GetUserId(User);
+            ViewBag.UnreadCount = _context.Messages
+                .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
 
             return View(model);
         }

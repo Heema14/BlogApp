@@ -22,7 +22,6 @@
     }
 </style>
 
-</style>
 <!-- Category Search -->
 <div class="my-4 text-center">
     <div class="input-group w-50 mx-auto">
@@ -40,16 +39,23 @@
     </a>
 </div>
 
-@if (!Model.Any())
-{
-    <div class="alert alert-warning text-center mt-4">
-        <i class="bi bi-info-circle"></i> Looks like you're not following anyone at the moment. Don't worry! Start following some fresh new faces and enjoy reading their unique and inspiring posts. 📚✨
+    @if (!Model.Any())
+    {
+    <div class="alert text-center mt-4" style="background-color: rgb(200, 235, 250) !important; color: #0a0a0a;">
+        <i class="bi bi-info-circle"></i>
+        Looks like you're not following anyone at the moment. Don't worry! Start following some fresh new faces and enjoy reading their unique and inspiring posts. 📚✨
+
         <br />
-        <a asp-action="Users" class="btn btn-primary mt-3" style="font-size: 16px; display: inline-flex; align-items: center; background: linear-gradient(to right, #ff7e5f, #feb47b); border: none; border-radius: 25px; padding: 12px 24px; text-decoration: none; color: white;">
-            <i class="bi bi-person-plus" style="margin-right: 8px;"></i> Explore New Users
+
+        <a asp-action="Users" class="modern-btn mt-4 d-inline-block" style="margin-top: 30px;">
+            <i class="bi bi-person-plus me-2"></i> Explore New Users
+        </a>
+        <a asp-action="Explore" asp-controller="Post" class="modern-btn mt-4 d-inline-block me-2" style="margin-top: 30px;">
+            <i class="bi bi-compass me-2"></i> Explore New Posts
         </a>
     </div>
-}
+    }
+
 
 else
 {
@@ -80,12 +86,17 @@ else
                     <div class="card-body">
                         <!-- User Info and Actions -->
                         <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div class="d-flex align-items-center gap-2">
+                            <a asp-action="Profile" asp-controller="Following" asp-route-userId="@post.Post.UserId" class="d-flex align-items-center gap-2 text-decoration-none text-dark">
                                 <img src="@post.Post.UserImageUrl" alt="User" class="rounded-circle" style="width: 30px; height: 30px;">
                                 <span>@post.Post.UserName</span>
-                            </div>
+                            </a>
+
 
                             <div class="d-flex align-items-center gap-2 actions">
+                                <button class="btn save-toggle-btn" data-post-id="@post.Post.Id" data-return-page="FollowingPosts"
+                                        aria-label="@(post.IsSaved ? "Unsave post" : "Save post")">
+                                    <i class="bi @(post.IsSaved ? "bi-bookmark-fill" : "bi-bookmark")"></i>
+                                </button>
                                 @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != post.Post.UserId)
                                 {
                                     if (post.IsFollowing)
@@ -101,17 +112,14 @@ else
                                     {
                                         <form asp-controller="Following" asp-action="Follow" asp-route-userId="@post.Post.UserId" method="post">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-success btn-sm">
+                                            <button type="submit" class="modern-btn">
                                                 <i class="bi bi-person-plus me-1"></i> Follow
                                             </button>
                                         </form>
                                     }
                                 }
 
-                                <button class="btn save-toggle-btn" data-post-id="@post.Post.Id" data-return-page="FollowingPosts"
-                                        aria-label="@(post.IsSaved ? "Unsave post" : "Save post")">
-                                    <i class="bi @(post.IsSaved ? "bi-bookmark-fill" : "bi-bookmark")"></i>
-                                </button>
+                               
 
                                 <form id="antiForgeryForm" style="display:none;">
                                     @Html.AntiForgeryToken()
