@@ -12,12 +12,15 @@ namespace SyncSyntax.Hubs
     {
         private readonly AppDbContext _context;
         private readonly UserManager<AppUser> _userManager;
+        private readonly InMemoryChatCacheService _cache;
 
-        public ChatHub(AppDbContext context, UserManager<AppUser> userManager)
+        public ChatHub(AppDbContext context, UserManager<AppUser> userManager, InMemoryChatCacheService cache)
         {
             _context = context;
             _userManager = userManager;
+            _cache = cache;
         }
+
 
         public async Task SendMessage(string senderId, string receiverId, string message)
         {
@@ -35,6 +38,16 @@ namespace SyncSyntax.Hubs
 
             _context.Messages.Add(newMessage);
             await _context.SaveChangesAsync();
+            
+            string cacheKey = $"chat:{senderId}:{receiverId}";
+            var updatedMessages = await _context.Messages
+                .Where(m => (m.SenderId == senderId && m.ReceiverId == receiverId) ||
+                            (m.SenderId == receiverId && m.ReceiverId == senderId))
+                .OrderByDescending(m => m.SentAt)
+                .Take(100)
+                .ToListAsync();
+
+            await _cache.SetMessagesAsync(cacheKey, updatedMessages);
 
 
             await Groups.AddToGroupAsync(Context.ConnectionId, newMessage.Id.ToString());

@@ -531,4 +531,35 @@ document.addEventListener('DOMContentLoaded', function () {
         a.click();
         URL.revokeObjectURL(url);
     });
+
+    //Clear Chat
+  
+        const clearChatBtn = document.getElementById("clearChatBtn");
+        const chatUserId = document.getElementById("chatUserId")?.value;
+        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+
+        if (clearChatBtn && chatUserId && token) {
+            clearChatBtn.addEventListener("click", async (e) => {
+                e.preventDefault();
+                const confirmed = confirm("هل تريد مسح جميع الرسائل من طرفك؟");
+                if (!confirmed) return;
+
+                const response = await fetch(`/ContentCreator/Messages/ClearChat?userId=${chatUserId}`, {
+                    method: "POST",
+                    headers: {
+                        "RequestVerificationToken": token
+                    }
+                });
+
+                if (response.ok) {
+                    location.reload(); // أو: window.location.href = window.location.href;
+                } else {
+                    alert("فشلت عملية الحذف، تأكد أن كل شيء مضبوط");
+                }
+            });
+        } else {
+            console.warn("⛔ زر Clear Chat أو قيمته غير موجودة.");
+        }
+   
+
 });

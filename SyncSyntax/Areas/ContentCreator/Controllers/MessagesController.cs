@@ -19,13 +19,22 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IHubContext<ChatHub> _hubContext;
         private readonly ILogger<PostController> _logger;
-        public MessagesController(AppDbContext context, UserManager<AppUser> userManager, IHubContext<ChatHub> hubContext, ILogger<PostController> logger)
+        private readonly InMemoryChatCacheService _cache  ;
+
+        public MessagesController(
+            AppDbContext context,
+            UserManager<AppUser> userManager,
+            IHubContext<ChatHub> hubContext,
+            ILogger<PostController> logger,
+            InMemoryChatCacheService cache)
         {
             _context = context;
             _userManager = userManager;
             _hubContext = hubContext;
             _logger = logger;
+            _cache = cache;
         }
+
 
         public async Task<IActionResult> Index()
         {
@@ -83,29 +92,41 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 message.IsRead = true;
                 message.ReadAt = DateTime.UtcNow;
             }
+
             if (unreadMessages.Any())
                 await _context.SaveChangesAsync();
 
-            var chatMessages = await _context.Messages
-               .Where(m => (m.SenderId == user.Id && m.ReceiverId == userId) ||
-                           (m.ReceiverId == user.Id && m.SenderId == userId))
-               .OrderBy(m => m.SentAt)
-               .ToListAsync();
+            string cacheKey = $"chat:{user.Id}:{userId}";
+            var chatMessages = await _cache.GetMessagesAsync(cacheKey);
+
+            if (chatMessages == null)
+            {
+                chatMessages = await _context.Messages
+                    .Where(m => (m.SenderId == user.Id && m.ReceiverId == userId) ||
+                                (m.ReceiverId == user.Id && m.SenderId == userId))
+                    .OrderByDescending(m => m.SentAt)
+                    .Take(100)
+                    .ToListAsync();
+
+                await _cache.SetMessagesAsync(cacheKey, chatMessages);
+            }
+
+            chatMessages = chatMessages.OrderBy(m => m.SentAt).ToList();
 
             var pinnedMessage = await _context.Messages
-               .Where(m => ((m.SenderId == user.Id && m.ReceiverId == userId) ||
-                            (m.SenderId == userId && m.ReceiverId == user.Id)) &&
-                            m.IsPinned == true)
-               .FirstOrDefaultAsync();
+                .Where(m => ((m.SenderId == user.Id && m.ReceiverId == userId) ||
+                             (m.SenderId == userId && m.ReceiverId == user.Id)) &&
+                             m.IsPinned == true)
+                .FirstOrDefaultAsync();
 
             var chatUser = await _context.Users.FindAsync(userId);
 
             var messageIds = chatMessages.Select(m => m.Id).ToList();
 
             var reactions = await _context.MessageReactions
-     .Where(r => messageIds.Contains(r.MessageId))
-     .Include(r => r.User)
-     .ToListAsync();
+                .Where(r => messageIds.Contains(r.MessageId))
+                .Include(r => r.User)
+                .ToListAsync();
 
             var groupedReactions = reactions
                 .GroupBy(r => r.MessageId)
@@ -120,7 +141,6 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 );
 
             ViewBag.MessageReactions = groupedReactions;
-
             ViewBag.ChatUser = chatUser;
             ViewBag.PinnedMessage = pinnedMessage;
 
@@ -396,6 +416,8 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             return Ok(reactions);
         }
+
+       
 
 
     }

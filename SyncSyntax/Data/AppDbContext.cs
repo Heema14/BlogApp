@@ -21,6 +21,9 @@ namespace SyncSyntax.Data
         public DbSet<MessageDeletion> MessageDeletions { get; set; }
         public DbSet<MessageReaction> MessageReactions { get; set; }
         public DbSet<SavedPost> SavedPosts { get; set; }
+
+        public DbSet<ArchivedMessage> ArchivedMessages { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
