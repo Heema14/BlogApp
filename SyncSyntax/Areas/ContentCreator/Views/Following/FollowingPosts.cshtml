@@ -5,23 +5,8 @@
     ViewData["Title"] = "Blog Posts";
 }
 <link href="~/css/sidebar.css" rel="stylesheet" />
+
  
-<style>
-    <style >
-    .save-toggle-btn {
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        font-size: 1.5rem;
-        color: #555;
-        transition: color 0.3s ease;
-    }
-
-    .save-toggle-btn.saved {
-        color: #007bff;
-    }
-</style>
-
 <!-- Category Search -->
 <div class="my-4 text-center">
     <div class="input-group w-50 mx-auto">
@@ -34,7 +19,7 @@
 
 <!-- Create Post Button -->
 <div class="text-end mb-4">
-    <a asp-action="Create" class="button create-post-btn">
+    <a asp-action="Create" class="icon-expand-btn" data-hover-text="Create New Post">
         <i class="bi bi-plus-circle svgIcon"></i>
     </a>
 </div>
@@ -57,11 +42,11 @@
     }
 
 
-else
-{
+    else
+    {
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        @foreach (var post in Model)
-        {
+            @foreach (var post in Model)
+            {
             <!-- Posts Grid -->
             <div class="col">
 
@@ -93,40 +78,45 @@ else
 
 
                             <div class="d-flex align-items-center gap-2 actions">
-                                <button class="btn save-toggle-btn" data-post-id="@post.Post.Id" data-return-page="FollowingPosts"
+                                <button class="icon-expand-btn save-toggle-btn"
+                                        data-hover-text="@(post.IsSaved ? "Un Save" : "Save")"
+                                        data-post-id="@post.Post.Id"
+                                        data-return-page="FollowingPosts"
                                         aria-label="@(post.IsSaved ? "Unsave post" : "Save post")">
-                                    <i class="bi @(post.IsSaved ? "bi-bookmark-fill" : "bi-bookmark")"></i>
+                                    <i class="bi svgIcon @(post.IsSaved ? "bi-bookmark-fill" : "bi-bookmark")"></i>
                                 </button>
-                                @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != post.Post.UserId)
-                                {
-                                    if (post.IsFollowing)
-                                    {
-                                        <form asp-controller="Following" asp-action="Unfollow" asp-route-userId="@post.Post.UserId" method="post">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                <i class="bi bi-person-dash me-1"></i> Unfollow
-                                            </button>
-                                        </form>
-                                    }
-                                    else
-                                    {
-                                        <form asp-controller="Following" asp-action="Follow" asp-route-userId="@post.Post.UserId" method="post">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="modern-btn">
-                                                <i class="bi bi-person-plus me-1"></i> Follow
-                                            </button>
-                                        </form>
-                                    }
-                                }
 
-                               
+
+                                    @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != post.Post.UserId)
+                                    {
+                                        if (post.IsFollowing)
+                                        {
+                                        <form asp-controller="Following" asp-action="Unfollow" asp-route-userId="@post.Post.UserId" method="post">
+                                                @Html.AntiForgeryToken()
+                                            <button type="submit" class="icon-expand-btn" data-hover-text="Un Follow">
+                                                <i class="bi bi-person-dash me-1 svgIcon"></i>
+                                            </button>
+                                        </form>
+                                        }
+                                        else
+                                        {
+                                        <form asp-controller="Following" asp-action="Follow" asp-route-userId="@post.Post.UserId" method="post">
+                                                @Html.AntiForgeryToken()
+                                            <button type="submit" class="icon-expand-btn" data-hover-text="Follow">
+                                                <i class="bi bi-person-plus me-1 svgIcon"></i>
+                                            </button>
+                                        </form>
+                                        }
+                                    }
+
+
 
                                 <form id="antiForgeryForm" style="display:none;">
-                                    @Html.AntiForgeryToken()
+                                        @Html.AntiForgeryToken()
                                 </form>
 
-                                
-                                
+
+
                             </div>
 
                         </div>
@@ -143,32 +133,32 @@ else
                         <!-- Date -->
                         <p class="text-muted mb-2 DatePost">
                             <i class="bi bi-calendar-event me-1"></i>
-                            @post.Post.PublishedDate.ToString("MMMM dd, yyyy")
+                                @post.Post.PublishedDate.ToString("MMMM dd, yyyy")
                         </p>
 
                         <!-- Preview -->
-                        @{
-                            var contentTag = HtmlTagHelper.RemoveHtmlTags(post.Post.Content);
-                            var preview = contentTag.Length > 100 ? contentTag.Substring(0, 100) + "..." : contentTag;
-                        }
+                            @{
+                                var contentTag = HtmlTagHelper.RemoveHtmlTags(post.Post.Content);
+                                var preview = contentTag.Length > 100 ? contentTag.Substring(0, 100) + "..." : contentTag;
+                            }
 
                         <p class="card-text text-black">@preview</p>
 
                         <!-- Category -->
-                        @if (post.Post.Category != null)
-                        {
+                            @if (post.Post.Category != null)
+                            {
                             <span class="badge bg-info text-dark mt-2">
                                 <i class="bi bi-tag me-1"></i> @post.Post.Category.Name
                             </span>
-                        }
+                            }
                     </div>
 
                 </div>
 
             </div>
-        }
+            }
     </div>
-}
+    }
 
 
 
@@ -189,7 +179,7 @@ else
 </div>
 
 
-@section Scripts {
+    @section Scripts {
     <script src="~/js/SavePost.js"></script>
     <!-- jQuery and jQuery UI -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -338,5 +328,4 @@ else
 
     </script>
 
-}
-
+    }

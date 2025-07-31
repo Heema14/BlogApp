@@ -1,6 +1,6 @@
 ﻿ @model ProfileViewModel
 @{
-    var currentUserId = User.Identity.Name;  
+    var currentUserId = User.Identity.Name;
 }
 
 <style>
@@ -35,10 +35,11 @@
             transition: background-color 0.3s, color 0.3s;
             border-radius: 5px;
         }
-                .profile-actions a:hover {
-                    background-color: #222;
-                    color: #fff;
-                }
+
+            .profile-actions a:hover {
+                background-color: #222;
+                color: #fff;
+            }
 
     .profile-username {
         font-weight: bold;
@@ -104,7 +105,6 @@
             cursor: pointer;
             color: #333;
         }
- 
 </style>
 
 <div class="profile-header">
@@ -115,19 +115,20 @@
         <div>@Model.User.Bio</div>
     </div>
 
-@if (currentUserId == Model.User.UserName)
+    @if (currentUserId == Model.User.UserName)
     {
-    <div class="profile-actions">
-        <a asp-action="EditProfile" asp-area="" asp-controller="Auth">Edit Profile</a>
-    </div>
+        <div class="profile-actions">
+            <a asp-action="EditProfile" asp-area="" asp-controller="Auth">Edit Profile</a>
+        </div>
     }
-    else{
+    else
+    {
         @if (Model.IsFollowing)
         {
             <form asp-controller="Following" asp-action="Unfollow" asp-route-userId="@Model.User.Id" method="post">
                 @Html.AntiForgeryToken()
-                <button type="submit" class="modern-btn">
-                    <i class="bi bi-person-dash me-1"></i> Unfollow
+                <button type="submit" class="button unfollow-btn">
+                    <i class="bi bi-person-dash me-1 svgIcon"></i>
                 </button>
             </form>
         }
@@ -135,8 +136,8 @@
         {
             <form asp-controller="Following" asp-action="Follow" asp-route-userId="@Model.User.Id" method="post">
                 @Html.AntiForgeryToken()
-                <button type="submit" class="modern-btn">
-                    <i class="bi bi-person-plus me-1"></i> Follow
+                <button type="submit" class="icon-expand-btn" data-hover-text="Follow">
+                    <i class="bi bi-person-plus me-1 svgIcon"></i>
                 </button>
             </form>
         }
@@ -150,13 +151,13 @@
 
 
 @if (currentUserId == Model.User.UserName)
-    {
-<div class="text-end mb-4">
-    <a asp-action="Create" asp-controller="Post" class="button create-post-btn">
-        <i class="bi bi-plus-circle svgIcon"></i>
-    </a>
-</div>
-    }
+{
+    <div class="text-end mb-4">
+        <a asp-action="Create" asp-controller="Post" class="button create-post-btn">
+            <i class="bi bi-plus-circle svgIcon"></i>
+        </a>
+    </div>
+}
 
 @* <div style="text-align:center; font-weight: bold;">Share Articles</div> *@
 
@@ -168,7 +169,7 @@
 <!-- Explore Content -->
 <section class="col-12 col-md-9 col-lg-10 explore-grid">
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        
+
         @foreach (var post in Model.Posts)
         {
             <div class="col">
@@ -196,7 +197,23 @@
                             <div class="d-flex align-items-center gap-2 actions">
                                 @if (post.UserId == Model.CurrentUserId)
                                 {
-                                    <span class="text-danger" onclick="confirmDelete(@post.Id)">
+                                    <button class="icon-expand-btn" onclick="confirmDelete(@post.Id)" data-hover-text="Delete" style="background-color: #dc3545;">
+                                        <i class="bi bi-trash3-fill svgIcon"></i>
+                                    </button>
+                                    <button class="icon-expand-btn" onclick="location.href='@Url.Action("Edit", "Post", new { id = post.Id })'" data-hover-text="Edit" style="background-color: #0d6efd;">
+                                        <i class="bi bi-pencil-square svgIcon"></i>
+                                    </button>
+                                    <button class="icon-expand-btn"
+                                            onclick="togglePublishStatus(this)"
+                                            data-id="@post.Id"
+                                            data-status="@post.IsPublished.ToString().ToLower()"
+                                            data-hover-text="@(post.IsPublished ? "Unpublish" : "Publish")"
+                                            style="background-color: @(post.IsPublished ? "#6c757d" : "#198754")">
+                                        <i class="bi @(post.IsPublished ? "bi-eye" : "bi-eye-slash") svgIcon"></i>
+                                    </button>
+
+
+                                    @*     <span class="text-danger" onclick="confirmDelete(@post.Id)">
                                         <i class="bi bi-trash3-fill"></i>
                                     </span>
                                     <span onclick="location.href='@Url.Action("Edit", "Post", new { id = post.Id })'">
@@ -214,7 +231,7 @@
                                                 <i class="bi bi-eye-slash"></i> <!-- Icon for Unpublished (eye-slash) -->
                                             }
                                         </button>
-                                    </span>
+                                    </span> *@
                                 }
                             </div>
 
@@ -276,74 +293,107 @@
 
 
 @section Scripts {
-<script>
-    function confirmDelete(postId) {
-        Swal.fire({
-            title: 'Are you sure?',
-            text: 'This post will be deleted permanently!',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'No, cancel!',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                window.location.href = '@Url.Action("Delete", "Post", new { id = "__POST_ID__" })'.replace('__POST_ID__', postId);
-            }
-        });
-    }
-
-
-
-    $(document).ready(function () {
-        $('#postModal').on('show.bs.modal', function (e) {
-            var button = $(e.relatedTarget);
-            var postId = button.data('id');
-            var modalBody = $(this).find('.modal-body');
-            modalBody.html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</div>');
-
-            // AJAX request to fetch post details
-            $.ajax({
-                url: '@Url.Action("Detail", "Post")/' + postId,
-                type: 'GET',
-                success: function (response) {
-                    modalBody.html(response);
-                },
-                error: function () {
-                    modalBody.html('<p class="text-danger">Failed to load post details.</p>');
+    <script>
+        function confirmDelete(postId) {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'This post will be deleted permanently!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'No, cancel!',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '@Url.Action("Delete", "Post", new { id = "__POST_ID__" })'.replace('__POST_ID__', postId);
                 }
             });
-        });
-    });
+        }
 
-    function togglePublishStatus(postId, currentStatus) {
-        var isPublished = JSON.parse(currentStatus);
 
-        $.ajax({
-            url: '@Url.Action("TogglePublishStatus", "Post")',
-            type: 'POST',
-            data: { postId: postId },
-            success: function(response) {
-                if (response.success) {
-                    var iconElement = $("button[data-id='" + postId + "'] i");
 
-                    if (response.isPublished) {
-                        toastr.success("Post has been published and notifications sent.");
-                        iconElement.removeClass('bi-eye-slash').addClass('bi-eye');
-                    } else {
-                        toastr.info("Post has been unpublished.");
-                        iconElement.removeClass('bi-eye').addClass('bi-eye-slash');
+        $(document).ready(function () {
+            $('#postModal').on('show.bs.modal', function (e) {
+                var button = $(e.relatedTarget);
+                var postId = button.data('id');
+                var modalBody = $(this).find('.modal-body');
+                modalBody.html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</div>');
+
+                // AJAX request to fetch post details
+                $.ajax({
+                    url: '@Url.Action("Detail", "Post")/' + postId,
+                    type: 'GET',
+                    success: function (response) {
+                        modalBody.html(response);
+                    },
+                    error: function () {
+                        modalBody.html('<p class="text-danger">Failed to load post details.</p>');
                     }
-                } else {
-                        toastr.error("Something went wrong. Try again.");
-                }
-            },
-            error: function() {
-                    toastr.error("Server error. Please check your connection.");
-                // alert("There was an error connecting to the server..");
-            }
+                });
+            });
         });
-    }
 
-</script>
+        function togglePublishStatus(postId, currentStatus) {
+            var isPublished = JSON.parse(currentStatus);
+
+            $.ajax({
+                url: '@Url.Action("TogglePublishStatus", "Post")',
+                type: 'POST',
+                data: { postId: postId },
+                success: function(response) {
+                    if (response.success) {
+                        var iconElement = $("button[data-id='" + postId + "'] i");
+
+                        if (response.isPublished) {
+                            toastr.success("Post has been published and notifications sent.");
+                            iconElement.removeClass('bi-eye-slash').addClass('bi-eye');
+                        } else {
+                            toastr.info("Post has been unpublished.");
+                            iconElement.removeClass('bi-eye').addClass('bi-eye-slash');
+                        }
+                    } else {
+                            toastr.error("Something went wrong. Try again.");
+                    }
+                },
+                error: function() {
+                        toastr.error("Server error. Please check your connection.");
+                    // alert("There was an error connecting to the server..");
+                }
+            });
+                }function togglePublishStatus(button) {
+                var postId = $(button).data("id");
+
+                $.ajax({
+                    url: '@Url.Action("TogglePublishStatus", "Post")',
+                    type: 'POST',
+                    data: { postId: postId },
+                    success: function (response) {
+                        if (response.success) {
+                            var icon = $(button).find("i");
+
+                            if (response.isPublished) {
+                                toastr.success("Post has been published and notifications sent.");
+                                icon.removeClass("bi-eye-slash").addClass("bi-eye");
+                                $(button).data("status", "true");
+                                $(button).attr("data-hover-text", "Unpublish");
+                                $(button).css("background-color", "#6c757d");
+                            } else {
+                                toastr.info("Post has been unpublished.");
+                                icon.removeClass("bi-eye").addClass("bi-eye-slash");
+                                $(button).data("status", "false");
+                                $(button).attr("data-hover-text", "Publish");
+                                $(button).css("background-color", "#198754");
+                            }
+                        } else {
+                            toastr.error("Something went wrong. Try again.");
+                        }
+                    },
+                    error: function () {
+                        toastr.error("Server error. Please check your connection.");
+                    }
+                });
+            }
+
+
+    </script>
 }

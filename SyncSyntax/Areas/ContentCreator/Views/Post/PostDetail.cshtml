@@ -2,94 +2,152 @@
 @{
     ViewData["Title"] = Model.Post.Title;
 }
-
 <style>
-    .content-wrapper {
-        padding: 20px;
-        max-width: 900px;
-        margin: 0 auto;
-        font-family: Arial, sans-serif;
+    .post-detail-container {
+        max-width: 1000px;
+        margin: 40px auto;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        font-family: 'Segoe UI', sans-serif;
     }
 
-    /* Feature image styles */
-    .feature-image {
-        width: 100%;
-        height: 500px;
-        object-fit: cover;
-        margin-bottom: 20px;
+    .post-left {
+        border-radius: 16px;
+        overflow: hidden;
+        background: #fff;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+        padding: 0;
+    }
+
+        .post-left img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+        }
+
+    .post-meta {
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        font-size: 14px;
+    }
+
+        .post-meta i {
+            margin-right: 6px;
+        }
+
+        .post-meta .meta-item {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            color: #444;
+            font-weight: 500;
+        }
+
+        .post-meta .meta-user {
+            font-weight: bold;
+            color: #007bff;
+        }
+
+    .post-right {
+        background: #fff;
+        padding: 25px;
+        border-radius: 16px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
+    }
+
+        .post-right h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .post-right .post-date {
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+    .comment-card {
+        border: 1px solid #eaeaea;
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        background-color: #fafafa;
+    }
+
+        .comment-card h5 {
+            margin-bottom: 5px;
+        }
+
+        .comment-card small {
+            color: #777;
+        }
+
+    .no-comments {
+        color: #999;
+        font-style: italic;
     }
 </style>
 
-
-<div class="content-wrapper">
-
-    <h1>@Model.Post.Title</h1>
-    <p><i class="bi bi-eye"></i> Views: @Model.Post.Views</p>
-
-    <p>Category:<strong class="badge bg-secondary m-1">@Model.Post.Category?.Name</strong></p>
-
-    @if (!string.IsNullOrEmpty(Model.Post.FeatureImagePath))
-    {
-        <img src="@Model.Post.FeatureImagePath" alt="@Model.Post.Title" class="feature-image" />
-    }
-
-    <hr>
-    <div class="post-date">Published on @Model.Post.CreatedAt.ToString("MMMM dd, yyyy")</div>
-
-    <hr />
-
-    <button id="likeButton-@Model.Post.Id" class="btn btn-light mb-2" onclick="toggleLike(@Model.Post.Id)">
-        <i class="fa fa-heart" id="likeIcon-@Model.Post.Id"
-           style="color: @(Model.UserLikedPost ? "red" : "gray")">
-        </i>
-        <span id="likesCount-@Model.Post.Id">@Model.Post.LikesCount</span>
-        Like
-    </button>
-
-
-    <!-- هذا حقل مخفي لتخزين حالة الاعجاب -->
-    <input type="hidden" id="userLikedPost" value="@Model.UserLikedPost" />
-
-
-
-
-    <h3>Comments</h3>
-
-    @if (Model.Post.Comments?.Any() ?? false)
-    {
-        <div class="comments-section mb-5">
-            @foreach (var comment in Model.Post.Comments)
-            {
-                <div class="card mb-3 shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title">@comment.User?.UserName</h5>
-                        <p class="comment-date"><small>@comment.CommentDate.ToString("M/dd/yyyy, h:m")</small></p>
-                        <p class="card-text">@comment.Content</p>
-                    </div>
-                </div>
-            }
-        </div>
-    }
-    else
-    {
-        <p class="no-comments text-muted fst-italic">No comments yet. Be the first to comment!</p>
-        <div class="comments-section mb-5"><!-- سيتم ملؤه عند أول تعليق --></div>
-    }
-
-    <hr />
-
-    @if (User.Identity.IsAuthenticated)
-    {
-        <h4>Add a Comment</h4>
-
-        <form id="commentForm">
-            <div class="form-group my-2">
-                <label for="Content">Content</label>
-                <textarea for="Content" id="Content" name="Content" rows="3" required class="form-control"></textarea>
+<div class="post-detail-container">
+    <!-- Left side -->
+    <div class="post-left">
+        <img src="@Model.Post.FeatureImagePath" alt="@Model.Post.Title" />
+        <div class="post-meta">
+            <div class="meta-item">
+                <i class="fa fa-heart" style="color: @(Model.UserLikedPost ? "red" : "gray")"></i>
+                <span>@Model.Post.LikesCount</span>
             </div>
+            <div class="meta-item">
+                <i class="bi bi-eye"></i>
+                <span>@Model.Post.Views</span>
+            </div>
+            <div class="meta-item meta-user">
+                @Model.Post.UserName
+            </div>
+        </div>
+    </div>
 
-            <button type="submit" class="btn btn-primary mt-2 p-2 rounded">Share comment</button>
-        </form>
-    }
+    <!-- Right side -->
+    <div class="post-right">
+        <h1>@Model.Post.Title</h1>
+        <div class="post-date">Published on @Model.Post.CreatedAt.ToString("MMMM dd, yyyy")</div>
+
+        <div class="post-content mb-4">
+            @Html.Raw(Model.Post.Content)
+        </div>
+
+        <h3>Comments</h3>
+        @if (Model.Post.Comments?.Any() ?? false)
+        {
+            <div class="comments-section mb-4">
+                @foreach (var comment in Model.Post.Comments)
+                {
+                    <div class="comment-card">
+                        <h5>@comment.User?.UserName</h5>
+                        <small>@comment.CommentDate.ToString("M/dd/yyyy, h:mm tt")</small>
+                        <p>@comment.Content</p>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p class="no-comments">No comments yet. Be the first to comment!</p>
+        }
+
+        @if (User.Identity.IsAuthenticated)
+        {
+            <form id="commentForm" class="mt-4">
+                <div class="form-group mb-2">
+                    <label for="Content">Content</label>
+                    <textarea id="Content" name="Content" rows="3" required class="form-control"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary px-4">Share comment</button>
+            </form>
+        }
+    </div>
 </div>
-

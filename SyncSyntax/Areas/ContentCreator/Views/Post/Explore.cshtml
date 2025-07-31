@@ -5,20 +5,7 @@
     ViewData["Title"] = "Blog Posts";
 }
 <link href="~/css/sidebar.css" rel="stylesheet" />
-<style>
-    .save-toggle-btn {
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        font-size: 1.5rem;
-        color: #555;  
-        transition: color 0.3s ease;
-    }
-
-        .save-toggle-btn.saved {
-            color: #007bff;  
-        }
-</style>
+ 
 <!-- Category Search -->
 <div class="my-4 text-center">
     <div class="input-group w-50 mx-auto">
@@ -29,7 +16,7 @@
     </div>
 </div>
 
- 
+
 @if (!Model.Any())
 {
     <div class="alert alert-warning text-center mt-4">
@@ -71,12 +58,14 @@ else
                             </a>
 
                             <div class="d-flex align-items-center gap-2 actions">
-                                <button class="btn save-toggle-btn"
+                                <button class="icon-expand-btn save-toggle-btn"
+                                        data-hover-text="@(post.IsSaved ? "Un Save" : "Save")"
                                         data-post-id="@post.Post.Id"
-                                        data-return-page="Explore"
+                                        data-return-page="FollowingPosts"
                                         aria-label="@(post.IsSaved ? "Unsave post" : "Save post")">
-                                    <i class="bi @(post.IsSaved ? "bi-bookmark-fill" : "bi-bookmark")"></i>
+                                    <i class="bi svgIcon @(post.IsSaved ? "bi-bookmark-fill" : "bi-bookmark")"></i>
                                 </button>
+
 
                                 @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != post.Post.UserId)
                                 {
@@ -84,8 +73,8 @@ else
                                     {
                                         <form asp-controller="Following" asp-action="Unfollow" asp-route-userId="@post.Post.UserId" method="post">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                <i class="bi bi-person-dash me-1"></i> Unfollow
+                                            <button type="submit" class="icon-expand-btn" data-hover-text="Un Follow">
+                                                <i class="bi bi-person-dash me-1 svgIcon"></i>
                                             </button>
                                         </form>
                                     }
@@ -93,14 +82,14 @@ else
                                     {
                                         <form asp-controller="Following" asp-action="Follow" asp-route-userId="@post.Post.UserId" method="post">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="modern-btn">
-                                                <i class="bi bi-person-plus me-1"></i> Follow
+                                            <button type="submit" class="icon-expand-btn" data-hover-text="Follow">
+                                                <i class="bi bi-person-plus me-1 svgIcon"></i>
                                             </button>
                                         </form>
                                     }
                                 }
 
-                              
+
 
                                 <form id="antiForgeryForm" style="display:none;">
                                     @Html.AntiForgeryToken()
@@ -300,5 +289,3 @@ else
 
     </script>
 }
-
-
