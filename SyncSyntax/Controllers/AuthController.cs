@@ -139,7 +139,7 @@ namespace SyncSyntax.Controllers
                 return View(model);
             }
 
-            var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
+            var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
             if (!signInResult.Succeeded)
             {
                 TempData["Error"] = "Incorrect password.";
