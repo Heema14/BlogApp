@@ -124,6 +124,7 @@ namespace SyncSyntax.Controllers
         public IActionResult SignIn() => View();
 
         [HttpPost]
+         
         public async Task<IActionResult> SignIn(SignInViewModel model)
         {
             if (!ModelState.IsValid)
@@ -140,6 +141,7 @@ namespace SyncSyntax.Controllers
             }
 
             var signInResult = await _signInManager.PasswordSignInAsync(user, model.Password, model.RememberMe, false);
+
             if (!signInResult.Succeeded)
             {
                 TempData["Error"] = "Incorrect password.";
