@@ -53,7 +53,7 @@
 
     input.form-control {
         border-radius: 8px;
-        background-color: #f8f9fa;
+     /*    background-color: #f8f9fa; */
     }
 
    
@@ -165,7 +165,7 @@
                 </div>
                 <!-- ÇáäæÚ -->
                 <div class="col-12">
-                    <label asp-for="Gender" class="form-label d-block">Gender</label>
+                    <label asp-for="Gender" class="form-label d-block text-primary">Gender</label>
                     <div class="text-primary">
                         @foreach (var gender in Enum.GetValues(typeof(Gender)))
                         {

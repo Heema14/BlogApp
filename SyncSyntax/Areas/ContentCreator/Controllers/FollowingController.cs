@@ -25,22 +25,48 @@ public class FollowingController : Controller
         _postlikeHub = postlikeHub;
     }
 
-    public IActionResult FollowingPosts(int? categoryId)
+    [HttpGet]
+    public IActionResult FollowingPosts(string searchTerm, string filterBy, int? categoryId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+        // جلب معرفات المستخدمين الذين أتابعهم
         var followedUsers = _context.Followings
             .Where(f => f.FollowerId == userId)
             .Select(f => f.FollowingId)
             .ToList();
 
+        // الاستعلام الأساسي لمنشورات المتابعين فقط
         var postQuery = _context.Posts
             .Include(p => p.Category)
+            .Include(p => p.User)
             .Where(p => followedUsers.Contains(p.UserId) && p.IsPublished);
 
+        // تصفية حسب الفئة (CategoryId)
         if (categoryId.HasValue)
         {
             postQuery = postQuery.Where(p => p.CategoryId == categoryId);
+        }
+
+        // تصفية حسب البحث
+        if (!string.IsNullOrEmpty(searchTerm))
+        {
+            switch (filterBy)
+            {
+                case "title":
+                    postQuery = postQuery.Where(p => p.Title.Contains(searchTerm));
+                    break;
+                case "category":
+                    postQuery = postQuery.Where(p => p.Category.Name.Contains(searchTerm));
+                    break;
+                case "publisher":
+                    postQuery = postQuery.Where(p => p.User.UserName.Contains(searchTerm));
+                    break;
+                case "date":
+                    if (DateTime.TryParse(searchTerm, out var date))
+                        postQuery = postQuery.Where(p => p.PublishedDate.Date == date.Date);
+                    break;
+            }
         }
 
         var posts = postQuery
@@ -55,7 +81,6 @@ public class FollowingController : Controller
             .Select(f => f.FollowingId)
             .ToHashSet();
 
-        // جلب قائمة الـ SavedPosts الخاصة بالمستخدم الحالي:
         var savedPostIds = _context.SavedPosts
             .Where(sp => sp.UserId == userId)
             .Select(sp => sp.PostId)
@@ -65,19 +90,19 @@ public class FollowingController : Controller
         {
             Post = post,
             IsFollowing = followingIds.Contains(post.UserId),
-            IsSaved = savedPostIds.Contains(post.Id)  // هنا تحدد اذا المنشور محفوظ
+            IsSaved = savedPostIds.Contains(post.Id)
         }).ToList();
 
         ViewData["Categories"] = _context.Categories.ToList();
+        ViewBag.UnreadNotificationsCount = _context.Notifications
+            .Count(n => n.UserId == userId && !n.IsRead);
 
-        var unreadNotificationsCount = _context.Notifications
-            .Where(n => n.UserId == userId && !n.IsRead)
-            .Count();
-
-        ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
-        var currentUserId = _userManager.GetUserId(User);
         ViewBag.UnreadCount = _context.Messages
-            .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
+            .Count(m => m.ReceiverId == userId && !m.IsRead);
+
+        ViewBag.Users = _context.Users.Select(u => new { id = u.Id, name = u.UserName }).ToList();
+        ViewBag.Categories = _context.Categories.Select(c => new { id = c.Id, name = c.Name }).ToList();
+        ViewBag.Posts = _context.Posts.Select(p => new { id = p.Id, title = p.Title }).ToList();
 
         return View(viewModelList);
     }

@@ -6,15 +6,14 @@
 }
 <link href="~/css/sidebar.css" rel="stylesheet" />
  
-<!-- Category Search -->
-<div class="my-4 text-center">
-    <div class="input-group w-50 mx-auto">
-        <input type="text" id="categorySearchInput" class="form-control" placeholder="Search category..." autocomplete="off" />
-        <button class="btn btn-success" id="searchCategoryBtn">
-            <i class="bi bi-search"></i> Search
-        </button>
-    </div>
-</div>
+
+
+<!-- Advanced Search -->
+@Html.Partial("_AdvancedSearchForm", new ViewDataDictionary(ViewData) { { "SearchAction", "Explore" } })
+
+
+ 
+
 
 
 @if (!Model.Any())
@@ -243,49 +242,12 @@ else
             $(this).find('.modal-body').html('');
         });
 
-
-
-            //Search
-
-                const users = @Html.Raw(Json.Serialize(ViewBag.Users));
-        const categories = @Html.Raw(Json.Serialize(ViewBag.Categories));
-        const posts = @Html.Raw(Json.Serialize(ViewBag.Posts)); // يحتوي على العناوين مثلاً
-
-        function filterPosts() {
-            const query = $("#searchInput").val().toLowerCase().trim();
-            const type = $("#filterType").val();
-
-            let match = null;
-
-            if (type === "user") {
-                match = users.find(u => u.name.toLowerCase().includes(query));
-                if (match) window.location.href = "?userId=" + match.id;
-            }
-            else if (type === "category") {
-                match = categories.find(c => c.name.toLowerCase().includes(query));
-                if (match) window.location.href = "?categoryId=" + match.id;
-            }
-            else if (type === "title") {
-                match = posts.find(p => p.title.toLowerCase().includes(query));
-                if (match) window.location.href = "?postId=" + match.id;
-            }
-
-            if (!match) {
-                alert("No matching result found.");
-            }
-        }
-
-        $("#searchBtn").on("click", function () {
-            filterPosts();
-        });
-
-        $("#searchInput").on("keypress", function (e) {
-            if (e.which === 13) {
-                filterPosts();
-                e.preventDefault();
-            }
-        });
-
+        const searchSuggestionsUrl = '@Url.Action("SearchSuggestions", "Post")';
 
     </script>
+
+ 
+
+    <script src="~/js/Search.js"></script>
+  
 }

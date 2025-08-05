@@ -142,8 +142,8 @@
                 </a>
 
                 <a asp-action="FollowingPosts" asp-controller="Following"><i class="bi bi-house-door"></i><span> Home</span></a>
-                <a href="#"><i class="bi bi-search"></i><span> Search</span></a>
-                <a asp-action="Explore" asp-controller="Post"><i class="bi bi-arrow-repeat"></i><span> Explore</span></a>
+@*                 <a href="#"><i class="bi bi-search"></i><span> Search</span></a>
+ *@                <a asp-action="Explore" asp-controller="Post"><i class="bi bi-arrow-repeat"></i><span> Explore</span></a>
                 <a href="@Url.Action("Index", "Messages")" class="position-relative">
                     <i class="bi bi-envelope"></i>
                     <span>Messages</span>
@@ -195,7 +195,7 @@
     <!-- Bottom nav for mobile -->
     <div class="sidebar-bottom d-flex d-md-none">
         <a asp-action="FollowingPosts" asp-controller="Following"><i class="bi bi-house-door"></i></a>
-        <a href="#"><i class="bi bi-search"></i></a>
+@*         <a href="#"><i class="bi bi-search"></i></a> *@
         <a asp-action="Explore" asp-controller="Post"><i class="bi bi-arrow-repeat"></i></a>
         <a href="@Url.Action("Index", "Messages")">
             <i class="bi bi-envelope"></i><span></span>
@@ -219,6 +219,9 @@
            asp-action="Profile"
            asp-route-userId="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
             <i class="bi bi-person"></i>
+        </a>
+        <a asp-action="Saved" asp-controller="Post" asp-area="ContentCreator">
+            <i class="bi bi-bookmark"></i><span> Saved</span>
         </a>
     </div>
 

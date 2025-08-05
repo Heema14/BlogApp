@@ -52,6 +52,12 @@ namespace SyncSyntax.Data
                 .WithMany(u => u.PostLikes)
                 .HasForeignKey(pl => pl.UserId);
 
+            modelBuilder.Entity<Post>()
+                        .HasOne(p => p.User)
+                        .WithMany()
+                        .HasForeignKey(p => p.UserId)
+                        .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<AppUser>()
                 .Property(u => u.Gender)
                 .HasConversion<string>();

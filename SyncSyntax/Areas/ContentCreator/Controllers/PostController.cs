@@ -193,19 +193,34 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 return RedirectToAction("Profile", "Following");
             }
         }
-
         [HttpGet]
-        public IActionResult Explore(int? categoryId)
+        public IActionResult Explore(string searchTerm, string filterBy, int? categoryId)
         {
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var postQuery = _context.Posts
                 .Include(p => p.Category)
+                .Include(p => p.User)
                 .Where(p => p.IsPublished);
 
-            if (categoryId.HasValue)
+            if (!string.IsNullOrEmpty(searchTerm))
             {
-                postQuery = postQuery.Where(p => p.CategoryId == categoryId);
+                switch (filterBy)
+                {
+                    case "title":
+                        postQuery = postQuery.Where(p => p.Title.Contains(searchTerm));
+                        break;
+                    case "category":
+                        postQuery = postQuery.Where(p => p.Category.Name.Contains(searchTerm));
+                        break;
+                    case "publisher":
+                        postQuery = postQuery.Where(p => p.UserName.Contains(searchTerm));
+                        break;
+                    case "date":
+                        if (DateTime.TryParse(searchTerm, out var date))
+                            postQuery = postQuery.Where(p => p.PublishedDate.Date == date.Date);
+                        break;
+                }
             }
 
             var posts = postQuery
@@ -243,9 +258,60 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
              
             ViewBag.UnreadCount = _context.Messages
                 .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
+
+            ViewBag.Users = _context.Users.Select(u => new { id = u.Id, name = u.UserName }).ToList();
+            ViewBag.Categories = _context.Categories.Select(c => new { id = c.Id, name = c.Name }).ToList();
+            ViewBag.Posts = _context.Posts.Select(p => new { id = p.Id, title = p.Title }).ToList();
+
             return View(viewModelList);
         }
 
+        [HttpGet]
+        public JsonResult SearchSuggestions(string term, string filterBy)
+        {
+            var suggestions = new List<string>();
+
+            switch (filterBy)
+            {
+                case "title":
+                    suggestions = _context.Posts
+                        .Where(p => p.Title.Contains(term))
+                        .Select(p => p.Title)
+                        .Distinct()
+                        .Take(10)
+                        .ToList();
+                    break;
+
+                case "category":
+                    suggestions = _context.Categories
+                        .Where(c => c.Name.Contains(term))
+                        .Select(c => c.Name)
+                        .Distinct()
+                        .Take(10)
+                        .ToList();
+                    break;
+
+                case "publisher":
+                    suggestions = _context.Users
+                        .Where(u => u.UserName.Contains(term))
+                        .Select(u => u.UserName)
+                        .Distinct()
+                        .Take(10)
+                        .ToList();
+                    break;
+
+                case "date":
+                    suggestions = _context.Posts
+                        .Where(p => p.PublishedDate.ToString().Contains(term))
+                        .Select(p => p.PublishedDate.ToString("yyyy-MM-dd"))
+                        .Distinct()
+                        .Take(10)
+                        .ToList();
+                    break;
+            }
+
+            return Json(suggestions);
+        }
 
         [HttpGet]
         public IActionResult MyPosts(int? categoryId)

@@ -7,15 +7,9 @@
 <link href="~/css/sidebar.css" rel="stylesheet" />
 
  
-<!-- Category Search -->
-<div class="my-4 text-center">
-    <div class="input-group w-50 mx-auto">
-        <input type="text" id="categorySearchInput" class="form-control" placeholder="Search category..." autocomplete="off" />
-        <button class="btn btn-success" id="searchCategoryBtn">
-            <i class="bi bi-search"></i> Search
-        </button>
-    </div>
-</div>
+<!-- Advanced Search -->
+@Html.Partial("_AdvancedSearchForm", new ViewDataDictionary(ViewData) { { "SearchAction", "FollowingPosts" } })
+
 
 <!-- Create Post Button -->
 <div class="text-end mb-4">
@@ -265,42 +259,7 @@
         }
 
 
-        // هنا كود البحث autocomplete حسب طلبك (موجود عندك)
-        const categories = @Html.Raw(Json.Serialize(ViewBag.Categories));
-
-        $("#categorySearchInput").autocomplete({
-            source: categories.map(c => ({ label: c.name, value: c.id })),
-            minLength: 0,
-            select: function (event, ui) {
-                window.location.href = "?categoryId=" + ui.item.value;
-            }
-        }).focus(function () {
-            $(this).autocomplete("search", "");
-        });
-
-        function searchCategory() {
-            const inputVal = $("#categorySearchInput").val().toLowerCase().trim();
-            if (!inputVal) return;
-
-            const match = categories.find(c => c.name.toLowerCase().includes(inputVal));
-
-            if (match) {
-                window.location.href = "?categoryId=" + match.id;
-            } else {
-                alert("No matching category found.");
-            }
-        }
-
-        $("#searchCategoryBtn").on("click", function () {
-            searchCategory();
-        });
-
-        $("#categorySearchInput").on("keypress", function (e) {
-            if (e.which === 13) {
-                searchCategory();
-                e.preventDefault();
-            }
-        });
+    
 
 
         //update page defult when make like
@@ -326,6 +285,9 @@
             $('#likesCount-' + postId).text(likesCount);
         });
 
-    </script>
+        const searchSuggestionsUrl = '@Url.Action("SearchSuggestions", "Post")';
 
-    }
+    </script>
+    <script src="~/js/Search.js"></script>
+
+}
