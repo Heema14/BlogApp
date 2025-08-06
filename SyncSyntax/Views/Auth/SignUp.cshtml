@@ -4,7 +4,10 @@
     ViewData["Title"] = "SignUp";
 }
 
- 
+
+<!--Crop Image-->
+<link href="https://unpkg.com/cropperjs/dist/cropper.min.css" rel="stylesheet" />
+<script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
 
 <style>
     body {
@@ -184,14 +187,31 @@
         </form>
     </div>
 </div>
+<!-- Cropper Modal -->
+<div class="modal fade" id="cropModal" tabindex="-1" aria-labelledby="cropModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h5 class="modal-title">Crop your profile image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="cropImage" style="max-width: 100%; max-height: 400px;" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="cropBtn">Crop & Use Image</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Scripts -->
 <script>
-    document.getElementById('profilePicInput').onchange = function () {
-        if (this.files && this.files[0]) {
-            document.getElementById('ProfilePicture').src = window.URL.createObjectURL(this.files[0]);
-        }
-    };
+    // document.getElementById('profilePicInput').onchange = function () {
+    //     if (this.files && this.files[0]) {
+    //         document.getElementById('ProfilePicture').src = window.URL.createObjectURL(this.files[0]);
+    //     }
+    // };
 
     function togglePassword(id, iconElement) {
         const input = document.getElementById(id);
@@ -207,8 +227,60 @@
         }
     }
 </script>
-
  
+
+<script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
+<script>
+    let cropper;
+    const profilePicInput = document.getElementById('profilePicInput');
+    const cropImage = document.getElementById('cropImage');
+    const previewImage = document.getElementById('ProfilePicture');
+
+    profilePicInput.onchange = function () {
+        if (this.files && this.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                cropImage.src = e.target.result;
+                new bootstrap.Modal(document.getElementById('cropModal')).show();
+
+                // Destroy previous cropper if exists
+                if (cropper) cropper.destroy();
+
+                cropper = new Cropper(cropImage, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    movable: true,
+                    zoomable: true,
+                    rotatable: false,
+                    scalable: false,
+                });
+            };
+            reader.readAsDataURL(this.files[0]);
+        }
+    };
+
+    document.getElementById('cropBtn').onclick = function () {
+        const canvas = cropper.getCroppedCanvas({
+            width: 300,
+            height: 300
+        });
+        canvas.toBlob(function (blob) {
+            // Show cropped image preview
+            previewImage.src = URL.createObjectURL(blob);
+
+            // Create a new File object to send in form
+            const fileInput = document.getElementById('profilePicInput');
+            const file = new File([blob], "cropped-profile.jpg", { type: 'image/jpeg' });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('cropModal')).hide();
+        });
+    };
+</script>
+
 
 <script src="~/js/site.js"></script>
 <partial name="_ValidationScriptsPartial" />

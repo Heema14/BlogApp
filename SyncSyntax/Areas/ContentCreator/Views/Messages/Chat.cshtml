@@ -8,7 +8,24 @@
 
 <div class="chat-container">
     <div class="chat-header">
-        
+
+        <div class="dropdown ms-auto">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Theme
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" data-theme="light">Light</a></li>
+                <li><a class="dropdown-item" href="#" data-theme="dark">Dark</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <label class="dropdown-item">
+                        Chat Background
+                        <input type="color" id="bgColorPicker" class="form-control form-control-color mt-1" title="Choose chat background color">
+                    </label>
+                </li>
+            </ul>
+        </div>
+
 
         <button id="toggleSelectModeBtn" class="btn btn-outline-primary">Select</button>
         <div id="bulkActions" style="display:none;" class="d-flex gap-2 align-items-center">
@@ -251,6 +268,37 @@
 
 
 
+    </script>
+    <script>
+        const chatContainer = document.querySelector('.chat-container');
+        const messageArea = document.querySelector('.chat-messages');
+        const themeOptions = document.querySelectorAll('[data-theme]');
+        const colorPicker = document.getElementById('bgColorPicker');
+
+        // تحميل الثيم والخلفية عند بدء الصفحة
+        const savedTheme = localStorage.getItem('chat-theme') || 'light';
+        const savedBg = localStorage.getItem('chat-bg');
+
+        chatContainer.classList.remove('light', 'dark');
+        chatContainer.classList.add(savedTheme);
+
+        if (savedBg) {
+            messageArea.style.backgroundColor = savedBg;
+            colorPicker.value = savedBg;
+        }
+
+        // تغيير الثيم
+        themeOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                const selectedTheme = option.dataset.theme;
+                chatContainer.classList.remove('light', 'dark');
+                chatContainer.classList.add(selectedTheme);
+                localStorage.setItem('chat-theme', selectedTheme);
+            });
+        });
+
+ 
     </script>
 
     <script src="~/js/Chat.js"></script>
