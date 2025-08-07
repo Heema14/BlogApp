@@ -9,6 +9,7 @@ using SyncSyntax.Models;
 using SyncSyntax.Models.Hubs;
 using SyncSyntax.Models.IServices;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace SyncSyntax.Areas.ContentCreator.Controllers
 {
@@ -182,6 +183,9 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
                     TempData["Success"] = "Post updated successfully ✏️";
                 }
+                 
+                var hashtags = ExtractHashtags(post.Content);
+                post.Tags = string.Join(",", hashtags);
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Profile", "Following", new { userId = post.UserId });
@@ -220,6 +224,10 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                         if (DateTime.TryParse(searchTerm, out var date))
                             postQuery = postQuery.Where(p => p.PublishedDate.Date == date.Date);
                         break;
+                    case "tag":
+                        postQuery = postQuery.Where(p => !string.IsNullOrEmpty(p.Tags) && p.Tags.Contains(searchTerm.ToLower()));
+                        break;
+
                 }
             }
 
@@ -259,9 +267,9 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             ViewBag.UnreadCount = _context.Messages
                 .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
 
-            ViewBag.Users = _context.Users.Select(u => new { id = u.Id, name = u.UserName }).ToList();
-            ViewBag.Categories = _context.Categories.Select(c => new { id = c.Id, name = c.Name }).ToList();
-            ViewBag.Posts = _context.Posts.Select(p => new { id = p.Id, title = p.Title }).ToList();
+            //ViewBag.Users = _context.Users.Select(u => new { id = u.Id, name = u.UserName }).ToList();
+            //ViewBag.Categories = _context.Categories.Select(c => new { id = c.Id, name = c.Name }).ToList();
+            //ViewBag.Posts = _context.Posts.Select(p => new { id = p.Id, title = p.Title }).ToList();
 
             return View(viewModelList);
         }
@@ -308,10 +316,23 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                         .Take(10)
                         .ToList();
                     break;
+
+                case "tag":
+                    suggestions = _context.Posts
+                        .Where(p => !string.IsNullOrEmpty(p.Tags))
+                        .AsEnumerable() // ✅ نقل التنفيذ للذاكرة
+                        .SelectMany(p => p.Tags.Split(','))
+                        .Where(tag => tag.StartsWith(term.ToLower()))
+                        .Distinct()
+                        .Take(10)
+                        .ToList();
+                    break;
+
             }
 
             return Json(suggestions);
         }
+
 
         [HttpGet]
         public IActionResult MyPosts(int? categoryId)
@@ -544,6 +565,21 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             }
         }
 
+        private List<string> ExtractHashtags(string content)
+        {
+            var hashtags = new List<string>();
+            if (!string.IsNullOrEmpty(content))
+            {
+                 
+                var matches = Regex.Matches(content, @"#\w+");
+                foreach (Match match in matches)
+                {
+                    
+                    hashtags.Add(match.Value.Substring(1).ToLower());
+                }
+            }
+            return hashtags.Distinct().ToList();
+        }
 
 
     }

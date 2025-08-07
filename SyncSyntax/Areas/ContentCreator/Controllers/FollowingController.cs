@@ -66,6 +66,10 @@ public class FollowingController : Controller
                     if (DateTime.TryParse(searchTerm, out var date))
                         postQuery = postQuery.Where(p => p.PublishedDate.Date == date.Date);
                     break;
+                case "tag":
+                    postQuery = postQuery.Where(p => !string.IsNullOrEmpty(p.Tags) && p.Tags.Contains(searchTerm.ToLower()));
+                    break;
+
             }
         }
 
@@ -100,9 +104,15 @@ public class FollowingController : Controller
         ViewBag.UnreadCount = _context.Messages
             .Count(m => m.ReceiverId == userId && !m.IsRead);
 
-        ViewBag.Users = _context.Users.Select(u => new { id = u.Id, name = u.UserName }).ToList();
-        ViewBag.Categories = _context.Categories.Select(c => new { id = c.Id, name = c.Name }).ToList();
-        ViewBag.Posts = _context.Posts.Select(p => new { id = p.Id, title = p.Title }).ToList();
+        //ViewBag.Users = _context.Users.Select(u => new { id = u.Id, name = u.UserName }).ToList();
+        //ViewBag.Categories = _context.Categories.Select(c => new { id = c.Id, name = c.Name }).ToList();
+        //ViewBag.Posts = _context.Posts.Select(p => new { id = p.Id, title = p.Title }).ToList();
+    //    ViewBag.Tags = _context.Posts
+    //.Where(p => !string.IsNullOrEmpty(p.Tags))
+    //.SelectMany(p => p.Tags.Split(','))
+    //.Distinct()
+    //.Select(tag => new { id = tag, name = "#" + tag })
+    //.ToList();
 
         return View(viewModelList);
     }
