@@ -1,0 +1,16 @@
+﻿@model List<SavedPost>
+
+<h2>Saved Posts</h2>
+
+@foreach (var item in Model)
+{
+    var post = item.Post;
+    <div class="card mb-3">
+        <div class="card-body">
+            <h4>@post.Title</h4>
+            <p>@post.Content.Substring(0, Math.Min(200, post.Content.Length))...</p>
+            <small>Saved at: @item.SavedAt.ToString("g")</small><br />
+            <a asp-action="Details" asp-route-id="@post.Id" class="btn btn-primary mt-2">View</a>
+        </div>
+    </div>
+}

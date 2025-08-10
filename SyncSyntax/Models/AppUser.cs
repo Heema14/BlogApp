@@ -41,6 +41,7 @@ namespace SyncSyntax.Models
 
         public ICollection<Following> Followers { get; set; }
         public ICollection<Notification> Notifications { get; set; }
-       
+        public ICollection<SavedPost> SavedPosts { get; set; }
+
     }
 }

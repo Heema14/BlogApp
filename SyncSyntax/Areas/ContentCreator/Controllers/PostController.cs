@@ -9,6 +9,7 @@ using SyncSyntax.Models;
 using SyncSyntax.Models.Hubs;
 using SyncSyntax.Models.IServices;
 using System.Security.Claims;
+using System.Text.RegularExpressions;
 
 namespace SyncSyntax.Areas.ContentCreator.Controllers
 {
@@ -92,6 +93,16 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         {
             var categories = _context.Categories.ToList();
             ViewBag.Categories = categories;
+            var currentUserId = _userManager.GetUserId(User);
+
+            var unreadNotificationsCount = _context.Notifications
+           .Where(n => n.UserId == currentUserId && !n.IsRead)
+           .Count();
+
+            ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
+            ViewBag.UnreadCount = _context.Messages
+                .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
+
             return View(new Post());
         }
 
@@ -101,13 +112,15 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             var post = await _context.Posts.FindAsync(id);
             if (post == null)
             {
-                return NotFound();
+                TempData["Error"] = "The post you’re trying to edit was not found.";
+                return RedirectToAction("Profile", "Following");
             }
 
             var categories = _context.Categories.ToList();
             ViewBag.Categories = categories;
             return View("Create", post);
         }
+
 
         [HttpPost]
         [RequestSizeLimit(5 * 1024 * 1024)]
@@ -126,13 +139,11 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                     post.UserId = currentUser.Id;
                 }
 
-
                 if (string.IsNullOrEmpty(post.Title) || string.IsNullOrEmpty(post.Content))
                 {
                     ModelState.AddModelError("", "Title and Content are required.");
                     return View(post);
                 }
-
 
                 if (ImageUrl != null && ImageUrl.Length > 0)
                 {
@@ -153,24 +164,28 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 }
                 else if (post.Id == 0 && string.IsNullOrEmpty(post.FeatureImagePath))
                 {
-
                     post.FeatureImagePath = "/images/uploadImgs/default-image.jpg";
                 }
-
 
                 if (post.Id == 0)
                 {
                     post.CreatedAt = DateTime.Now;
                     post.UpdatedAt = null;
                     post.Views = 0;
-
                     _context.Add(post);
+
+                    TempData["Success"] = "Post created successfully 🎉";
                 }
                 else
                 {
                     post.UpdatedAt = DateTime.Now;
                     _context.Update(post);
+
+                    TempData["Success"] = "Post updated successfully ✏️";
                 }
+                 
+                var hashtags = ExtractHashtags(post.Content);
+                post.Tags = string.Join(",", hashtags);
 
                 await _context.SaveChangesAsync();
                 return RedirectToAction("Profile", "Following", new { userId = post.UserId });
@@ -178,24 +193,42 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             catch (Exception ex)
             {
                 _logger.LogError($"Error saving post: {ex.Message}");
-                return StatusCode(500, "An error occurred while saving the post.");
+                TempData["Error"] = "An unexpected error occurred while saving the post. Please try again.";
+                return RedirectToAction("Profile", "Following");
             }
         }
-
-
         [HttpGet]
-        public IActionResult Explore(int? categoryId)
+        public IActionResult Explore(string searchTerm, string filterBy, int? categoryId)
         {
-
             var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             var postQuery = _context.Posts
                 .Include(p => p.Category)
+                .Include(p => p.User)
                 .Where(p => p.IsPublished);
 
-            if (categoryId.HasValue)
+            if (!string.IsNullOrEmpty(searchTerm))
             {
-                postQuery = postQuery.Where(p => p.CategoryId == categoryId);
+                switch (filterBy)
+                {
+                    case "title":
+                        postQuery = postQuery.Where(p => p.Title.Contains(searchTerm));
+                        break;
+                    case "category":
+                        postQuery = postQuery.Where(p => p.Category.Name.Contains(searchTerm));
+                        break;
+                    case "publisher":
+                        postQuery = postQuery.Where(p => p.UserName.Contains(searchTerm));
+                        break;
+                    case "date":
+                        if (DateTime.TryParse(searchTerm, out var date))
+                            postQuery = postQuery.Where(p => p.PublishedDate.Date == date.Date);
+                        break;
+                    case "tag":
+                        postQuery = postQuery.Where(p => !string.IsNullOrEmpty(p.Tags) && p.Tags.Contains(searchTerm.ToLower()));
+                        break;
+
+                }
             }
 
             var posts = postQuery
@@ -203,20 +236,23 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 .AsNoTracking()
                 .ToList();
 
-
             var postOwnerIds = posts.Select(p => p.UserId).Distinct().ToList();
-
 
             var followingIds = _context.Followings
                 .Where(f => f.FollowerId == currentUserId && postOwnerIds.Contains(f.FollowingId))
                 .Select(f => f.FollowingId)
                 .ToHashSet();
 
+            var savedPostIds = _context.SavedPosts
+                .Where(sp => sp.UserId == currentUserId && posts.Select(p => p.Id).Contains(sp.PostId))
+                .Select(sp => sp.PostId)
+                .ToHashSet();
 
             var viewModelList = posts.Select(post => new PostWithFollowStatusViewModel
             {
                 Post = post,
-                IsFollowing = followingIds.Contains(post.UserId)
+                IsFollowing = followingIds.Contains(post.UserId),
+                IsSaved = savedPostIds.Contains(post.Id)  // هذي الخاصية
             }).ToList();
 
             ViewData["Categories"] = _context.Categories.ToList();
@@ -225,46 +261,113 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 .Where(n => n.UserId == currentUserId && !n.IsRead)
                 .Count();
 
-
             ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
+           
+             
+            ViewBag.UnreadCount = _context.Messages
+                .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
+
+            //ViewBag.Users = _context.Users.Select(u => new { id = u.Id, name = u.UserName }).ToList();
+            //ViewBag.Categories = _context.Categories.Select(c => new { id = c.Id, name = c.Name }).ToList();
+            //ViewBag.Posts = _context.Posts.Select(p => new { id = p.Id, title = p.Title }).ToList();
 
             return View(viewModelList);
         }
 
         [HttpGet]
+        public JsonResult SearchSuggestions(string term, string filterBy)
+        {
+            var suggestions = new List<string>();
+
+            switch (filterBy)
+            {
+                case "title":
+                    suggestions = _context.Posts
+                        .Where(p => p.Title.Contains(term))
+                        .Select(p => p.Title)
+                        .Distinct()
+                        .Take(10)
+                        .ToList();
+                    break;
+
+                case "category":
+                    suggestions = _context.Categories
+                        .Where(c => c.Name.Contains(term))
+                        .Select(c => c.Name)
+                        .Distinct()
+                        .Take(10)
+                        .ToList();
+                    break;
+
+                case "publisher":
+                    suggestions = _context.Users
+                        .Where(u => u.UserName.Contains(term))
+                        .Select(u => u.UserName)
+                        .Distinct()
+                        .Take(10)
+                        .ToList();
+                    break;
+
+                case "date":
+                    suggestions = _context.Posts
+                        .Where(p => p.PublishedDate.ToString().Contains(term))
+                        .Select(p => p.PublishedDate.ToString("yyyy-MM-dd"))
+                        .Distinct()
+                        .Take(10)
+                        .ToList();
+                    break;
+
+                case "tag":
+                    suggestions = _context.Posts
+                        .Where(p => !string.IsNullOrEmpty(p.Tags))
+                        .AsEnumerable() // ✅ نقل التنفيذ للذاكرة
+                        .SelectMany(p => p.Tags.Split(','))
+                        .Where(tag => tag.StartsWith(term.ToLower()))
+                        .Distinct()
+                        .Take(10)
+                        .ToList();
+                    break;
+
+            }
+
+            return Json(suggestions);
+        }
+
+
+        [HttpGet]
         public IActionResult MyPosts(int? categoryId)
         {
-            // الحصول على اسم المستخدم من المصادقة
-            var userName = User.Identity.Name; // استخدم User.Identity.Name للحصول على الـ UserName من الـ Claims
+           
+            var userName = User.Identity.Name; 
 
             if (string.IsNullOrEmpty(userName))
             {
-                // إذا لم يكن المستخدم مسجل دخول
+               
                 _logger.LogWarning("User is not authenticated.");
-                return RedirectToAction("Login", "Account"); // إعادة التوجيه إلى صفحة تسجيل الدخول
+                return RedirectToAction("Login", "Account"); 
             }
 
-            // استعلام البوستات الخاصة بالمستخدم بناءً على UserName
+            
             var postQuery = _context.Posts
-                                    .Where(p => p.UserName == userName) // تصفية البوستات بناءً على الـ UserName
-                                    .Include(p => p.Category) // إذا كنت بحاجة لعرض الفئة
+                                    .Where(p => p.UserName == userName) 
+                                    .Include(p => p.Category) 
                                     .AsQueryable();
 
             if (categoryId.HasValue)
             {
-                // تصفية إضافية حسب الـ CategoryId
+              
                 postQuery = postQuery.Where(p => p.CategoryId == categoryId);
             }
 
-            var posts = postQuery.AsNoTracking().ToList(); // جلب البوستات دون تتبع التغييرات
+            var posts = postQuery.AsNoTracking().ToList(); 
 
-            // إرسال الفئات إلى الـ View (إذا كنت بحاجة إليها لعرضها في قائمة الفئات مثلاً)
+            
             ViewBag.Categories = _context.Categories
                 .AsNoTracking()
                 .Select(c => new { id = c.Id, name = c.Name })
                 .ToList();
 
-            return View(posts); // عرض البوستات في الـ View
+            return View(posts); 
         }
 
         public async Task<IActionResult> Detail(int id)
@@ -308,11 +411,16 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 UserLikedPost = userLikedPost
             };
 
-            // التأكد من أن الـ Request هو Ajax
+ 
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
-                return PartialView("PostDetail", viewModel);  // ارجع الـ Partial View
+                post.Views += 1;
+                _context.Posts.Update(post);
+                await _context.SaveChangesAsync();
+
+                return PartialView("PostDetail", viewModel);  
             }
+
 
             return View(viewModel);
         }
@@ -324,20 +432,20 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             if (post == null)
             {
-                return NotFound();
+                TempData["Error"] = "Post not found. It may have already been deleted.";
+                return RedirectToAction("Profile", "Following");
             }
-
 
             _context.Posts.Remove(post);
             _context.SaveChanges();
 
-
+            TempData["Success"] = "Post deleted successfully.";
             return RedirectToAction("Profile", "Following");
         }
 
 
         [HttpPost]
-        [Authorize]
+
         public async Task<IActionResult> Like(int postId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -388,6 +496,91 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 userLiked = userLiked
             });
         }
+        public async Task<IActionResult> Saved()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var savedPosts = await _context.SavedPosts
+                .Where(sp => sp.UserId == userId)
+                .Include(sp => sp.Post)
+                    .ThenInclude(p => p.Category)
+                .Include(sp => sp.Post)
+                    .ThenInclude(p => p.Comments)
+                .ToListAsync();
+            var currentUserId = _userManager.GetUserId(User);
+
+            var unreadNotificationsCount = _context.Notifications
+           .Where(n => n.UserId == currentUserId && !n.IsRead)
+           .Count();
+
+            ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
+            ViewBag.UnreadCount = _context.Messages
+                .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
+            return View(savedPosts);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ToggleSave(int postId, string returnPage)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var postExists = await _context.Posts.AnyAsync(p => p.Id == postId);
+            if (!postExists)
+            {
+                TempData["Error"] = "Post not found.";
+                return RedirectToAction("Explore", "Post", new { area = "ContentCreator" });
+            }
+
+            var existing = await _context.SavedPosts
+                .FirstOrDefaultAsync(sp => sp.PostId == postId && sp.UserId == userId);
+
+            if (existing != null)
+            {
+                var toRemove = new SavedPost { PostId = postId, UserId = userId };
+                _context.SavedPosts.Attach(toRemove);
+                _context.SavedPosts.Remove(toRemove);
+
+                TempData["Info"] = "Post removed from your saved list.";
+            }
+            else
+            {
+                var saved = new SavedPost { UserId = userId, PostId = postId };
+                _context.SavedPosts.Add(saved);
+
+                TempData["Success"] = "Post saved successfully!";
+            }
+
+            await _context.SaveChangesAsync();
+
+            if (returnPage == "FollowingPosts")
+            {
+                return RedirectToAction("FollowingPosts", "Following", new { area = "ContentCreator" });
+            }
+            else if (returnPage == "Explore")
+            {
+                return RedirectToAction("Explore", "Post", new { area = "ContentCreator" });
+            }
+            else
+            {
+                return RedirectToAction("Detail", "Post", new { area = "ContentCreator", id = postId });
+            }
+        }
+
+        private List<string> ExtractHashtags(string content)
+        {
+            var hashtags = new List<string>();
+            if (!string.IsNullOrEmpty(content))
+            {
+                 
+                var matches = Regex.Matches(content, @"#\w+");
+                foreach (Match match in matches)
+                {
+                    
+                    hashtags.Add(match.Value.Substring(1).ToLower());
+                }
+            }
+            return hashtags.Distinct().ToList();
+        }
+
 
     }
 }

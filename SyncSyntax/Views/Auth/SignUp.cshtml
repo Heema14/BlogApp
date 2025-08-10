@@ -4,129 +4,283 @@
     ViewData["Title"] = "SignUp";
 }
 
+
+<!--Crop Image-->
+<link href="https://unpkg.com/cropperjs/dist/cropper.min.css" rel="stylesheet" />
+<script src="https://unpkg.com/cropperjs/dist/cropper.min.js"></script>
+
 <style>
-    .profile-picture {
-        height: 300px;
-        width: 300px;
-        aspect-ratio: 1 / 1;
-        object-fit: cover;
+    body {
+        background-color: #ffffff;
+        font-family: 'Segoe UI', sans-serif;
+        margin: 0;
+        min-height: 100vh;
+    }
+
+    .form-container {
+        max-width: 1000px;
+/*         height: 90vh;
+        overflow-y: auto; */
+        margin: 30px auto;
+        background-color: #fff;
+        border-radius: 1.5rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        padding: 2rem;
+    }
+
+    .profile-picture-container {
+        display: inline-block;
+        padding: 3px;
+        background: rgb(24, 191, 239) !important;
+        
         border-radius: 50%;
-        border: 2px solid #0d6efd;
-        cursor: pointer;
-        transition: box-shadow 0.3s ease;
+    }
+
+    .profile-picture {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        object-fit: cover;
     }
 
         .profile-picture:hover {
-            box-shadow: 0 0 15px #0d6efdaa;
+            transform: scale(1.05);
+            cursor: pointer;
         }
+
+    .form-label {
+        font-weight: 600;
+        color: rgb(24, 191, 239) !important;
+        
+    }
+
+    input.form-control {
+        border-radius: 8px;
+     /*    background-color: #f8f9fa; */
+    }
+
+   
+
+    .btn-outline-secondary {
+        border-radius: 12px;
+        padding: 12px 24px;
+        font-weight: 600;
+    }
 </style>
 
-<div class="container my-5">
-    <div class="card shadow-lg rounded-4">
-        <div class="card-header bg-primary text-white text-center py-3 rounded-top-4">
-            <h3 class="mb-0">Create Your Account</h3>
-        </div>
-        <div class="card-body p-4">
-            <form asp-action="SignUp" enctype="multipart/form-data" method="post" novalidate>
-                <div class="row gy-3">
-                    <div class="col-md-6">
-                        <div class="mb-3">
-                            <label asp-for="FirstName" class="form-label"></label>
-                            <input asp-for="FirstName" class="form-control" placeholder="first name..." />
-                            <span asp-validation-for="FirstName" class="text-danger"></span>
-                        </div>
+<div class="container">
+ 
 
-                        <div class="mb-3">
-                            <label asp-for="LastName" class="form-label"></label>
-                            <input asp-for="LastName" class="form-control" placeholder="last name..." />
-                            <span asp-validation-for="LastName" class="text-danger"></span>
-                        </div>
+    <div class="form-container">
+        <form asp-action="SignUp" enctype="multipart/form-data" method="post" novalidate>
+            <div class="position-relative text-center mb-4">
+                <a asp-action="SignIn" asp-controller="Auth" class="position-absolute start-0 top-50 translate-middle-y ms-3 global-color">
+					<h1><i class="bi bi-arrow-left-circle"></i></h1>
+                </a>
 
-                        <div class="mb-3">
-                            <label asp-for="MajorName" class="form-label"></label>
-                            <input asp-for="MajorName" class="form-control" placeholder="Major..." />
-                            <span asp-validation-for="MajorName" class="text-danger"></span>
-                        </div>
-
-                        <div>
-                            <label asp-for="Gender" class="form-label"></label>
-                            <div class="mb-3">
-                                @foreach (var gender in Enum.GetValues(typeof(Gender)))
-                                {
-                                    <div class="form-check form-check-inline">
-                                        <input class="form-check-input" type="radio" name="Gender" value="@gender" required />
-                                        <label class="form-check-label">@gender</label>
-                                    </div>
-                                }
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="DateOfBirth" class="form-label"></label>
-                            <input type="date" asp-for="DateOfBirth" class="form-control" placeholder="date of birth..." />
-                            <span asp-validation-for="DateOfBirth" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="Email" class="form-label"></label>
-                            <input asp-for="Email" class="form-control" placeholder="Email..." />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3">
-                            <label asp-for="PhoneNumber" class="form-label"></label>
-                            <input asp-for="PhoneNumber" class="form-control" placeholder="Phone..." />
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                        </div>
-
-                        <div class="mb-3 position-relative">
-                            <label asp-for="Password" class="form-label"></label>
-                            <input asp-for="Password" type="password" class="form-control" placeholder="Password..." id="registerPassword" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
-
-                            <span onclick="togglePassword('registerPassword', this)" class="position-absolute translate-middle-y pe-3" style="cursor: pointer; top: 66%; right: 4px;">
-                                <i class="bi bi-eye fs-5 text-black"></i>
-                            </span>
-                        </div>
+                <h3 class="fw-bold d-inline-block global-color">
+                      Create New Account
+                </h3>
+            </div>
 
 
-                        <div class="mb-3 position-relative">
-                            <label asp-for="ConfirmPassword" class="form-label"></label>
-                            <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm Password..." id="ConfirmPassword" />
-                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            <div class="row gy-3">
+                <!-- ÕæÑÉ ÇáãáÝ -->
+                <div class="col-12 d-flex flex-column align-items-center">
+                    <input asp-for="ProfilePicture" type="file" id="profilePicInput" accept=".png,.jpg,.jpeg" class="d-none" />
+                    <label for="profilePicInput" class="mb-2 profile-picture-container">
+                        <img id="ProfilePicture" src="~/images/uploadImgs/default-image.jpg" alt="Profile Image" class="profile-picture" loading="lazy" />
+                    </label>
+                    <small class="text-muted mb-2">Click to upload profile picture (max 2MB)</small>
+                    <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+                </div>
 
-                            <span onclick="togglePassword('ConfirmPassword', this)" class="position-absolute translate-middle-y pe-3" style="cursor: pointer; top: 66%; right: 4px;">
-                                <i class="bi bi-eye fs-5 text-black"></i>
-                            </span>
-                        </div>
-
-                        <div class="mt-4 d-flex align-items-center">
-                            <button type="submit" class="btn btn-primary me-2">Sign Up</button>
-                            <a asp-action="SignIn" asp-controller="Auth" class="btn btn-secondary">Go to login</a>
-                        </div>
-                    </div>
-
-                    <div class="col-md-6 d-flex flex-column align-items-center">
-                        <input asp-for="ProfilePicture" type="file" id="profilePicInput" accept=".png,.jpg,.jpeg" class="d-none" />
-                        <label for="profilePicInput" class="mb-0">
-                            <img id="ProfilePicture" src="~/images/uploadImgs/default-image.jpg" alt="Profile Image" class="profile-picture" loading="lazy" />
-                        </label>
-                        <small class="text-muted mt-2">Click the image to upload your profile picture (max 2MB)</small>
-                        <span asp-validation-for="ProfilePicture" class="text-danger mt-1"></span>
+                <!-- ÇáÇÓã æÇááÞÈ -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="FirstName" class="form-label"></label>
+                        <input asp-for="FirstName" class="form-control" placeholder="First name..." />
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
                     </div>
                 </div>
-            </form>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="LastName" class="form-label"></label>
+                        <input asp-for="LastName" class="form-control" placeholder="Last name..." />
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- ÇáÊÎÕÕ æÊÇÑíÎ ÇáãíáÇÏ -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="MajorName" class="form-label"></label>
+                        <input asp-for="MajorName" class="form-control" placeholder="Major..." />
+                        <span asp-validation-for="MajorName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="DateOfBirth" class="form-label"></label>
+                        <input type="date" asp-for="DateOfBirth" class="form-control" />
+                        <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                    </div>
+                </div>
+
+             
+
+                <!-- ÇáÈÑíÏ æÇáåÇÊÝ -->
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="Email" class="form-label"></label>
+                        <input asp-for="Email" class="form-control" placeholder="Email..." />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber" class="form-label"></label>
+                        <input asp-for="PhoneNumber" class="form-control" placeholder="Phone..." />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <!-- ßáãÉ ÇáãÑæÑ æÇáÊÃßíÏ -->
+                <div class="col-md-6 mb-3 position-relative">
+                    <label asp-for="Password" class="form-label"></label>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Password..." id="registerPassword" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                    <span onclick="togglePassword('registerPassword', this)" class="position-absolute translate-middle-y pe-3" style="cursor: pointer; top: 66%; right: 4px;">
+                        <i class="bi bi-eye fs-5 text-black"></i>
+                    </span>
+                </div>
+
+                <div class="col-md-6 mb-3 position-relative">
+                    <label asp-for="ConfirmPassword" class="form-label"></label>
+                    <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="Confirm Password..." id="ConfirmPassword" />
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                    <span onclick="togglePassword('ConfirmPassword', this)" class="position-absolute translate-middle-y pe-3" style="cursor: pointer; top: 66%; right: 4px;">
+                        <i class="bi bi-eye fs-5 text-black"></i>
+                    </span>
+                </div>
+                <!-- ÇáäæÚ -->
+                <div class="col-12">
+                    <label asp-for="Gender" class="form-label d-block text-primary">Gender</label>
+                    <div class="text-primary">
+                        @foreach (var gender in Enum.GetValues(typeof(Gender)))
+                        {
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" id="gender_@gender" name="Gender" value="@gender" required />
+                                <label class="form-check-label me-3" for="gender_@gender">@gender</label>
+                            </div>
+                        }
+                    </div>
+                </div>
+                <!-- Sign Up Button -->
+                <div class="text-center">
+                    <button type="submit" class="modern-btn flex-fill">Sign Up</button>
+                 </div>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Cropper Modal -->
+<div class="modal fade" id="cropModal" tabindex="-1" aria-labelledby="cropModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h5 class="modal-title">Crop your profile image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="cropImage" style="max-width: 100%; max-height: 400px;" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="cropBtn">Crop & Use Image</button>
+            </div>
         </div>
     </div>
 </div>
 
+<!-- Scripts -->
 <script>
-    document.getElementById('profilePicInput').onchange = function () {
+    // document.getElementById('profilePicInput').onchange = function () {
+    //     if (this.files && this.files[0]) {
+    //         document.getElementById('ProfilePicture').src = window.URL.createObjectURL(this.files[0]);
+    //     }
+    // };
+
+    function togglePassword(id, iconElement) {
+        const input = document.getElementById(id);
+        const icon = iconElement.querySelector('i');
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("bi-eye");
+            icon.classList.add("bi-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.remove("bi-eye-slash");
+            icon.classList.add("bi-eye");
+        }
+    }
+</script>
+ 
+
+<script src="https://unpkg.com/cropperjs@1.5.13/dist/cropper.min.js"></script>
+<script>
+    let cropper;
+    const profilePicInput = document.getElementById('profilePicInput');
+    const cropImage = document.getElementById('cropImage');
+    const previewImage = document.getElementById('ProfilePicture');
+
+    profilePicInput.onchange = function () {
         if (this.files && this.files[0]) {
-            document.getElementById('ProfilePicture').src = window.URL.createObjectURL(this.files[0]);
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                cropImage.src = e.target.result;
+                new bootstrap.Modal(document.getElementById('cropModal')).show();
+
+                // Destroy previous cropper if exists
+                if (cropper) cropper.destroy();
+
+                cropper = new Cropper(cropImage, {
+                    aspectRatio: 1,
+                    viewMode: 1,
+                    movable: true,
+                    zoomable: true,
+                    rotatable: false,
+                    scalable: false,
+                });
+            };
+            reader.readAsDataURL(this.files[0]);
         }
     };
+
+    document.getElementById('cropBtn').onclick = function () {
+        const canvas = cropper.getCroppedCanvas({
+            width: 300,
+            height: 300
+        });
+        canvas.toBlob(function (blob) {
+            // Show cropped image preview
+            previewImage.src = URL.createObjectURL(blob);
+
+            // Create a new File object to send in form
+            const fileInput = document.getElementById('profilePicInput');
+            const file = new File([blob], "cropped-profile.jpg", { type: 'image/jpeg' });
+            const dataTransfer = new DataTransfer();
+            dataTransfer.items.add(file);
+            fileInput.files = dataTransfer.files;
+
+            // Close modal
+            bootstrap.Modal.getInstance(document.getElementById('cropModal')).hide();
+        });
+    };
 </script>
+
 
 <script src="~/js/site.js"></script>
 <partial name="_ValidationScriptsPartial" />

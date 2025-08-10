@@ -18,6 +18,12 @@ namespace SyncSyntax.Data
         public DbSet<Following> Followings { get; set; }
         public DbSet<Notification> Notifications { get; set; }
         public DbSet<Message> Messages { get; set; }
+        public DbSet<MessageDeletion> MessageDeletions { get; set; }
+        public DbSet<MessageReaction> MessageReactions { get; set; }
+        public DbSet<SavedPost> SavedPosts { get; set; }
+
+        public DbSet<ArchivedMessage> ArchivedMessages { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -45,6 +51,12 @@ namespace SyncSyntax.Data
                 .HasOne(pl => pl.User)
                 .WithMany(u => u.PostLikes)
                 .HasForeignKey(pl => pl.UserId);
+
+            modelBuilder.Entity<Post>()
+                        .HasOne(p => p.User)
+                        .WithMany()
+                        .HasForeignKey(p => p.UserId)
+                        .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<AppUser>()
                 .Property(u => u.Gender)

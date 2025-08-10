@@ -29,3 +29,96 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+.global-color {
+    color: rgb(24, 191, 239) !important;
+}
+
+
+.modern-btn {
+    background: linear-gradient(135deg, #18bfe7, #0ea5e9);
+    color: white;
+    font-size: 16px;
+    font-weight: 600;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    text-align: center;
+    display: inline-block;
+    text-decoration: none;
+    cursor: pointer;
+    max-width: 100%;
+    box-sizing: border-box;
+}
+
+    /* Hover effect */
+    .modern-btn:hover {
+        background: linear-gradient(135deg, #0ea5e9, #18bfe7);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+    /* Active (click) effect */
+    .modern-btn:active {
+        transform: scale(0.98);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+/* Responsive behavior for small screens */
+@media (max-width: 576px) {
+    .modern-btn {
+        width: 100%;
+        font-size: 14px;
+        padding: 10px 20px;
+    }
+}
+
+.icon-expand-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: rgb(24, 191, 239) !important;
+    border: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0px 0px 0px 4px rgba(180, 160, 255, 0.253);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    overflow: hidden;
+    position: relative;
+    color: white;
+    text-decoration: none;
+}
+
+    .icon-expand-btn .svgIcon {
+        font-size: 18px;
+        transition: transform 0.3s ease;
+    }
+
+    .icon-expand-btn:hover {
+        width: 140px;
+        border-radius: 50px;
+    }
+
+        .icon-expand-btn:hover .svgIcon {
+            transform: translateY(-200%);
+        }
+
+    .icon-expand-btn::before {
+        content: attr(data-hover-text);
+        position: absolute;
+        color: white;
+        font-size: 0;
+        bottom: -10px;
+        transition: all 0.3s ease;
+        white-space: nowrap;
+    }
+
+    .icon-expand-btn:hover::before {
+        font-size: 14px;
+        bottom: unset;
+    }

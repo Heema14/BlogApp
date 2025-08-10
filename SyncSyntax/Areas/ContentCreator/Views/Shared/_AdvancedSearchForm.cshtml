@@ -1,0 +1,35 @@
+﻿<style>
+    .autocomplete-loading {
+        background: url('https://i.stack.imgur.com/MnyxU.gif') no-repeat right center;
+        background-size: 20px 20px;
+        background-origin: content-box;
+    }
+
+</style>
+
+
+@{
+    var selectedFilter = Context.Request.Query["filterBy"].ToString();
+}
+<form method="get" asp-action="@(ViewData["SearchAction"] ?? "Explore")">
+
+    <div class="input-group w-75 mx-auto">
+        <input type="text" id="searchInput" name="searchTerm" class="form-control" placeholder="Search..." />
+        <button type="button" id="clearSearch" class="btn btn-outline-secondary">
+            <i class="bi bi-x-circle"></i>
+        </button>
+
+        <select name="filterBy" class="form-select">
+            <option value="title" selected="@(selectedFilter == "title")">Title</option>
+            <option value="category" selected="@(selectedFilter == "category")">Category</option>
+            <option value="publisher" selected="@(selectedFilter == "publisher")">Publisher</option>
+            <option value="date" selected="@(selectedFilter == "date")">Published Date</option>
+            <option value="tag" selected="@(selectedFilter == "tag")">Tag</option>
+
+        </select>
+
+        <button type="submit" class="modern-btn">
+            <i class="bi bi-search"></i> Search
+        </button>
+    </div>
+</form>

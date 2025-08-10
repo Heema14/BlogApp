@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Http.Features;
+﻿using Hangfire;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using StackExchange.Redis;
 using SyncSyntax.Data;
 using SyncSyntax.Hubs;
 using SyncSyntax.Models;
@@ -65,8 +67,26 @@ builder.Services.ConfigureApplicationCookie(options =>
 builder.Services.AddScoped<IUploadFileService, UploadFileService>();
 
 builder.Services.AddSignalR();
+builder.Services.AddHangfire(config =>
+    config.UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddHangfireServer();
+builder.Services.AddScoped<ArchiveService>();
+builder.Services.AddMemoryCache();
+
+builder.Services.AddScoped<InMemoryChatCacheService>();
+
 
 var app = builder.Build();
+using (var scope = app.Services.CreateScope())
+{
+    var recurringJobs = scope.ServiceProvider.GetRequiredService<IRecurringJobManager>();
+    recurringJobs.AddOrUpdate<ArchiveService>(
+        "archive-old-messages",
+        job => job.ArchiveOldMessages(),
+        Cron.Daily);
+}
+
 
 try
 {
@@ -91,6 +111,8 @@ app.UseHttpsRedirection();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseHangfireDashboard(); 
+
 app.MapStaticAssets();
 
 
@@ -116,5 +138,6 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}"
     );
 
+ 
 
 app.Run();

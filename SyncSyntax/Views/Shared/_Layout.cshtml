@@ -5,26 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - BlogApp</title>
     <script type="importmap"></script>
-
+    <link href="~/css/site.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/lib/bootswatch/bootstrap.min.css" />
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+ 
 </head>
 <body>
 
-  @*   <header>
-        <partial name="_Navbar.cshtml" />
-    </header>
- *@
+
     <div class="container">
         <main role="main" class="pb-3 mt-3">
             @RenderBody()
+            
         </main>
     </div>
 
-    <partial name="_Footer.cshtml" />
 
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -35,5 +37,31 @@
 
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        toastr.options = {
+            "closeButton": true,
+            "positionClass": "toast-top-right",
+            "showDuration": "300",
+            "hideDuration": "1000",
+            "timeOut": "3000"
+        };
+
+        $(function () {
+        @if (TempData["Success"] != null)
+        {
+            <text>toastr.success("@TempData["Success"]");</text>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <text>toastr.error("@TempData["Error"]");</text>
+        }
+        @if (TempData["Info"] != null)
+        {
+            <text>toastr.info("@TempData["Info"]");</text>
+        }
+        });
+    </script>
+
 </body>
 </html>
+

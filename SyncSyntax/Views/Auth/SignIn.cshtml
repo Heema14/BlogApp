@@ -1,79 +1,98 @@
-﻿@model SignInViewModel;
+﻿ @model SignInViewModel;
 
 @{
     ViewData["Title"] = "SignIn";
 }
 
-<style>
-    .divider:after,
-    .divider:before {
-        content: "";
-        flex: 1;
-        height: 1px;
-        background: #eee;
-    }
+ 
+<div id="signin-wrapper" class="d-flex flex-column flex-md-row align-items-center justify-content-center min-vh-100 bg-white overflow-hidden">
+    <!-- LEFT FORM -->
+    <div class="col-md-5 bg-white rounded-4 shadow p-4 m-2 z-2">
+        <form asp-action="SignIn" method="post" novalidate>
 
-    input::placeholder {
-        font-size: 14px;
-    }
-</style>
-
-<section class="d-flex justify-content-center align-items-center flex-column py-5">
-    <div class="container-fluid">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-md-9 col-lg-6 col-xl-5">
-                <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.webp"
-                     class="img-fluid" alt="Sample image">
+            <!-- Email or Username -->
+            <div class="form-group mb-4 position-relative">
+                <label asp-for="EmailOrUsername" class="form-label fw-semibold text-secondary">Email or Username</label>
+                <div class="position-relative">
+                    <input asp-for="EmailOrUsername"
+                           class="form-control form-control-lg rounded-3 border-0 ps-5"
+                           placeholder="Enter your email or user name"
+                           style="font-size: 15px; background-color: #f8f9fa;" />
+                    <i class="bi bi-envelope-fill position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary fs-5"></i>
+                </div>
+                <span asp-validation-for="EmailOrUsername" class="text-danger small"></span>
             </div>
 
-            <div class="col-md-8 col-lg-6 col-xl-4 offset-xl-1">
-                <form asp-action="SignIn" method="post" novalidate>
+            <!-- Password -->
+            <div class="form-group mb-4 position-relative">
+                <label asp-for="Password" class="form-label fw-semibold text-secondary">Password</label>
+                <div class="position-relative">
+                    <input asp-for="Password"
+                           type="password"
+                           class="form-control form-control-lg rounded-3 border-0 ps-5 pe-5"
+                           placeholder="Enter your password"
+                           id="registerPassword"
+                           style="font-size: 15px; background-color: #f8f9fa;" />
 
-                    <div class="form-outline mb-4">
-                        <label asp-for="EmailOrUsername" class="form-label"></label>
-                        <input asp-for="EmailOrUsername" class="form-control form-control-lg" placeholder="Enter your email or user name" style="font-size: 16px;font-weight: 600;" />
-                        <span asp-validation-for="EmailOrUsername" class="text-danger"></span>
-                    </div>
+                    <!-- Left Icon -->
+                    <i class="bi bi-lock-fill position-absolute top-50 start-0 translate-middle-y ms-3 text-secondary fs-5"></i>
 
-                    <div class="form-outline mb-3 position-relative">
-                        <label asp-for="Password" class="form-label"></label>
-                        <input asp-for="Password" type="password" class="form-control form-control-lg"
-                               placeholder="Enter your password" id="registerPassword" style="font-size: 16px;" />
-                        <span asp-validation-for="Password" class="text-danger"></span>
-
-                        <span onclick="togglePassword('registerPassword', this)" class="position-absolute translate-middle-y pe-3"
-                              style="cursor: pointer; top: 70%; right: 4px;">
-                            <i id="toggleIcon" class="bi bi-eye fs-5 text-black"></i>
-                        </span>
-                    </div>
-
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="form-check mb-0">
-                            <input class="form-check-input me-2" type="checkbox" id="rememberMe" />
-                            <label class="form-check-label" for="rememberMe">
-                                Remember me
-                            </label>
-                        </div>
-                        <a href="#" class="text-body">Forgot password?</a>
-                    </div>
-
-                    <div class="text-center text-lg-start mt-4 pt-2">
-                        <button type="submit" class="btn btn-primary btn-lg px-4 w-100" style="font-size: 16px;">
-                            Sign In
-                        </button>
-
-                        <p class="small fw-bold mt-3 pt-1 mb-0 text-center">
-                            Don't have an account?
-                            <a asp-action="SignUp" class="link-danger">Register</a>
-                        </p>
-                    </div>
-
-                </form>
+                    <!-- Show Password Toggle -->
+                    <span onclick="togglePassword('registerPassword', this)"
+                          class="position-absolute top-50 end-0 translate-middle-y me-3"
+                          style="cursor: pointer;">
+                        <i id="toggleIcon" class="bi bi-eye text-secondary fs-5"></i>
+                    </span>
+                </div>
+                <span asp-validation-for="Password" class="text-danger small"></span>
             </div>
-        </div>
+
+            <!-- Remember & Forgot -->
+            <div class="d-flex justify-content-between align-items-center mb-4 text-primary">
+                <div class="form-check">
+                    <input asp-for="RememberMe" class="form-check-input" type="checkbox" id="rememberMe" />
+                    <label class="form-check-label" for="rememberMe">Remember me</label>
+                </div>
+                <a href="#" class="text-decoration-none small ">Forgot password?</a>
+            </div>
+
+            <!-- Sign In Button -->
+            <div class="text-center">
+                <button type="submit" class="modern-btn w-50">Sign In</button>
+            </div>
+
+            <!-- Register -->
+            <p class="small fw-bold mt-4 text-center text-primary">
+                Don't have an account?
+                <a asp-action="SignUp" class="link-danger text-decoration-none">Register</a>
+            </p>
+
+        </form>
     </div>
 
-</section>
+
+    <!-- RIGHT IMAGES COLLAGE -->
+    <div class="col-md-6 position-relative d-none d-md-block">
+        <div class="collage-container position-relative">
+            <img src="/images/a1.jpg" class="collage-img img1" />
+            <img src="/images/a2.jpg" class="collage-img img2" />
+            <img src="/images/a4.jpg" class="collage-img img3" />
+            <img src="/images/a3.jpg" class="collage-img img4" />
+        </div>
+    </div>
+</div>
+
+
+<script>
+    window.addEventListener("DOMContentLoaded", () => {
+        setTimeout(() => {
+            document.querySelector(".collage-container")?.classList.add("loaded");
+        }, 800);
+    });
+</script>
+
+
 
 <partial name="_ValidationScriptsPartial" />
 <script src="~/js/site.js"></script>
+<link rel="stylesheet" href="/css/SignIn.css" />

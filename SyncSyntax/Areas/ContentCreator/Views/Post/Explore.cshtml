@@ -5,16 +5,15 @@
     ViewData["Title"] = "Blog Posts";
 }
 <link href="~/css/sidebar.css" rel="stylesheet" />
+ 
 
-<!-- Category Search -->
-<div class="my-4 text-center">
-    <div class="input-group w-50 mx-auto">
-        <input type="text" id="categorySearchInput" class="form-control" placeholder="Search category..." autocomplete="off" />
-        <button class="btn btn-success" id="searchCategoryBtn">
-            <i class="bi bi-search"></i> Search
-        </button>
-    </div>
-</div>
+
+<!-- Advanced Search -->
+@Html.Partial("_AdvancedSearchForm", new ViewDataDictionary(ViewData) { { "SearchAction", "Explore" } })
+
+
+ 
+
 
 
 @if (!Model.Any())
@@ -52,20 +51,29 @@ else
                     <div class="card-body">
                         <!-- User Info and Actions -->
                         <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div class="d-flex align-items-center gap-2">
+                            <a asp-action="Profile" asp-controller="Following" asp-route-userId="@post.Post.UserId" class="d-flex align-items-center gap-2 text-decoration-none text-dark">
                                 <img src="@post.Post.UserImageUrl" alt="User" class="rounded-circle" style="width: 30px; height: 30px;">
                                 <span>@post.Post.UserName</span>
-                            </div>
+                            </a>
 
                             <div class="d-flex align-items-center gap-2 actions">
+                                <button class="icon-expand-btn save-toggle-btn"
+                                        data-hover-text="@(post.IsSaved ? "Un Save" : "Save")"
+                                        data-post-id="@post.Post.Id"
+                                        data-return-page="FollowingPosts"
+                                        aria-label="@(post.IsSaved ? "Unsave post" : "Save post")">
+                                    <i class="bi svgIcon @(post.IsSaved ? "bi-bookmark-fill" : "bi-bookmark")"></i>
+                                </button>
+
+
                                 @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != post.Post.UserId)
                                 {
                                     if (post.IsFollowing)
                                     {
                                         <form asp-controller="Following" asp-action="Unfollow" asp-route-userId="@post.Post.UserId" method="post">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                <i class="bi bi-person-dash me-1"></i> Unfollow
+                                            <button type="submit" class="icon-expand-btn" data-hover-text="Un Follow">
+                                                <i class="bi bi-person-dash me-1 svgIcon"></i>
                                             </button>
                                         </form>
                                     }
@@ -73,12 +81,19 @@ else
                                     {
                                         <form asp-controller="Following" asp-action="Follow" asp-route-userId="@post.Post.UserId" method="post">
                                             @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-success btn-sm">
-                                                <i class="bi bi-person-plus me-1"></i> Follow
+                                            <button type="submit" class="icon-expand-btn" data-hover-text="Follow">
+                                                <i class="bi bi-person-plus me-1 svgIcon"></i>
                                             </button>
                                         </form>
                                     }
                                 }
+
+
+
+                                <form id="antiForgeryForm" style="display:none;">
+                                    @Html.AntiForgeryToken()
+                                </form>
+
 
                             </div>
 
@@ -143,6 +158,7 @@ else
 
 
 @section Scripts {
+    <script src="~/js/SavePost.js"></script>
     <!-- jQuery and jQuery UI -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
@@ -226,51 +242,12 @@ else
             $(this).find('.modal-body').html('');
         });
 
-
-
-            //Search
-        const categories = @Html.Raw(Json.Serialize(ViewBag.Categories));
-
-        $("#categorySearchInput").autocomplete({
-            source: categories.map(c => ({ label: c.name, value: c.id })),
-            minLength: 0,
-            select: function (event, ui) {
-                window.location.href = "?categoryId=" + ui.item.value;
-            }
-        }).focus(function () {
-            $(this).autocomplete("search", "");
-        });
-
-
-        // search
-        function searchCategory() {
-            const inputVal = $("#categorySearchInput").val().toLowerCase().trim();
-            if (!inputVal) return;
-
-            const match = categories.find(c => c.name.toLowerCase().includes(inputVal));
-
-            if (match) {
-                window.location.href = "?categoryId=" + match.id;
-            } else {
-                alert("No matching category found.");
-            }
-        }
-
-        // Button click
-        $("#searchCategoryBtn").on("click", function () {
-            searchCategory();
-        });
-
-        // Enter key press
-        $("#categorySearchInput").on("keypress", function (e) {
-            if (e.which === 13) {
-                searchCategory();
-                e.preventDefault();
-            }
-        });
-
+        const searchSuggestionsUrl = '@Url.Action("SearchSuggestions", "Post")';
 
     </script>
+
+ 
+
+    <script src="~/js/Search.js"></script>
+  
 }
-
-

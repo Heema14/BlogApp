@@ -2,11 +2,53 @@
 @{
     var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
     var chatUser = ViewBag.ChatUser;
+    var pinnedMessage = ViewBag.PinnedMessage as Message;
 }
 
 
 <div class="chat-container">
     <div class="chat-header">
+
+        <div class="dropdown ms-auto">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Theme
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#" data-theme="light">Light</a></li>
+                <li><a class="dropdown-item" href="#" data-theme="dark">Dark</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <label class="dropdown-item">
+                        Chat Background
+                        <input type="color" id="bgColorPicker" class="form-control form-control-color mt-1" title="Choose chat background color">
+                    </label>
+                </li>
+            </ul>
+        </div>
+
+
+        <button id="toggleSelectModeBtn" class="btn btn-outline-primary">Select</button>
+        <div id="bulkActions" style="display:none;" class="d-flex gap-2 align-items-center">
+            <div class="dropdown">
+                <button id="deleteSelectedMe" style="display:none;"></button>
+                <button id="deleteSelectedAll" style="display:none;"></button>
+
+                <button class="btn btn-light dropdown-toggle" type="button" id="bulkOptionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    ⋮
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="bulkOptionsDropdown">
+                    <li><a class="dropdown-item" id="bulkDeleteMe" href="#">Delete for me</a></li>
+                    <li><a class="dropdown-item" id="bulkDeleteAll" href="#">Delete for everyone</a></li>
+                    <li><a class="dropdown-item" id="bulkCopy" href="#">Copy</a></li>
+                    <li><a class="dropdown-item" id="bulkExport" href="#">Export Chat</a></li>
+
+                </ul>
+            </div>
+            <button id="cancelSelectBtn" class="btn btn-secondary" style="display: none;">Cancel</button>
+        </div>
+
+
+
         <input type="hidden" id="senderId" value="@currentUserId" />
         <input type="hidden" id="receiverId" value="@chatUser.Id" />
 
@@ -16,10 +58,10 @@
                 DateTime lastSeen = Convert.ToDateTime(chatUser.LastSeen);
                 string lastSeenText = "Last seen unknown";
 
-                // لا تحتاج تحقق null لأن DateTime غير nullable
+
                 var diff = DateTime.UtcNow - lastSeen;
 
-                if (diff.TotalSeconds < 1)  // less than one second difference
+                if (diff.TotalSeconds < 1)
                 {
                     lastSeenText = "Online now";
                 }
@@ -45,19 +87,47 @@
         </div>
     </div>
 
+    @if (Model.Any(m => m.IsPinned))
+    {
+        var pinnedMsg = Model.First(m => m.IsPinned);
+        <div id="pinnedMessageContainer" class="alert alert-warning">
+            <strong>Pinned:</strong>
+            <span>@pinnedMsg.Content</span>
+            <button class="btn btn-sm btn-outline-dark float-end pin-message" data-id="@pinnedMsg.Id">
+                @(pinnedMsg.IsPinned ? "Unpin" : "Pin")
+            </button>
+        </div>
+    }
+    else
+    {
+        <div id="pinnedMessageContainer" style="display:none;"></div>
+    }
+
     <div id="messagesContainer" class="chat-messages">
         @foreach (var message in Model)
         {
-            <div class="message @(message.SenderId == currentUserId ? "sent" : "received")" data-id="@message.Id">
+            @Html.AntiForgeryToken()
+
+            <div class="message @(message.SenderId == currentUserId ? "sent" : "received")"
+                 data-id="@message.Id"
+                 data-sender-id="@message.SenderId">
+                <input type="checkbox" class="message-select-checkbox" style="display:none;" />
                 <div class="message-header">
                     <div class="dropdown message-options">
                         <button class="dots-btn text-black" data-bs-toggle="dropdown" aria-expanded="false">⋮</button>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item edit-message" data-id="@message.Id" href="#">Edit</a></li>
-                            <li><a class="dropdown-item delete-message" data-id="@message.Id" href="#">Delete</a></li>
                             @if (message.SenderId == currentUserId)
                             {
+                                <li><a class="dropdown-item edit-message" data-id="@message.Id" href="#">Edit</a></li>
+                                <li><a class="dropdown-item delete-message" data-id="@message.Id" data-scope="me" href="#">Delete for me</a></li>
+                                <li><a class="dropdown-item delete-message" data-id="@message.Id" data-scope="all" href="#">Delete for everyone</a></li>
                                 <li><a class="dropdown-item info-message" data-id="@message.Id" href="#">Info</a></li>
+                            }
+                            else
+                            {
+                                <li><a class="dropdown-item pin-message" data-id="@message.Id" href="#">@(message.IsPinned ? "Unpin" : "Pin")</a></li>
+                                <li><a class="dropdown-item copy-message" data-id="@message.Id" href="#">Copy</a></li>
+                                <li><a class="dropdown-item delete-message" data-id="@message.Id" data-scope="me" href="#">Delete for me</a></li>
                             }
                         </ul>
                     </div>
@@ -74,6 +144,37 @@
                 {
                     <p style="white-space: pre-line;">@message.Content</p>
                 }
+                <p>@message.Content</p>
+
+                @if (ViewBag.MessageReactions != null && ViewBag.MessageReactions.ContainsKey(message.Id))
+                {
+                    var reactions = ViewBag.MessageReactions[message.Id];
+                    <div class="reaction-summary">
+                        @foreach (var r in reactions)
+                        {
+                            @*                             <span class="reaction-count">${r.reaction} ${r.count}</span>
+ *@
+                            <span class="reaction-count" data-message-id="@message.Id" data-emoji="@r.Emoji" title="@string.Join(", ", r.Users)">
+                                @r.Emoji @r.Count
+                            </span>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="reaction-summary"></div>
+                }
+
+                <div class="reaction-bar">
+                    <span class="emoji-option">👍</span>
+                    <span class="emoji-option">❤️</span>
+                    <span class="emoji-option">😂</span>
+                    <span class="emoji-option">😮</span>
+                    <span class="emoji-option">😢</span>
+                   
+                </div>
+
+
                 <small>
                     @message.SentAt.ToLocalTime().ToString("HH:mm")
                     @if (message.SenderId == currentUserId && message.IsRead)
@@ -85,6 +186,7 @@
             </div>
         }
     </div>
+
 
 
 
@@ -245,6 +347,7 @@
         cursor: pointer;
         color: rgba(255,255,255,0.6);
     }
+<link rel="stylesheet" href="~/css/Chat.css" />
 
     .message.sent .dots-btn {
         color: rgba(255,255,255,0.6);
@@ -310,69 +413,17 @@
 
 </style>
 
+
+</style>
+
 @section Scripts {
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
-
-    <script>
-
-        var connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chathub")
-            .build();
-
-
-        connection.start().then(function () {
-            console.log("Connected to SignalR Hub!");
-        }).catch(function (err) {
-            console.error("SignalR connection failed: " + err.toString());
-        });
-
-
-
-             connection.on("ReceiveMessage", function (sender, message, messageId, sentAt, isRead) {
-            var messageContainer = document.getElementById("messagesContainer");
-            var messageElement = document.createElement("div");
-
-            var currentUserId = document.getElementById("senderId").value;
-
-            var isSent = sender === currentUserId;
-
-            messageElement.classList.add("message");
-            messageElement.classList.add(isSent ? "sent" : "received");
-
-            // مهم جدًا: تعيين data-id على العنصر الرئيسي للرسالة
-            messageElement.setAttribute('data-id', messageId);
-
-            messageElement.innerHTML = `
-                <div class="message-header">
-                    <div class="dropdown message-options">
-                        <button class="dots-btn" data-bs-toggle="dropdown" aria-expanded="false">⋮</button>
-                        <ul class="dropdown-menu" style="direction: rtl;">
-                            ${isSent ? `
-                            <li><a class="dropdown-item edit-message" data-id="${messageId}" href="#">Edit</a></li>
-                            <li><a class="dropdown-item delete-message" data-id="${messageId}" href="#">Delete</a></li>
-                            <li><a class="dropdown-item info-message" data-id="${messageId}" href="#">Info</a></li>
-                            ` : ""}
-                        </ul>
-                    </div>
-                </div>
-                <p>${message}</p>
-                <small>
-                    ${new Date(sentAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
-                    ${isSent && isRead ? '<span title="Read">✅</span>' : ''}
-                </small>
-            `;
-
-            messageContainer.appendChild(messageElement);
-            messageContainer.scrollTop = messageContainer.scrollHeight;
-        });
-
-
            document.getElementById("sendButton").addEventListener("click", function () {
                var sender = document.getElementById("senderId").value.trim(); // ID
         var receiver = document.getElementById("receiverId").value.trim();
         var messageContent = document.getElementById("messageInput").value.trim();
-
+               var sender = document.getElementById("senderId").value.trim(); // هذا هو ال Id
             if (!messageContent || !sender || !receiver) {
                 alert("Please provide Sender, Receiver, and Message.");
                 return;
@@ -384,6 +435,10 @@
             document.getElementById("messageInput").value = "";
         });
     </script>
+
+
+    <!-- library for imojis -->
+    <!-- مكتبة الإيموجي الجاهزة -->
 
 
     <!-- library for imojis -->
@@ -416,10 +471,10 @@
             input.value = input.value.slice(0, start) + emoji + input.value.slice(end);
             input.focus();
             input.selectionStart = input.selectionEnd = start + emoji.length;
-            // لا نغلق البوكس هنا!
+
           });
 
-          // إغلاق البوكس فقط إذا المستخدم ضغط خارج الزر والإيموجي
+
           document.addEventListener('click', (e) => {
             if (!picker.contains(e.target) && e.target !== emojiBtn) {
               picker.style.display = 'none';
@@ -427,31 +482,29 @@
           });
         });
 
-
-
-        let editingMessageId = null;
-
         $(document).on('click', '.delete-message', function (e) {
             e.preventDefault();
             const messageId = $(this).data('id');
             const messageElement = $(this).closest('.message');
+            e.preventDefault();
+            const messageId = $(this).data('id');
+            const messageElement = $(this).closest('.message');
 
-            if (confirm("Are you sure you want to delete the message?")) {
-                $.post('/ContentCreator/Messages/DeleteMessage', { id: messageId }, function () {
-                    // حذف الرسالة من الصفحة بدون إعادة تحميل
-                    messageElement.remove();
-                });
-            }
-        });
-
+    </script>
+    <script>
+        const chatContainer = document.querySelector('.chat-container');
+        const messageArea = document.querySelector('.chat-messages');
         $(document).on('click', '.edit-message', function (e) {
              e.preventDefault();
              const messageId = $(this).data('id');
              const messageElement = $(this).closest('.message');
              const originalContent = messageElement.find('p').text();
-
-             $('#editMessageInput').val(originalContent);
-             editingMessageId = messageId;
+        // تحميل الثيم والخلفية عند بدء الصفحة
+        const savedTheme = localStorage.getItem('chat-theme') || 'light';
+        const savedBg = localStorage.getItem('chat-bg');
+             const messageId = $(this).data('id');
+             const messageElement = $(this).closest('.message');
+             const originalContent = messageElement.find('p').text();
 
              const modal = new bootstrap.Modal(document.getElementById('editMessageModal'));
              modal.show();
@@ -464,7 +517,11 @@
                 alert('The message cannot be empty.');
                 return;
             }
-
+        if (savedBg) {
+            messageArea.style.backgroundColor = savedBg;
+            colorPicker.value = savedBg;
+        }
+                alert('The message cannot be empty.');
             $.post('/ContentCreator/Messages/EditMessage', {
                 id: editingMessageId,
                 content: newContent
@@ -503,10 +560,21 @@
 
         $('#closeInfoBox').on('click', function () {
             $('#messageInfoBox').fadeOut(300);
+        // تغيير الثيم
+        themeOptions.forEach(option => {
+            option.addEventListener('click', (e) => {
+                e.preventDefault();
+                const selectedTheme = option.dataset.theme;
+                chatContainer.classList.remove('light', 'dark');
+                chatContainer.classList.add(selectedTheme);
+                localStorage.setItem('chat-theme', selectedTheme);
+            });
+
+        $('#closeInfoBox').on('click', function () {
+            $('#messageInfoBox').fadeOut(300);
         });
 
-
-    </script>
+    <script src="~/js/Chat.js"></script>
 
     <script>
         let mediaRecorder;
@@ -584,5 +652,8 @@
         }
     </script>
 
+
+ 
+    </script>
 
 }

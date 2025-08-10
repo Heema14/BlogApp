@@ -25,22 +25,52 @@ public class FollowingController : Controller
         _postlikeHub = postlikeHub;
     }
 
-    public IActionResult FollowingPosts(int? categoryId)
+    [HttpGet]
+    public IActionResult FollowingPosts(string searchTerm, string filterBy, int? categoryId)
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
+        // جلب معرفات المستخدمين الذين أتابعهم
         var followedUsers = _context.Followings
             .Where(f => f.FollowerId == userId)
             .Select(f => f.FollowingId)
             .ToList();
 
+        // الاستعلام الأساسي لمنشورات المتابعين فقط
         var postQuery = _context.Posts
             .Include(p => p.Category)
+            .Include(p => p.User)
             .Where(p => followedUsers.Contains(p.UserId) && p.IsPublished);
 
+        // تصفية حسب الفئة (CategoryId)
         if (categoryId.HasValue)
         {
             postQuery = postQuery.Where(p => p.CategoryId == categoryId);
+        }
+
+        // تصفية حسب البحث
+        if (!string.IsNullOrEmpty(searchTerm))
+        {
+            switch (filterBy)
+            {
+                case "title":
+                    postQuery = postQuery.Where(p => p.Title.Contains(searchTerm));
+                    break;
+                case "category":
+                    postQuery = postQuery.Where(p => p.Category.Name.Contains(searchTerm));
+                    break;
+                case "publisher":
+                    postQuery = postQuery.Where(p => p.User.UserName.Contains(searchTerm));
+                    break;
+                case "date":
+                    if (DateTime.TryParse(searchTerm, out var date))
+                        postQuery = postQuery.Where(p => p.PublishedDate.Date == date.Date);
+                    break;
+                case "tag":
+                    postQuery = postQuery.Where(p => !string.IsNullOrEmpty(p.Tags) && p.Tags.Contains(searchTerm.ToLower()));
+                    break;
+
+            }
         }
 
         var posts = postQuery
@@ -55,21 +85,35 @@ public class FollowingController : Controller
             .Select(f => f.FollowingId)
             .ToHashSet();
 
+        var savedPostIds = _context.SavedPosts
+            .Where(sp => sp.UserId == userId)
+            .Select(sp => sp.PostId)
+            .ToHashSet();
+
         var viewModelList = posts.Select(post => new PostWithFollowStatusViewModel
         {
             Post = post,
-            IsFollowing = followingIds.Contains(post.UserId)
+            IsFollowing = followingIds.Contains(post.UserId),
+            IsSaved = savedPostIds.Contains(post.Id)
         }).ToList();
 
         ViewData["Categories"] = _context.Categories.ToList();
+        ViewBag.UnreadNotificationsCount = _context.Notifications
+            .Count(n => n.UserId == userId && !n.IsRead);
 
-        var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+        ViewBag.UnreadCount = _context.Messages
+            .Count(m => m.ReceiverId == userId && !m.IsRead);
 
-        var unreadNotificationsCount = _context.Notifications
-            .Where(n => n.UserId == currentUserId && !n.IsRead)
-            .Count();
+        //ViewBag.Users = _context.Users.Select(u => new { id = u.Id, name = u.UserName }).ToList();
+        //ViewBag.Categories = _context.Categories.Select(c => new { id = c.Id, name = c.Name }).ToList();
+        //ViewBag.Posts = _context.Posts.Select(p => new { id = p.Id, title = p.Title }).ToList();
+    //    ViewBag.Tags = _context.Posts
+    //.Where(p => !string.IsNullOrEmpty(p.Tags))
+    //.SelectMany(p => p.Tags.Split(','))
+    //.Distinct()
+    //.Select(tag => new { id = tag, name = "#" + tag })
+    //.ToList();
 
-        ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
         return View(viewModelList);
     }
 
@@ -78,25 +122,27 @@ public class FollowingController : Controller
     {
         var currentUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
         var userToFollow = _context.Users.FirstOrDefault(u => u.Id == userId);
+
         if (userToFollow == null)
         {
-            return NotFound("User not found");
+            TempData["Error"] = "The user you're trying to follow was not found.";
+            return RedirectToAction("Explore", "Post", new { area = "ContentCreator" });
         }
 
         if (currentUserId == userId)
         {
+            TempData["Info"] = "You cannot follow yourself.";
             return RedirectToAction("Profile", new { userId = userId });
         }
 
         var follow = new Following { FollowerId = currentUserId, FollowingId = userId };
-
         _context.Followings.Add(follow);
         _context.SaveChanges();
 
         var notification = new Notification
         {
-            UserId = userId,  // الشخص الذي يتم متابعته
-            Message = $"{_userManager.GetUserName(User)} started following you.",  // نرسل إشعارًا للمتابع عليه
+            UserId = userId,
+            Message = $"{_userManager.GetUserName(User)} started following you.",
             IsRead = false,
             CreatedAt = DateTime.Now
         };
@@ -104,6 +150,7 @@ public class FollowingController : Controller
         _context.Notifications.Add(notification);
         _context.SaveChanges();
 
+        TempData["Success"] = $"You are now following {userToFollow.UserName}.";
         return RedirectToAction("Profile", new { userId = userId });
     }
 
@@ -121,11 +168,17 @@ public class FollowingController : Controller
             {
                 _context.Followings.Remove(follow);
                 _context.SaveChanges();
+                TempData["Info"] = "You have unfollowed the user.";
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while unfollowing user");
+                TempData["Error"] = "Something went wrong while trying to unfollow.";
             }
+        }
+        else
+        {
+            TempData["Error"] = "You're not following this user.";
         }
 
         return RedirectToAction("Profile", new { userId = userId });
@@ -158,6 +211,9 @@ public class FollowingController : Controller
 
         var followingCount = _context.Followings
             .Count(f => f.FollowerId == userId);
+        var isFollowing = _context.Followings.Any(f =>
+    f.FollowerId == currentUserId && f.FollowingId == user.Id);
+
 
         var model = new ProfileViewModel
         {
@@ -166,10 +222,19 @@ public class FollowingController : Controller
             FollowingCount = followingCount,
             PostsCount = postsCount,
             Posts = posts,
+            IsFollowing = isFollowing,
             Bio = user.Bio,
-            CurrentUserId = currentUserId // إضافة معرف المستخدم الحالي إلى الـ ViewModel
+            CurrentUserId = currentUserId  
         };
+         
 
+        var unreadNotificationsCount = _context.Notifications
+       .Where(n => n.UserId == currentUserId && !n.IsRead)
+       .Count();
+
+        ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
+        ViewBag.UnreadCount = _context.Messages
+            .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
         return View(model);
     }
 

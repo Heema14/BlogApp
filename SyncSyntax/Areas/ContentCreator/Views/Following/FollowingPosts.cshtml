@@ -6,39 +6,41 @@
 }
 <link href="~/css/sidebar.css" rel="stylesheet" />
 
-<!-- Category Search -->
-<div class="my-4 text-center">
-    <div class="input-group w-50 mx-auto">
-        <input type="text" id="categorySearchInput" class="form-control" placeholder="Search category..." autocomplete="off" />
-        <button class="btn btn-success" id="searchCategoryBtn">
-            <i class="bi bi-search"></i> Search
-        </button>
-    </div>
-</div>
+ 
+<!-- Advanced Search -->
+@Html.Partial("_AdvancedSearchForm", new ViewDataDictionary(ViewData) { { "SearchAction", "FollowingPosts" } })
+
 
 <!-- Create Post Button -->
 <div class="text-end mb-4">
-    <a asp-action="Create" class="button create-post-btn">
+    <a asp-action="Create" class="icon-expand-btn" data-hover-text="Create New Post">
         <i class="bi bi-plus-circle svgIcon"></i>
     </a>
 </div>
 
-@if (!Model.Any())
-{
-    <div class="alert alert-warning text-center mt-4">
-        <i class="bi bi-info-circle"></i> Looks like you're not following anyone at the moment. Don't worry! Start following some fresh new faces and enjoy reading their unique and inspiring posts. 📚✨
+    @if (!Model.Any())
+    {
+    <div class="alert text-center mt-4" style="background-color: rgb(200, 235, 250) !important; color: #0a0a0a;">
+        <i class="bi bi-info-circle"></i>
+        Looks like you're not following anyone at the moment. Don't worry! Start following some fresh new faces and enjoy reading their unique and inspiring posts. 📚✨
+
         <br />
-        <a asp-action="Users" class="btn btn-primary mt-3" style="font-size: 16px; display: inline-flex; align-items: center; background: linear-gradient(to right, #ff7e5f, #feb47b); border: none; border-radius: 25px; padding: 12px 24px; text-decoration: none; color: white;">
-            <i class="bi bi-person-plus" style="margin-right: 8px;"></i> Explore New Users
+
+        <a asp-action="Users" class="modern-btn mt-4 d-inline-block" style="margin-top: 30px;">
+            <i class="bi bi-person-plus me-2"></i> Explore New Users
+        </a>
+        <a asp-action="Explore" asp-controller="Post" class="modern-btn mt-4 d-inline-block me-2" style="margin-top: 30px;">
+            <i class="bi bi-compass me-2"></i> Explore New Posts
         </a>
     </div>
-}
+    }
 
-else
-{
+
+    else
+    {
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-        @foreach (var post in Model)
-        {
+            @foreach (var post in Model)
+            {
             <!-- Posts Grid -->
             <div class="col">
 
@@ -63,33 +65,51 @@ else
                     <div class="card-body">
                         <!-- User Info and Actions -->
                         <div class="d-flex align-items-center justify-content-between mb-3">
-                            <div class="d-flex align-items-center gap-2">
+                            <a asp-action="Profile" asp-controller="Following" asp-route-userId="@post.Post.UserId" class="d-flex align-items-center gap-2 text-decoration-none text-dark">
                                 <img src="@post.Post.UserImageUrl" alt="User" class="rounded-circle" style="width: 30px; height: 30px;">
                                 <span>@post.Post.UserName</span>
-                            </div>
+                            </a>
+
 
                             <div class="d-flex align-items-center gap-2 actions">
-                                @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != post.Post.UserId)
-                                {
-                                    if (post.IsFollowing)
+                                <button class="icon-expand-btn save-toggle-btn"
+                                        data-hover-text="@(post.IsSaved ? "Un Save" : "Save")"
+                                        data-post-id="@post.Post.Id"
+                                        data-return-page="FollowingPosts"
+                                        aria-label="@(post.IsSaved ? "Unsave post" : "Save post")">
+                                    <i class="bi svgIcon @(post.IsSaved ? "bi-bookmark-fill" : "bi-bookmark")"></i>
+                                </button>
+
+
+                                    @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != post.Post.UserId)
                                     {
+                                        if (post.IsFollowing)
+                                        {
                                         <form asp-controller="Following" asp-action="Unfollow" asp-route-userId="@post.Post.UserId" method="post">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-danger btn-sm">
-                                                <i class="bi bi-person-dash me-1"></i> Unfollow
+                                                @Html.AntiForgeryToken()
+                                            <button type="submit" class="icon-expand-btn" data-hover-text="Un Follow">
+                                                <i class="bi bi-person-dash me-1 svgIcon"></i>
                                             </button>
                                         </form>
-                                    }
-                                    else
-                                    {
+                                        }
+                                        else
+                                        {
                                         <form asp-controller="Following" asp-action="Follow" asp-route-userId="@post.Post.UserId" method="post">
-                                            @Html.AntiForgeryToken()
-                                            <button type="submit" class="btn btn-success btn-sm">
-                                                <i class="bi bi-person-plus me-1"></i> Follow
+                                                @Html.AntiForgeryToken()
+                                            <button type="submit" class="icon-expand-btn" data-hover-text="Follow">
+                                                <i class="bi bi-person-plus me-1 svgIcon"></i>
                                             </button>
                                         </form>
+                                        }
                                     }
-                                }
+
+
+
+                                <form id="antiForgeryForm" style="display:none;">
+                                        @Html.AntiForgeryToken()
+                                </form>
+
+
 
                             </div>
 
@@ -107,32 +127,32 @@ else
                         <!-- Date -->
                         <p class="text-muted mb-2 DatePost">
                             <i class="bi bi-calendar-event me-1"></i>
-                            @post.Post.PublishedDate.ToString("MMMM dd, yyyy")
+                                @post.Post.PublishedDate.ToString("MMMM dd, yyyy")
                         </p>
 
                         <!-- Preview -->
-                        @{
-                            var contentTag = HtmlTagHelper.RemoveHtmlTags(post.Post.Content);
-                            var preview = contentTag.Length > 100 ? contentTag.Substring(0, 100) + "..." : contentTag;
-                        }
+                            @{
+                                var contentTag = HtmlTagHelper.RemoveHtmlTags(post.Post.Content);
+                                var preview = contentTag.Length > 100 ? contentTag.Substring(0, 100) + "..." : contentTag;
+                            }
 
                         <p class="card-text text-black">@preview</p>
 
                         <!-- Category -->
-                        @if (post.Post.Category != null)
-                        {
+                            @if (post.Post.Category != null)
+                            {
                             <span class="badge bg-info text-dark mt-2">
                                 <i class="bi bi-tag me-1"></i> @post.Post.Category.Name
                             </span>
-                        }
+                            }
                     </div>
 
                 </div>
 
             </div>
-        }
+            }
     </div>
-}
+    }
 
 
 
@@ -153,7 +173,8 @@ else
 </div>
 
 
-@section Scripts {
+    @section Scripts {
+    <script src="~/js/SavePost.js"></script>
     <!-- jQuery and jQuery UI -->
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
@@ -238,42 +259,7 @@ else
         }
 
 
-        // هنا كود البحث autocomplete حسب طلبك (موجود عندك)
-        const categories = @Html.Raw(Json.Serialize(ViewBag.Categories));
-
-        $("#categorySearchInput").autocomplete({
-            source: categories.map(c => ({ label: c.name, value: c.id })),
-            minLength: 0,
-            select: function (event, ui) {
-                window.location.href = "?categoryId=" + ui.item.value;
-            }
-        }).focus(function () {
-            $(this).autocomplete("search", "");
-        });
-
-        function searchCategory() {
-            const inputVal = $("#categorySearchInput").val().toLowerCase().trim();
-            if (!inputVal) return;
-
-            const match = categories.find(c => c.name.toLowerCase().includes(inputVal));
-
-            if (match) {
-                window.location.href = "?categoryId=" + match.id;
-            } else {
-                alert("No matching category found.");
-            }
-        }
-
-        $("#searchCategoryBtn").on("click", function () {
-            searchCategory();
-        });
-
-        $("#categorySearchInput").on("keypress", function (e) {
-            if (e.which === 13) {
-                searchCategory();
-                e.preventDefault();
-            }
-        });
+    
 
 
         //update page defult when make like
@@ -299,7 +285,9 @@ else
             $('#likesCount-' + postId).text(likesCount);
         });
 
+        const searchSuggestionsUrl = '@Url.Action("SearchSuggestions", "Post")';
+
     </script>
+    <script src="~/js/Search.js"></script>
 
 }
-

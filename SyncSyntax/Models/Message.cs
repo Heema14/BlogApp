@@ -21,4 +21,6 @@ public class Message
     public DateTime? ReadAt { get; set; }
 
     public string? AudioPath { get; set; }
+    public bool IsPinned { get; set; } = false;
+
 }
