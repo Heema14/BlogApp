@@ -62,7 +62,18 @@
                         </ul>
                     </div>
                 </div>
-                <p>@message.Content</p>
+
+                @if (!string.IsNullOrEmpty(message.AudioPath))
+                {
+                    <audio controls>
+                        <source src="@message.AudioPath" type="audio/webm" />
+                        Your browser does not support the audio element.
+                    </audio>
+                }
+                else
+                {
+                    <p style="white-space: pre-line;">@message.Content</p>
+                }
                 <small>
                     @message.SentAt.ToLocalTime().ToString("HH:mm")
                     @if (message.SenderId == currentUserId && message.IsRead)
@@ -70,6 +81,7 @@
                         <span title="Read">✅</span>
                     }
                 </small>
+
             </div>
         }
     </div>
@@ -78,7 +90,16 @@
 
     <div class="chat-input">
         <textarea type="text" id="messageInput" placeholder="Write a message..." required></textarea>
+
+        <div class="d-flex gap-1">
+            <button id="recordAudioBtn" class="" type="button">🎙️</button>
+            <span id="recordingIndicator" style="display: none; color: red;transform: translateY(20px);">
+                Recording... <span id="countdownTimer">10</span>s
+            </span>
+        </div>
+
         <button type="button" id="emojiBtn">😊</button>
+
         <button id="sendButton" aria-label="Send message">
             <svg xmlns="http://www.w3.org/2000/svg" fill="white" width="20" height="20" viewBox="0 0 24 24">
                 <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
@@ -88,6 +109,7 @@
 </div>
 
 
+@* div edit and delete and info massege *@
 <div class="modal fade" id="editMessageModal" tabindex="-1" aria-labelledby="editMessageLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -107,6 +129,7 @@
 </div>
 
 
+@* div of info massege *@
 <div id="messageInfoBox" class="alert alert-info position-relative" style="margin-top: 20px;">
     <button type="button" class="btn-close position-absolute top-0 end-0 m-2" id="closeInfoBox" aria-label="close"></button>
     <div id="infoContent"></div>
@@ -126,7 +149,6 @@
         overflow: hidden;
     }
 
-    /* الهيدر فوق */
     .chat-header {
         display: flex;
         align-items: center;
@@ -161,7 +183,6 @@
         color: #fafafa;
     }
 
-    /* حاوية الرسائل */
     .chat-messages {
         flex-grow: 1;
         padding: 15px 20px;
@@ -169,10 +190,6 @@
         background: url(https://blog.1a23.com/wp-content/uploads/sites/2/2020/02/Desktop.png) no-repeat;
     }
 
-        .chat-messages p {
-            white-space: pre-line;
-        }
-    /* فقاعات الرسائل */
     .message {
         max-width: 70%;
         margin-bottom: 15px;
@@ -185,7 +202,6 @@
         word-wrap: break-word;
     }
 
-        /* رسائل المرسل: يمين */
         .message.sent {
             background-color: #dcf8c6;
             color: #222;
@@ -193,7 +209,6 @@
             border-bottom-right-radius: 0;
         }
 
-        /* رسائل المستلم: يسار */
         .message.received {
             background-color: #e9ecef;
             color: #333;
@@ -201,7 +216,6 @@
             border-bottom-left-radius: 0;
         }
 
-        /* توقيت الرسالة */
         .message small {
             display: block;
             margin-top: 5px;
@@ -209,17 +223,19 @@
             opacity: 0.7;
         }
 
-            /* علامة قراءة الرسالة */
             .message small span[title="Read"] {
                 margin-left: 5px;
                 color: #0d6efd;
             }
 
-    /* قائمة خيارات الرسالة (⋮) */
     .message-header {
         position: absolute;
         top: 5px;
         right: 8px;
+    }
+
+    .message.message-header .message-options button {
+        color: #222;
     }
 
     .dots-btn {
@@ -238,7 +254,6 @@
         color: rgba(0,0,0,0.3);
     }
 
-    /* صندوق الإدخال */
     .chat-input {
         display: flex;
         padding: 15px 20px;
@@ -260,7 +275,7 @@
             border-color: #0d6efd;
         }
 
-    #emojiBtn, #sendButton {
+    #emojiBtn, #sendButton, #recordAudioBtn {
         color: white;
         background: #132029;
         padding: 0 15px;
@@ -280,7 +295,6 @@
         padding: 0 10px;
     }
 
-    /* scrollbar بسيط */
     .chat-messages::-webkit-scrollbar {
         width: 8px;
     }
@@ -290,7 +304,6 @@
         border-radius: 4px;
     }
 
-    /* ضبط مودال التحرير (مو شغلنا لكن حبيت أذكره) */
     .modal-content {
         border-radius: 8px;
     }
@@ -356,7 +369,7 @@
 
 
            document.getElementById("sendButton").addEventListener("click", function () {
-               var sender = document.getElementById("senderId").value.trim(); // هذا هو ال Id
+               var sender = document.getElementById("senderId").value.trim(); // ID
         var receiver = document.getElementById("receiverId").value.trim();
         var messageContent = document.getElementById("messageInput").value.trim();
 
@@ -373,7 +386,7 @@
     </script>
 
 
-    <!-- مكتبة الإيموجي الجاهزة -->
+    <!-- library for imojis -->
     <script src="https://unpkg.com/picmo@latest/dist/umd/index.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/picmo@latest/dist/styles.css">
     <script type="module">
@@ -418,7 +431,7 @@
 
         let editingMessageId = null;
 
-            $(document).on('click', '.delete-message', function (e) {
+        $(document).on('click', '.delete-message', function (e) {
             e.preventDefault();
             const messageId = $(this).data('id');
             const messageElement = $(this).closest('.message');
@@ -431,7 +444,7 @@
             }
         });
 
-         $(document).on('click', '.edit-message', function (e) {
+        $(document).on('click', '.edit-message', function (e) {
              e.preventDefault();
              const messageId = $(this).data('id');
              const messageElement = $(this).closest('.message');
@@ -444,7 +457,7 @@
              modal.show();
          });
 
-           $(document).on('click', '#saveEditBtn', function () {
+         $(document).on('click', '#saveEditBtn', function () {
             const newContent = $('#editMessageInput').val();
 
             if (!newContent.trim()) {
@@ -469,7 +482,7 @@
             });
         });
 
-                $(document).on('click', '.info-message', function (e) {
+        $(document).on('click', '.info-message', function (e) {
             e.preventDefault();
             const messageId = $(this).data('id');
 
@@ -488,12 +501,88 @@
             });
         });
 
-        // زر الإغلاق اليدوي مع أنيميشن
         $('#closeInfoBox').on('click', function () {
             $('#messageInfoBox').fadeOut(300);
         });
 
 
     </script>
+
+    <script>
+        let mediaRecorder;
+        let audioChunks = [];
+        let isRecording = false;
+        let countdownInterval;
+        const maxRecordingSeconds = 30;
+        let secondsLeft = maxRecordingSeconds;
+
+        $('#recordAudioBtn').on('click', async function () {
+            if (!isRecording) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    mediaRecorder = new MediaRecorder(stream);
+                    audioChunks = [];
+                    secondsLeft = maxRecordingSeconds;
+                    $('#countdownTimer').text(secondsLeft);
+
+                    mediaRecorder.ondataavailable = (event) => {
+                        if (event.data.size > 0) {
+                            audioChunks.push(event.data);
+                        }
+                    };
+
+                    mediaRecorder.onstop = () => {
+                        clearInterval(countdownInterval);
+                        $('#recordingIndicator').hide();
+                        $(this).text("🎙️");
+                        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                        uploadAudio(audioBlob);
+                    };
+
+                    mediaRecorder.start();
+                    isRecording = true;
+                    $('#recordingIndicator').show();
+                    $(this).text("⏹️");
+
+                    // Start countdown
+                    countdownInterval = setInterval(() => {
+                        secondsLeft--;
+                        $('#countdownTimer').text(secondsLeft);
+                        if (secondsLeft <= 0) {
+                            mediaRecorder.stop(); // auto-stop
+                        }
+                    }, 1000);
+
+                } catch (err) {
+                    alert("🎙️ Microphone access denied.");
+                    console.error(err);
+                }
+            } else {
+                // Manual stop
+                mediaRecorder.stop();
+                isRecording = false;
+            }
+        });
+
+        function uploadAudio(audioBlob) {
+            const formData = new FormData();
+            formData.append('audioFile', audioBlob, 'recording.webm');
+
+            $.ajax({
+                url: '/ContentCreator/Messages/SendAudioMessage',
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function () {
+                    console.log("✅ Audio sent!");
+                },
+                error: function () {
+                    alert("❌ Failed to send audio.");
+                }
+            });
+        }
+    </script>
+
 
 }

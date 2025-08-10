@@ -158,11 +158,13 @@
                     }
                 </a>
                 <a asp-action="Create" asp-controller="Post"><i class="bi bi-plus-circle"></i><span> Create</span></a>
+
                 <a asp-controller="Following"
                    asp-area="ContentCreator"
                    asp-action="Profile"
                    asp-route-userId="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
-                    <i class="bi bi-person"></i><span> Profile</span>
+                    @* <img src="@(!string.IsNullOrEmpty(Model.ProfilePicture) ? Model.ProfilePicture : "/images/uploadImgs/default-image.jpg")" alt="User" width="40" href="40" class="rounded-circle me-1" /> *@
+                    <span> Profile</span>
                 </a>
 
                 <hr class="text-white" />

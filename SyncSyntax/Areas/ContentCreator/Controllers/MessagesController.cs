@@ -1,11 +1,12 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
-using SyncSyntax.Models;
 using SyncSyntax.Hubs;
+using SyncSyntax.Models;
 
 namespace SyncSyntax.Areas.ContentCreator.Controllers
 {
@@ -17,12 +18,15 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IHubContext<ChatHub> _hubContext;
         private readonly ILogger<PostController> _logger;
-        public MessagesController(AppDbContext context, UserManager<AppUser> userManager, IHubContext<ChatHub> hubContext, ILogger<PostController> logger)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+
+        public MessagesController(AppDbContext context, UserManager<AppUser> userManager, IHubContext<ChatHub> hubContext, ILogger<PostController> logger, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
             _userManager = userManager;
             _hubContext = hubContext;
             _logger = logger;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public async Task<IActionResult> Index()
@@ -66,6 +70,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             return View(model);
         }
 
+
         public async Task<IActionResult> Chat(string userId)
         {
             var user = await _userManager.GetUserAsync(User);
@@ -102,7 +107,6 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         }
 
 
-
         [HttpPost]
         public async Task<IActionResult> DeleteMessage(int id)
         {
@@ -115,6 +119,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             return Ok();
         }
 
+
         [HttpPost]
         public async Task<IActionResult> EditMessage(int id, string content)
         {
@@ -126,6 +131,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             }
             return Ok();
         }
+
 
         [HttpGet]
         public IActionResult MessageInfo(int id)
@@ -158,6 +164,43 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             await _context.SaveChangesAsync();
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> SendAudioMessage(IFormFile audioFile)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return NotFound();
+
+            if (audioFile == null || audioFile.Length == 0)
+                return BadRequest("No audio file provided.");
+
+            var fileName = $"{Guid.NewGuid()}.webm";
+            var savePath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "audios", fileName);
+
+            Directory.CreateDirectory(Path.GetDirectoryName(savePath));
+
+            using (var stream = new FileStream(savePath, FileMode.Create))
+            {
+                await audioFile.CopyToAsync(stream);
+            }
+
+            // Save audio path as message in DB
+            var message = new Message
+            {
+                SenderId = _userManager.GetUserId(User),
+                ReceiverId = user.Id,
+                SentAt = DateTime.UtcNow,
+                AudioPath = "/images/audios/" + fileName
+            };
+
+            _context.Messages.Add(message);
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
 
 
     }
