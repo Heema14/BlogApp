@@ -1,122 +1,267 @@
 ﻿@model EditProfileViewModel
 
+<!-- كرر روابط وأسلوب Croppie والستايل من واجهة التسجيل كما هي -->
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+
 <style>
-    #ProfilePicture {
-        aspect-ratio: 1 / 1;
-        object-fit: cover;
-        border-radius: 50%;
-        border: 2px solid #0d6efd;
-        cursor: pointer;
-        transition: box-shadow 0.3s ease;
+    body {
+        background: linear-gradient(135deg, #f0f4ff, #e6f7ff);
+        font-family: 'Segoe UI', sans-serif;
+        min-height: 100vh;
     }
 
-        #ProfilePicture:hover {
-            box-shadow: 0 0 15px #0d6efdaa;
+    .form-container {
+        max-width: 950px;
+        background: #fff;
+        border-radius: 20px;
+        padding: 2.5rem;
+        margin: 30px auto;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+        animation: fadeIn 0.6s ease-in-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .profile-picture-container {
+        display: inline-block;
+        padding: 4px;
+        background: linear-gradient(135deg, #18bfef, #007bff);
+        border-radius: 50%;
+        position: relative;
+    }
+
+    .profile-picture {
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        object-fit: cover;
+        transition: 0.3s ease;
+        cursor: pointer;
+    }
+
+        .profile-picture:hover {
+            transform: scale(1.05);
+        }
+
+    .form-label {
+        font-weight: 600;
+        color: #18bfef;
+    }
+
+    input.form-control {
+        border-radius: 10px;
+        background-color: #f8f9fa;
+        border: none;
+        padding-left: 12px;
+    }
+
+        input.form-control:focus {
+            box-shadow: 0 0 0 0.2rem rgba(24, 191, 239, 0.25);
+        }
+
+    .gender-label {
+        font-weight: bold;
+        color: #007bff;
+    }
+
+    .modern-btn {
+        background: linear-gradient(135deg, #18bfef, #007bff);
+        border: none;
+        color: white;
+        font-weight: bold;
+        border-radius: 12px;
+        padding: 12px 24px;
+        transition: all 0.3s ease;
+    }
+
+        .modern-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
         }
 </style>
 
+<div class="container">
+    <div class="form-container">
+        <form asp-action="EditProfile" enctype="multipart/form-data" method="post" novalidate>
+            <!-- العودة -->
+            <div class="position-relative text-center mb-4">
+                <a asp-action="Profile" asp-controller="Account" class="position-absolute start-0 top-50 translate-middle-y ms-3 text-primary fs-3">
+                    <i class="bi bi-arrow-left-circle-fill"></i>
+                </a>
+                <h3 class="fw-bold text-primary">Edit Your Profile</h3>
+            </div>
 
-<div class="container mt-5">
-    <div class="card shadow-lg rounded-4">
-        <div class="card-header bg-primary text-white text-center py-3 rounded-top-4">
-            <h3 class="mb-0">Edit Your Profile</h3>
-        </div>
-        <div class="card-body p-4">
-            <form asp-action="EditProfile" enctype="multipart/form-data" method="post" novalidate>
+            <!-- صورة البروفايل -->
+            <div class="text-center mb-4">
+                <input asp-for="NewProfilePicture" type="file" id="profilePicInput" accept=".png,.jpg,.jpeg" class="d-none" />
+                <label for="profilePicInput" class="profile-picture-container">
+                    <img id="ProfilePicture"
+                         src="@(!string.IsNullOrEmpty(Model.ProfilePicturePath) ? Model.ProfilePicturePath : Url.Content("~/images/uploadImgs/default-image.jpg"))"
+                         alt="Profile Image"
+                         class="profile-picture" />
+                </label>
+                <small class="text-muted d-block mt-2">Click to change your profile picture (max 2MB)</small>
+                <span asp-validation-for="NewProfilePicture" class="text-danger"></span>
+            </div>
 
-                <div class="text-center mb-3 d-flex justify-content-center align-items-center flex-column">
-                    <input asp-for="NewProfilePicture" type="file" id="profilePicInput" class="d-none" accept=".png,.jpg,.jpeg" />
-
-                    <label for="profilePicInput">
-                        @if (!string.IsNullOrEmpty(Model.ProfilePicturePath))
-                        {
-                            <img id="ProfilePicture" src="@Model.ProfilePicturePath"
-                                 class="mb-3" width="200" height="200" />
-                        }
-                        else
-                        {
-                            <img id="ProfilePicture" src="~/images/uploadImgs/default-image.jpg"
-                                 class="mb-3" width="200" height="200" />
-                        }
-                    </label>
-                    <small class="text-muted">Click the image to upload your profile picture (max 2MB)</small>
-                    <span asp-validation-for="NewProfilePicture" class="text-danger"></span>
+            <div class="row g-3">
+                <!-- Email (readonly) -->
+                <div class="col-md-6">
+                    <label asp-for="Email" class="form-label">Email</label>
+                    <input asp-for="Email" class="form-control" readonly />
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Email" class="form-label"></label>
-                    <input asp-for="Email" readonly class="form-control-plaintext border-bottom" />
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="NameUser" class="form-label">Username</label>
-                    <input asp-for="NameUser" class="form-control" placeholder="enter username..." />
-                    <span asp-validation-for="NameUser" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="FirstName" class="form-label"></label>
-                    <input asp-for="FirstName" class="form-control" placeholder="first name..." />
+                <!-- First Name -->
+                <div class="col-md-6">
+                    <label asp-for="FirstName" class="form-label">First Name</label>
+                    <input asp-for="FirstName" class="form-control" placeholder="First name..." />
                     <span asp-validation-for="FirstName" class="text-danger"></span>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="LastName" class="form-label"></label>
-                    <input asp-for="LastName" class="form-control" placeholder="first name..." />
+                <!-- Last Name -->
+                <div class="col-md-6">
+                    <label asp-for="LastName" class="form-label">Last Name</label>
+                    <input asp-for="LastName" class="form-control" placeholder="Last name..." />
                     <span asp-validation-for="LastName" class="text-danger"></span>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Major" class="form-label"></label>
-                    <input asp-for="Major" class="form-control" placeholder="major..." />
+                <!-- Major -->
+                <div class="col-md-6">
+                    <label asp-for="Major" class="form-label">Major</label>
+                    <input asp-for="Major" class="form-control" placeholder="Major..." />
                     <span asp-validation-for="Major" class="text-danger"></span>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="Bio" class="form-label"></label>
-                    <input asp-for="Bio" class="form-control" placeholder="Bio..." />
-                    <span asp-validation-for="Bio" class="text-danger"></span>
-                </div>
-
-                <div class="mb-3">
-                    <label asp-for="DateOfBirth" class="form-label"></label>
-                    <input type="date" asp-for="DateOfBirth" class="form-control" placeholder="DateOfBirth..." />
+                <!-- Date of Birth -->
+                <div class="col-md-6">
+                    <label asp-for="DateOfBirth" class="form-label">Date of Birth</label>
+                    <input type="date" asp-for="DateOfBirth" class="form-control" />
                     <span asp-validation-for="DateOfBirth" class="text-danger"></span>
                 </div>
 
-                <div>
-                    <label asp-for="Gender" class="form-label"></label>
-                    <div class="mb-3">
+                <!-- Gender -->
+                <div class="col-md-6">
+                    <label asp-for="Gender" class="form-label gender-label">Gender</label>
+                    <div>
                         @foreach (var gender in Enum.GetValues(typeof(Gender)))
                         {
                             var isChecked = (Model.Gender.ToString() == gender.ToString()) ? "checked" : "";
-
-                            <div class="form-check form-check-inline">
-                                <input class="form-check-input" type="radio" name="Gender" value="@gender" @isChecked required />
-                                <label class="form-check-label">@gender</label>
+                            <div class="form-check form-check-inline text-secondary">
+                                <input class="form-check-input border" type="radio" name="Gender" value="@gender" @isChecked />
+                                <label class="form-check-label" style="cursor:pointer;">@gender</label>
                             </div>
                         }
                     </div>
                 </div>
 
-                <div class="mb-3">
-                    <label asp-for="PhoneNumber" class="form-label"></label>
-                    <input asp-for="PhoneNumber" class="form-control" placeholder="phone number..." />
+                <!-- Phone Number -->
+                <div class="col-md-6">
+                    <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                    <input asp-for="PhoneNumber" class="form-control" placeholder="Phone number..." />
                     <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                 </div>
+            </div>
 
-                <div class="d-grid">
-                    <button type="submit" class="btn btn-primary btn-lg">Save Changes</button>
-                </div>
-            </form>
+            <!-- زر حفظ التعديلات -->
+            <div class="text-center mt-4">
+                <button type="submit" class="modern-btn w-100 py-2 d-flex justify-content-center align-items-center gap-2">
+                    <i class="bi bi-pencil-square fs-5"></i>
+                    Save Changes
+                </button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<!-- Cropper Modal -->
+<div class="modal fade" id="cropModal" tabindex="-1" aria-labelledby="cropModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cropModalLabel">
+                    <i class="bi bi-scissors me-2"></i> Crop Your Profile Image
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div id="croppie-container" style="max-width: 100%; margin: auto;"></div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" id="cropBtn">Crop & Use Image</button>
+            </div>
         </div>
     </div>
 </div>
 
-<partial name="_ValidationScriptsPartial" />
+@section Scripts {
+    <script>
+        let croppieInstance;
+        const profilePicInput = document.getElementById('profilePicInput');
+        const previewImage = document.getElementById('ProfilePicture');
 
-<script>
-    document.querySelector("#profilePicInput").onchange = function () {
-        document.getElementById('ProfilePicture').src = window.URL.createObjectURL(this.files[0]);
-    }
-</script>
+        profilePicInput.onchange = function () {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const cropModal = new bootstrap.Modal(document.getElementById('cropModal'));
+                    cropModal.show();
+
+                    if (croppieInstance) {
+                        croppieInstance.destroy();
+                    }
+
+                    croppieInstance = new Croppie(document.getElementById('croppie-container'), {
+                        viewport: { width: 300, height: 300, type: 'circle' },
+                        boundary: { width: 400, height: 400 },
+                        enableExif: true,
+                        enableOrientation: true,
+                        enableResize: true,
+                        enableZoom: true,
+                        showZoomer: true,
+                        mouseWheelZoom: true,
+                    });
+
+                    croppieInstance.bind({
+                        url: e.target.result,
+                        zoom: 0.5,
+                        orientation: 1
+                    });
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        };
+
+        document.getElementById('cropBtn').onclick = function () {
+            croppieInstance.result({
+                type: 'blob',
+                size: 'viewport',
+                format: 'jpeg',
+                quality: 0.9,
+                circle: true
+            }).then(function (blob) {
+                previewImage.src = URL.createObjectURL(blob);
+
+                const fileInput = document.getElementById('profilePicInput');
+                const file = new File([blob], "cropped-profile.jpg", { type: 'image/jpeg' });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+
+                bootstrap.Modal.getInstance(document.getElementById('cropModal')).hide();
+            });
+        };
+    </script>
+}

@@ -1,14 +1,16 @@
-﻿ @model SignInViewModel;
+﻿@model SignInViewModel;
 
 @{
     ViewData["Title"] = "SignIn";
 }
 
- 
+
 <div id="signin-wrapper" class="d-flex flex-column flex-md-row align-items-center justify-content-center min-vh-100 bg-white overflow-hidden">
     <!-- LEFT FORM -->
     <div class="col-md-5 bg-white rounded-4 shadow p-4 m-2 z-2">
         <form asp-action="SignIn" method="post" novalidate>
+
+            <h3 class="fw-bold mb-4 text-secondary text-center">Welcome Back 👋</h3>
 
             <!-- Email or Username -->
             <div class="form-group mb-4 position-relative">
@@ -50,7 +52,7 @@
             <!-- Remember & Forgot -->
             <div class="d-flex justify-content-between align-items-center mb-4 text-primary">
                 <div class="form-check">
-                    <input asp-for="RememberMe" class="form-check-input" type="checkbox" id="rememberMe" />
+                    <input asp-for="RememberMe" class="form-check-input border" type="checkbox" id="rememberMe" />
                     <label class="form-check-label" for="rememberMe">Remember me</label>
                 </div>
                 <a href="#" class="text-decoration-none small ">Forgot password?</a>
@@ -80,6 +82,7 @@
             <img src="/images/a3.jpg" class="collage-img img4" />
         </div>
     </div>
+
 </div>
 
 

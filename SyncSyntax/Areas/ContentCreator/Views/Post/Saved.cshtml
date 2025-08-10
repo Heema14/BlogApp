@@ -2,6 +2,14 @@
 
 <h2>Saved Posts</h2>
 
+@if (!Model.Any())
+{
+    <div class="mt-3">
+        <p class="text-danger fs-3">There are no posts saved yet!!</p>
+    </div>
+}
+
+
 @foreach (var item in Model)
 {
     var post = item.Post;

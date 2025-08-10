@@ -171,7 +171,7 @@
                     <span class="emoji-option">😂</span>
                     <span class="emoji-option">😮</span>
                     <span class="emoji-option">😢</span>
-                   
+
                 </div>
 
 
@@ -347,7 +347,8 @@
         cursor: pointer;
         color: rgba(255,255,255,0.6);
     }
-<link rel="stylesheet" href="~/css/Chat.css" />
+
+    <link rel="stylesheet" href="~/css/Chat.css" / >
 
     .message.sent .dots-btn {
         color: rgba(255,255,255,0.6);
@@ -419,28 +420,26 @@
 @section Scripts {
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
-           document.getElementById("sendButton").addEventListener("click", function () {
-               var sender = document.getElementById("senderId").value.trim(); // ID
-        var receiver = document.getElementById("receiverId").value.trim();
-        var messageContent = document.getElementById("messageInput").value.trim();
-               var sender = document.getElementById("senderId").value.trim(); // هذا هو ال Id
-            if (!messageContent || !sender || !receiver) {
-                alert("Please provide Sender, Receiver, and Message.");
-                return;
-            }
+               document.getElementById("sendButton").addEventListener("click", function () {
+                   var sender = document.getElementById("senderId").value.trim(); // ID
+            var receiver = document.getElementById("receiverId").value.trim();
+            var messageContent = document.getElementById("messageInput").value.trim();
+                   var sender = document.getElementById("senderId").value.trim(); // هذا هو ال Id
+                if (!messageContent || !sender || !receiver) {
+                    alert("Please provide Sender, Receiver, and Message.");
+                    return;
+                }
 
-           connection.invoke("SendMessage", sender, receiver, messageContent)
-        .catch(err => console.error(err));
+               connection.invoke("SendMessage", sender, receiver, messageContent)
+            .catch(err => console.error(err));
 
-            document.getElementById("messageInput").value = "";
-        });
+                document.getElementById("messageInput").value = "";
+            });
     </script>
 
 
     <!-- library for imojis -->
     <!-- مكتبة الإيموجي الجاهزة -->
-
-
     <!-- library for imojis -->
     <script src="https://unpkg.com/picmo@latest/dist/umd/index.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/picmo@latest/dist/styles.css">
@@ -492,89 +491,89 @@
 
     </script>
     <script>
-        const chatContainer = document.querySelector('.chat-container');
-        const messageArea = document.querySelector('.chat-messages');
-        $(document).on('click', '.edit-message', function (e) {
-             e.preventDefault();
-             const messageId = $(this).data('id');
-             const messageElement = $(this).closest('.message');
-             const originalContent = messageElement.find('p').text();
-        // تحميل الثيم والخلفية عند بدء الصفحة
-        const savedTheme = localStorage.getItem('chat-theme') || 'light';
-        const savedBg = localStorage.getItem('chat-bg');
-             const messageId = $(this).data('id');
-             const messageElement = $(this).closest('.message');
-             const originalContent = messageElement.find('p').text();
+            const chatContainer = document.querySelector('.chat-container');
+            const messageArea = document.querySelector('.chat-messages');
+            $(document).on('click', '.edit-message', function (e) {
+                 e.preventDefault();
+                 const messageId = $(this).data('id');
+                 const messageElement = $(this).closest('.message');
+                 const originalContent = messageElement.find('p').text();
+            // تحميل الثيم والخلفية عند بدء الصفحة
+            const savedTheme = localStorage.getItem('chat-theme') || 'light';
+            const savedBg = localStorage.getItem('chat-bg');
+                 const messageId = $(this).data('id');
+                 const messageElement = $(this).closest('.message');
+                 const originalContent = messageElement.find('p').text();
 
-             const modal = new bootstrap.Modal(document.getElementById('editMessageModal'));
-             modal.show();
-         });
+                 const modal = new bootstrap.Modal(document.getElementById('editMessageModal'));
+                 modal.show();
+             });
 
-         $(document).on('click', '#saveEditBtn', function () {
-            const newContent = $('#editMessageInput').val();
+             $(document).on('click', '#saveEditBtn', function () {
+                const newContent = $('#editMessageInput').val();
 
-            if (!newContent.trim()) {
-                alert('The message cannot be empty.');
-                return;
+                if (!newContent.trim()) {
+                    alert('The message cannot be empty.');
+                    return;
+                }
+            if (savedBg) {
+                messageArea.style.backgroundColor = savedBg;
+                colorPicker.value = savedBg;
             }
-        if (savedBg) {
-            messageArea.style.backgroundColor = savedBg;
-            colorPicker.value = savedBg;
-        }
-                alert('The message cannot be empty.');
-            $.post('/ContentCreator/Messages/EditMessage', {
-                id: editingMessageId,
-                content: newContent
-            }, function () {
-                // تحديث النص في الرسالة المعروضة مباشرة بدون إعادة تحميل الصفحة
-                const messageElement = $(`.message[data-id="${editingMessageId}"]`);
-                messageElement.find('p').text(newContent);
+                    alert('The message cannot be empty.');
+                $.post('/ContentCreator/Messages/EditMessage', {
+                    id: editingMessageId,
+                    content: newContent
+                }, function () {
+                    // تحديث النص في الرسالة المعروضة مباشرة بدون إعادة تحميل الصفحة
+                    const messageElement = $(`.message[data-id="${editingMessageId}"]`);
+                    messageElement.find('p').text(newContent);
 
-                // إخفاء المودال بعد التعديل
-                const modal = bootstrap.Modal.getInstance(document.getElementById('editMessageModal'));
-                modal.hide();
+                    // إخفاء المودال بعد التعديل
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('editMessageModal'));
+                    modal.hide();
 
-                // مسح متغير الرسالة التي يتم تعديلها
-                editingMessageId = null;
+                    // مسح متغير الرسالة التي يتم تعديلها
+                    editingMessageId = null;
+                });
             });
-        });
 
-        $(document).on('click', '.info-message', function (e) {
-            e.preventDefault();
-            const messageId = $(this).data('id');
-
-            $.get('/ContentCreator/Messages/MessageInfo', { id: messageId }, function (data) {
-                $('#infoContent').html(
-                    `<strong>Sent:</strong> ${data.sentAt}<br>
-                     <strong>State:</strong> ${data.isRead ? `✔️ Read<br><strong>Read At:</strong> ${data.readAt}` : '📭 Unread'}`
-                );
-
-                const box = $('#messageInfoBox');
-                box.stop(true, true).fadeIn(300);
-
-                setTimeout(() => {
-                    box.fadeOut(300);
-                }, 3000);
-            });
-        });
-
-        $('#closeInfoBox').on('click', function () {
-            $('#messageInfoBox').fadeOut(300);
-        // تغيير الثيم
-        themeOptions.forEach(option => {
-            option.addEventListener('click', (e) => {
+            $(document).on('click', '.info-message', function (e) {
                 e.preventDefault();
-                const selectedTheme = option.dataset.theme;
-                chatContainer.classList.remove('light', 'dark');
-                chatContainer.classList.add(selectedTheme);
-                localStorage.setItem('chat-theme', selectedTheme);
+                const messageId = $(this).data('id');
+
+                $.get('/ContentCreator/Messages/MessageInfo', { id: messageId }, function (data) {
+                    $('#infoContent').html(
+                        `<strong>Sent:</strong> ${data.sentAt}<br>
+                         <strong>State:</strong> ${data.isRead ? `✔️ Read<br><strong>Read At:</strong> ${data.readAt}` : '📭 Unread'}`
+                    );
+
+                    const box = $('#messageInfoBox');
+                    box.stop(true, true).fadeIn(300);
+
+                    setTimeout(() => {
+                        box.fadeOut(300);
+                    }, 3000);
+                });
             });
 
-        $('#closeInfoBox').on('click', function () {
-            $('#messageInfoBox').fadeOut(300);
-        });
+            $('#closeInfoBox').on('click', function () {
+                $('#messageInfoBox').fadeOut(300);
+            // تغيير الثيم
+            themeOptions.forEach(option => {
+                option.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const selectedTheme = option.dataset.theme;
+                    chatContainer.classList.remove('light', 'dark');
+                    chatContainer.classList.add(selectedTheme);
+                    localStorage.setItem('chat-theme', selectedTheme);
+                });
 
-    <script src="~/js/Chat.js"></script>
+            $('#closeInfoBox').on('click', function () {
+                $('#messageInfoBox').fadeOut(300);
+            });
+
+        <script src="~/js/Chat.js"></script>
 
     <script>
         let mediaRecorder;
@@ -653,7 +652,7 @@
     </script>
 
 
- 
+
     </script>
 
 }

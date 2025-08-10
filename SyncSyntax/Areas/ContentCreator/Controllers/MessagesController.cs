@@ -20,17 +20,10 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IHubContext<ChatHub> _hubContext;
         private readonly ILogger<PostController> _logger;
-        private readonly InMemoryChatCacheService _cache  ;
-
-        public MessagesController(
-            AppDbContext context,
-            UserManager<AppUser> userManager,
-            IHubContext<ChatHub> hubContext,
-            ILogger<PostController> logger,
-            InMemoryChatCacheService cache)
+        private readonly InMemoryChatCacheService _cache;
         private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public MessagesController(AppDbContext context, UserManager<AppUser> userManager, IHubContext<ChatHub> hubContext, ILogger<PostController> logger, IWebHostEnvironment webHostEnvironment)
+        public MessagesController(AppDbContext context, UserManager<AppUser> userManager, IHubContext<ChatHub> hubContext, ILogger<PostController> logger, IWebHostEnvironment webHostEnvironment, InMemoryChatCacheService cache)
         {
             _context = context;
             _userManager = userManager;
@@ -181,12 +174,12 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 }
                 else
                 {
-                    return Forbid();  
+                    return Forbid();
                 }
             }
             else if (scope == "me")
             {
-                 
+
                 var alreadyDeleted = await _context.MessageDeletions
                     .AnyAsync(d => d.UserId == currentUserId && d.MessageId == message.Id);
 
@@ -424,7 +417,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         {
             var reactions = await _context.MessageReactions
                 .Where(r => r.MessageId == id)
-                .Select(r => new { r.Reaction, r.UserId, r.User.FirstName }) 
+                .Select(r => new { r.Reaction, r.UserId, r.User.FirstName })
                 .ToListAsync();
 
             return Ok(reactions);

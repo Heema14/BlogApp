@@ -53,7 +53,7 @@
         }
         /* Sidebar Styles */
         .sidebar {
-            background: #e7d3c6;
+            background: #132029;
             border-right: 1px solid #ddd;
             padding-top: 1rem;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
@@ -173,9 +173,10 @@
                    asp-area="ContentCreator"
                    asp-action="Profile"
                    asp-route-userId="@User.FindFirstValue(ClaimTypes.NameIdentifier)">
-                    @* <img src="@(!string.IsNullOrEmpty(Model.ProfilePicture) ? Model.ProfilePicture : "/images/uploadImgs/default-image.jpg")" alt="User" width="40" href="40" class="rounded-circle me-1" /> *@
+                    <i class="bi bi-person-circle"></i>
                     <span> Profile</span>
                 </a>
+
                 <a asp-action="Saved" asp-controller="Post" asp-area="ContentCreator">
                     <i class="bi bi-bookmark"></i><span> Saved</span>
                 </a>
@@ -223,7 +224,7 @@
             <i class="bi bi-person"></i>
         </a>
         <a asp-action="Saved" asp-controller="Post" asp-area="ContentCreator">
-            <i class="bi bi-bookmark"></i><span> Saved</span>
+            <i class="bi bi-bookmark"></i>
         </a>
     </div>
 
