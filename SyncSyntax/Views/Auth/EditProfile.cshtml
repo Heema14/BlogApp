@@ -1,9 +1,5 @@
 ﻿@model EditProfileViewModel
 
-<!-- كرر روابط وأسلوب Croppie والستايل من واجهة التسجيل كما هي -->
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
 
 <style>
     body {
@@ -92,18 +88,20 @@
         }
 </style>
 
+
 <div class="container">
     <div class="form-container">
         <form asp-action="EditProfile" enctype="multipart/form-data" method="post" novalidate>
-            <!-- العودة -->
+            <!-- Back -->
             <div class="position-relative text-center mb-4">
-                <a asp-action="Profile" asp-controller="Account" class="position-absolute start-0 top-50 translate-middle-y ms-3 text-primary fs-3">
+                <button type="button" onclick="history.back()"
+                class="position-absolute start-0 top-50 translate-middle-y ms-3 text-primary fs-3">
                     <i class="bi bi-arrow-left-circle-fill"></i>
-                </a>
+                </button>
                 <h3 class="fw-bold text-primary">Edit Your Profile</h3>
             </div>
 
-            <!-- صورة البروفايل -->
+            <!-- image profile -->
             <div class="text-center mb-4">
                 <input asp-for="NewProfilePicture" type="file" id="profilePicInput" accept=".png,.jpg,.jpeg" class="d-none" />
                 <label for="profilePicInput" class="profile-picture-container">
@@ -174,7 +172,6 @@
                 </div>
             </div>
 
-            <!-- زر حفظ التعديلات -->
             <div class="text-center mt-4">
                 <button type="submit" class="modern-btn w-100 py-2 d-flex justify-content-center align-items-center gap-2">
                     <i class="bi bi-pencil-square fs-5"></i>
@@ -186,82 +183,11 @@
     </div>
 </div>
 
+
 <!-- Cropper Modal -->
-<div class="modal fade" id="cropModal" tabindex="-1" aria-labelledby="cropModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content p-3">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cropModalLabel">
-                    <i class="bi bi-scissors me-2"></i> Crop Your Profile Image
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <div id="croppie-container" style="max-width: 100%; margin: auto;"></div>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-primary" id="cropBtn">Crop & Use Image</button>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="_ProfileImageCropper" />
 
-@section Scripts {
-    <script>
-        let croppieInstance;
-        const profilePicInput = document.getElementById('profilePicInput');
-        const previewImage = document.getElementById('ProfilePicture');
-
-        profilePicInput.onchange = function () {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    const cropModal = new bootstrap.Modal(document.getElementById('cropModal'));
-                    cropModal.show();
-
-                    if (croppieInstance) {
-                        croppieInstance.destroy();
-                    }
-
-                    croppieInstance = new Croppie(document.getElementById('croppie-container'), {
-                        viewport: { width: 300, height: 300, type: 'circle' },
-                        boundary: { width: 400, height: 400 },
-                        enableExif: true,
-                        enableOrientation: true,
-                        enableResize: true,
-                        enableZoom: true,
-                        showZoomer: true,
-                        mouseWheelZoom: true,
-                    });
-
-                    croppieInstance.bind({
-                        url: e.target.result,
-                        zoom: 0.5,
-                        orientation: 1
-                    });
-                };
-                reader.readAsDataURL(this.files[0]);
-            }
-        };
-
-        document.getElementById('cropBtn').onclick = function () {
-            croppieInstance.result({
-                type: 'blob',
-                size: 'viewport',
-                format: 'jpeg',
-                quality: 0.9,
-                circle: true
-            }).then(function (blob) {
-                previewImage.src = URL.createObjectURL(blob);
-
-                const fileInput = document.getElementById('profilePicInput');
-                const file = new File([blob], "cropped-profile.jpg", { type: 'image/jpeg' });
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                fileInput.files = dataTransfer.files;
-
-                bootstrap.Modal.getInstance(document.getElementById('cropModal')).hide();
-            });
-        };
-    </script>
-}
+<script>
+    // take IDs for function in partial
+    initProfileImageCropper('profilePicInput', 'ProfilePicture');
+</script>

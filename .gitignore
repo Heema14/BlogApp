@@ -387,3 +387,7 @@ FodyWeavers.xsd
 /SyncSyntax/bin/Debug/net9.0/SyncSyntax.deps.json
 /SyncSyntax/appsettings.json
 /SyncSyntax/Migrations/*
+/SyncSyntax/bin/Debug/net9.0/SyncSyntax.dll
+/SyncSyntax/bin/Debug/net9.0/SyncSyntax.exe
+/SyncSyntax/bin/Debug/net9.0/SyncSyntax.dll
+/SyncSyntax/bin/Debug/net9.0/SyncSyntax.exe

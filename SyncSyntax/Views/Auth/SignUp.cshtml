@@ -202,120 +202,37 @@
 </div>
 
 
+
 <!-- Cropper Modal -->
-<div class="modal fade" id="cropModal" tabindex="-1" aria-labelledby="cropModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content p-3">
-            <div class="modal-header">
-                <h5 class="modal-title" id="cropModalLabel">
-                    <i class="bi bi-scissors me-2"></i> Crop Your Profile Image
-                </h5>              
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <!-- Â‰« »œ¯·‰« <img> »‹ div ÌÕ ÊÌ Croppie -->
-                <div id="croppie-container" style="max-width: 100%; margin: auto;"></div>
-            </div>
-            <div class="modal-footer justify-content-center">
-                <button type="button" class="btn btn-primary" id="cropBtn">Crop & Use Image</button>
-            </div>
-        </div>
-    </div>
-</div>
+<partial name="_ProfileImageCropper" />
+
+<script>
+    // take IDs for function in partial
+    initProfileImageCropper('profilePicInput', 'ProfilePicture');
+</script>
 
 
-<!-- Scripts -->
-@section Scripts {
+<script>
+    // document.getElementById('profilePicInput').onchange = function () {
+    //     if (this.files && this.files[0]) {
+    //         document.getElementById('ProfilePicture').src = window.URL.createObjectURL(this.files[0]);
+    //     }
+    // };
 
-    <script>
-        // document.getElementById('profilePicInput').onchange = function () {
-        //     if (this.files && this.files[0]) {
-        //         document.getElementById('ProfilePicture').src = window.URL.createObjectURL(this.files[0]);
-        //     }
-        // };
-
-        function togglePassword(id, iconElement) {
-            const input = document.getElementById(id);
-            const icon = iconElement.querySelector('i');
-            if (input.type === "password") {
-                input.type = "text";
-                icon.classList.remove("bi-eye");
-                icon.classList.add("bi-eye-slash");
-            } else {
-                input.type = "password";
-                icon.classList.remove("bi-eye-slash");
-                icon.classList.add("bi-eye");
-            }
+    function togglePassword(id, iconElement) {
+        const input = document.getElementById(id);
+        const icon = iconElement.querySelector('i');
+        if (input.type === "password") {
+            input.type = "text";
+            icon.classList.remove("bi-eye");
+            icon.classList.add("bi-eye-slash");
+        } else {
+            input.type = "password";
+            icon.classList.remove("bi-eye-slash");
+            icon.classList.add("bi-eye");
         }
-    </script>
-
-
-    <script>
-        let croppieInstance;
-        const profilePicInput = document.getElementById('profilePicInput');
-        const previewImage = document.getElementById('ProfilePicture');
-
-        profilePicInput.onchange = function () {
-            if (this.files && this.files[0]) {
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    // ≈ŸÂ«— «·„Êœ«·
-                    const cropModal = new bootstrap.Modal(document.getElementById('cropModal'));
-                    cropModal.show();
-
-                    //  œ„Ì— Croppie «·”«»ﬁ… ≈–« „ÊÃÊœ…
-                    if (croppieInstance) {
-                        croppieInstance.destroy();
-                    }
-
-                    // ≈‰‘«¡ Croppie ÃœÌœ…
-                    croppieInstance = new Croppie(document.getElementById('croppie-container'), {
-                        viewport: { width: 300, height: 300, type: 'circle' },
-                        boundary: { width: 400, height: 400 }, // √ﬂ»— „”«Õ… ·· Õﬂ„
-                        enableExif: true,
-                        enableOrientation: true,
-                        enableResize: true,
-                        enableZoom: true,      // ›⁄· «· ﬂ»Ì—/ ’€Ì—
-                        showZoomer: true,      // √ŸÂ— ‘—Ìÿ «· ﬂ»Ì—
-                        mouseWheelZoom: true,  //  ﬂ»Ì— »«·„«Ê”
-                    });
-
-
-                    croppieInstance.bind({
-                        url: e.target.result,
-                        zoom: 0.5,
-                        orientation: 1
-                    });
-                };
-                reader.readAsDataURL(this.files[0]);
-            }
-        };
-
-        document.getElementById('cropBtn').onclick = function () {
-            croppieInstance.result({
-                type: 'blob',
-                size: 'viewport',
-                format: 'jpeg',
-                quality: 0.9,
-                circle: true
-            }).then(function (blob) {
-                // ⁄—÷ «·’Ê—… «·„ﬁ ’… ›Ì «·„⁄«Ì‰…
-                previewImage.src = URL.createObjectURL(blob);
-
-                //  ÕœÌÀ „·› «·≈œŒ«· ·≈—”«· «·’Ê—… «·„ﬁ ’…
-                const fileInput = document.getElementById('profilePicInput');
-                const file = new File([blob], "cropped-profile.jpg", { type: 'image/jpeg' });
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-                fileInput.files = dataTransfer.files;
-
-                // ≈€·«ﬁ «·„Êœ«·
-                bootstrap.Modal.getInstance(document.getElementById('cropModal')).hide();
-            });
-        };
-    </script>
-
-}
+    }
+</script>
 
 
 <script src="~/js/site.js"></script>

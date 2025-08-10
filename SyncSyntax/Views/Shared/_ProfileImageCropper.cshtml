@@ -1,0 +1,90 @@
+﻿
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.5/croppie.min.js"></script>
+
+<style>
+    #croppie-container {
+        max-width: 100%;
+        margin: auto;
+    }
+</style>
+
+<!-- Cropper Modal -->
+<div class="modal fade" id="cropModal" tabindex="-1" aria-labelledby="cropModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content p-3">
+            <div class="modal-header">
+                <h5 class="modal-title" id="cropModalLabel">
+                    <i class="bi bi-scissors me-2"></i> Crop Your Profile Image
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div id="croppie-container" style="max-width: 100%; margin: auto;"></div>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-primary" id="cropBtn">Crop & Use Image</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    let croppieInstance;
+    function initProfileImageCropper(inputFileId, previewImgId) {
+        const profilePicInput = document.getElementById(inputFileId);
+        const previewImage = document.getElementById(previewImgId);
+
+        profilePicInput.onchange = function () {
+            if (this.files && this.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    const cropModal = new bootstrap.Modal(document.getElementById('cropModal'));
+                    cropModal.show();
+
+                    if (croppieInstance) {
+                        croppieInstance.destroy();
+                    }
+
+                    croppieInstance = new Croppie(document.getElementById('croppie-container'), {
+                        viewport: { width: 300, height: 300, type: 'circle' },
+                        boundary: { width: 400, height: 400 },
+                        enableExif: true,
+                        enableOrientation: true,
+                        enableResize: true,
+                        enableZoom: true,
+                        showZoomer: true,
+                        mouseWheelZoom: true,
+                    });
+
+                    croppieInstance.bind({
+                        url: e.target.result,
+                        zoom: 0.5,
+                        orientation: 1
+                    });
+                };
+                reader.readAsDataURL(this.files[0]);
+            }
+        };
+
+        document.getElementById('cropBtn').onclick = function () {
+            croppieInstance.result({
+                type: 'blob',
+                size: 'viewport',
+                format: 'jpeg',
+                quality: 0.9,
+                circle: true
+            }).then(function (blob) {
+                previewImage.src = URL.createObjectURL(blob);
+
+                const fileInput = document.getElementById(inputFileId);
+                const file = new File([blob], "cropped-profile.jpg", { type: 'image/jpeg' });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                fileInput.files = dataTransfer.files;
+
+                bootstrap.Modal.getInstance(document.getElementById('cropModal')).hide();
+            });
+        };
+    }
+</script>
