@@ -534,32 +534,42 @@ document.addEventListener('DOMContentLoaded', function () {
 
     //Clear Chat
   
-        const clearChatBtn = document.getElementById("clearChatBtn");
-        const chatUserId = document.getElementById("chatUserId")?.value;
-        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
+    //document.addEventListener('click', async function (e) {
+    //    if (e.target && e.target.id === "clearChatBtn") {
+    //        e.preventDefault();
 
-        if (clearChatBtn && chatUserId && token) {
-            clearChatBtn.addEventListener("click", async (e) => {
-                e.preventDefault();
-                const confirmed = confirm("هل تريد مسح جميع الرسائل من طرفك؟");
-                if (!confirmed) return;
+    //        const senderId = document.getElementById("senderId")?.value;
+    //        const receiverId = document.getElementById("receiverId")?.value;
+    //        const token = document.querySelector('input[name="__RequestVerificationToken"]')?.value;
 
-                const response = await fetch(`/ContentCreator/Messages/ClearChat?userId=${chatUserId}`, {
-                    method: "POST",
-                    headers: {
-                        "RequestVerificationToken": token
-                    }
-                });
+    //        if (!senderId || !receiverId || !token) {
+    //            return alert("⛔ بيانات المستخدم غير موجودة");
+    //        }
 
-                if (response.ok) {
-                    location.reload(); // أو: window.location.href = window.location.href;
-                } else {
-                    alert("فشلت عملية الحذف، تأكد أن كل شيء مضبوط");
-                }
-            });
-        } else {
-            console.warn("⛔ زر Clear Chat أو قيمته غير موجودة.");
-        }
+    //        const confirmed = confirm("هل تريد مسح جميع الرسائل من طرفك؟");
+    //        if (!confirmed) return;
+
+    //        try {
+    //            const response = await fetch(`/ContentCreator/Messages/ClearChat?userId=${receiverId}`, {
+    //                method: "POST",
+    //                headers: {
+    //                    "RequestVerificationToken": token
+    //                }
+    //            });
+
+    //            if (response.ok) {
+    //                location.reload();
+    //            } else {
+    //                alert("فشلت عملية الحذف، تأكد أن كل شيء مضبوط");
+    //            }
+    //        } catch (err) {
+    //            console.error(err);
+    //            alert("حدث خطأ أثناء الحذف");
+    //        }
+    //    }
+    //});
+
+
    
     const messageArea = document.querySelector('.chat-messages');
     const colorPicker = document.getElementById('bgColorPicker');

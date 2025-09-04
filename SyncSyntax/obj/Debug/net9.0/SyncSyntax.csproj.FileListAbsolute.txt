@@ -1166,4 +1166,4 @@ C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\SyncSyntax.pdb
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\SyncSyntax.genruntimeconfig.cache
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\ref\SyncSyntax.dll
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\71wgmqromi-55l22kleba.gz
-C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\ezqh74081w-2ei2kttbel.gz
+C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\ezqh74081w-ugj3vgpcer.gz

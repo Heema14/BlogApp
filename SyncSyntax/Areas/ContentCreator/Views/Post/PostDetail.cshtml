@@ -90,6 +90,25 @@
         color: #999;
         font-style: italic;
     }
+
+    .focus-mode {
+        background-color: #f5f5dc; 
+        color: #333;  
+    }
+
+        .focus-mode .post-detail-container {
+            background-color: #f5f5dc; 
+            color: #333;  
+            padding: 20px;
+            border-radius: 10px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .focus-mode body {
+            background-color: #f5f5dc;
+            transition: background-color 0.3s ease;
+        }
+
 </style>
 
 <div class="post-detail-container">
@@ -113,6 +132,8 @@
 
     <!-- Right side -->
     <div class="post-right">
+        <button id="focusModeBtn" class="btn btn-outline-secondary mb-3">Focus Mode</button>
+
         <h1>@Model.Post.Title</h1>
         <div class="post-date">Published on @Model.Post.CreatedAt.ToString("MMMM dd, yyyy")</div>
 
@@ -152,3 +173,20 @@
         }
     </div>
 </div>
+<script>
+    const focusBtn = document.getElementById("focusModeBtn");
+
+    focusBtn.addEventListener("click", () => {
+        document.body.classList.toggle("focus-mode");
+
+        // تغيير نص الزر حسب الوضع الحالي
+        if (document.body.classList.contains("focus-mode")) {
+            focusBtn.textContent = "Exit Focus Mode";
+        } else {
+            focusBtn.textContent = "Focus Mode";
+        }
+    });
+
+
+
+</script>

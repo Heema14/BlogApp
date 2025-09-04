@@ -153,14 +153,13 @@
 @if (currentUserId == Model.User.UserName)
 {
     <div class="text-end mb-4">
-        <a asp-action="Create" asp-controller="Post" class="icon-expand-btn">
+        <a asp-action="Create" asp-controller="Post" class="icon-expand-btn" data-hover-text="Create New Post"  >
             <i class="bi bi-plus-circle svgIcon"></i>
         </a>
     </div>
 }
 
-@* <div style="text-align:center; font-weight: bold;">Share Articles</div> *@
-
+ 
 <div class="nav-tabs-custom">
     <span>Articles</span>
 
@@ -211,27 +210,7 @@
                                             style="background-color: @(post.IsPublished ? "#6c757d" : "#198754")">
                                         <i class="bi @(post.IsPublished ? "bi-eye" : "bi-eye-slash") svgIcon"></i>
                                     </button>
-
-
-                                    @*     <span class="text-danger" onclick="confirmDelete(@post.Id)">
-                                        <i class="bi bi-trash3-fill"></i>
-                                    </span>
-                                    <span onclick="location.href='@Url.Action("Edit", "Post", new { id = post.Id })'">
-                                        <i class="bi bi-pencil-square"></i>
-                                    </span>
-                                    <!-- زر On/Off Toggle -->
-                                    <span onclick="togglePublishStatus(@post.Id, '@post.IsPublished.ToString().ToLower()')">
-                                        <button class="btn btn-sm position-relative p-2" data-id="@post.Id">
-                                            @if (post.IsPublished)
-                                            {
-                                                <i class="bi bi-eye"></i> <!-- Icon for Published (eye) -->
-                                            }
-                                            else
-                                            {
-                                                <i class="bi bi-eye-slash"></i> <!-- Icon for Unpublished (eye-slash) -->
-                                            }
-                                        </button>
-                                    </span> *@
+ 
                                 }
                             </div>
 

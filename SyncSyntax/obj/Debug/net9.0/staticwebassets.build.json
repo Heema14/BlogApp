@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "izxoZz8d3NGCoDPlsho8PI1l7ttDBtyk1jsIT22nvbs=",
+  "Hash": "2yRKpYlWXgwlBjauIeZXoeSAQamHX1mmNAEZjZPTCa0=",
   "Source": "SyncSyntax",
   "BasePath": "_content/SyncSyntax",
   "Mode": "Default",
@@ -836,12 +836,12 @@
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\assets\\webfonts\\fa-solid-900.svg"
     },
     {
-      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-2ei2kttbel.gz",
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-ugj3vgpcer.gz",
       "SourceId": "SyncSyntax",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\",
       "BasePath": "_content/SyncSyntax",
-      "RelativePath": "js/Chat#[.{fingerprint=2ei2kttbel}]?.js.gz",
+      "RelativePath": "js/Chat#[.{fingerprint=ugj3vgpcer}]?.js.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -850,8 +850,8 @@
       "RelatedAsset": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\Chat.js",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "kdv4enxoda",
-      "Integrity": "KO4E8XBzoB2exWxN14yLHLsAkpUANQNovG7pEoZ+MwY=",
+      "Fingerprint": "qdtwnfcrlp",
+      "Integrity": "vu+y0BtzpX5r9wV2ek5Utc6qBSqjt0OYTI6jAg6xZbk=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\Chat.js"
@@ -4210,8 +4210,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "2ei2kttbel",
-      "Integrity": "moEKVZNvu2cVUCX8Pnp7v9hG7Qf4QNUqdUCU2OsFhmI=",
+      "Fingerprint": "ugj3vgpcer",
+      "Integrity": "TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\Chat.js"
@@ -18107,13 +18107,13 @@
       ]
     },
     {
-      "Route": "js/Chat.2ei2kttbel.js",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-2ei2kttbel.gz",
+      "Route": "js/Chat.js",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-ugj3vgpcer.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000188643652"
+          "Quality": "0.000187125749"
         }
       ],
       "ResponseHeaders": [
@@ -18123,19 +18123,19 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "5300"
+          "Value": "5343"
         },
         {
           "Name": "ETag",
-          "Value": "\"KO4E8XBzoB2exWxN14yLHLsAkpUANQNovG7pEoZ+MwY=\""
+          "Value": "\"vu+y0BtzpX5r9wV2ek5Utc6qBSqjt0OYTI6jAg6xZbk=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 09:24:22 GMT"
+          "Value": "Thu, 04 Sep 2025 10:09:10 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
+          "Value": "no-cache"
         },
         {
           "Name": "Content-Encoding",
@@ -18151,26 +18151,18 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"moEKVZNvu2cVUCX8Pnp7v9hG7Qf4QNUqdUCU2OsFhmI=\""
+          "Value": "W/\"TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI=\""
         }
       ],
       "EndpointProperties": [
         {
-          "Name": "fingerprint",
-          "Value": "2ei2kttbel"
-        },
-        {
-          "Name": "label",
-          "Value": "js/Chat.js"
-        },
-        {
           "Name": "integrity",
-          "Value": "sha256-moEKVZNvu2cVUCX8Pnp7v9hG7Qf4QNUqdUCU2OsFhmI="
+          "Value": "sha256-TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI="
         }
       ]
     },
     {
-      "Route": "js/Chat.2ei2kttbel.js",
+      "Route": "js/Chat.js",
       "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\Chat.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -18180,7 +18172,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "24389"
+          "Value": "24609"
         },
         {
           "Name": "Content-Type",
@@ -18188,11 +18180,156 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"moEKVZNvu2cVUCX8Pnp7v9hG7Qf4QNUqdUCU2OsFhmI=\""
+          "Value": "\"TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 09:24:22 GMT"
+          "Value": "Thu, 04 Sep 2025 10:09:10 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI="
+        }
+      ]
+    },
+    {
+      "Route": "js/Chat.js.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-ugj3vgpcer.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5343"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vu+y0BtzpX5r9wV2ek5Utc6qBSqjt0OYTI6jAg6xZbk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 04 Sep 2025 10:09:10 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-vu+y0BtzpX5r9wV2ek5Utc6qBSqjt0OYTI6jAg6xZbk="
+        }
+      ]
+    },
+    {
+      "Route": "js/Chat.ugj3vgpcer.js",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-ugj3vgpcer.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.000187125749"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "5343"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"vu+y0BtzpX5r9wV2ek5Utc6qBSqjt0OYTI6jAg6xZbk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 04 Sep 2025 10:09:10 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ugj3vgpcer"
+        },
+        {
+          "Name": "label",
+          "Value": "js/Chat.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI="
+        }
+      ]
+    },
+    {
+      "Route": "js/Chat.ugj3vgpcer.js",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\Chat.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "24609"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Thu, 04 Sep 2025 10:09:10 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -18202,7 +18339,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "2ei2kttbel"
+          "Value": "ugj3vgpcer"
         },
         {
           "Name": "label",
@@ -18210,13 +18347,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-moEKVZNvu2cVUCX8Pnp7v9hG7Qf4QNUqdUCU2OsFhmI="
+          "Value": "sha256-TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI="
         }
       ]
     },
     {
-      "Route": "js/Chat.2ei2kttbel.js.gz",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-2ei2kttbel.gz",
+      "Route": "js/Chat.ugj3vgpcer.js.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-ugj3vgpcer.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -18225,7 +18362,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "5300"
+          "Value": "5343"
         },
         {
           "Name": "Content-Type",
@@ -18233,11 +18370,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"KO4E8XBzoB2exWxN14yLHLsAkpUANQNovG7pEoZ+MwY=\""
+          "Value": "\"vu+y0BtzpX5r9wV2ek5Utc6qBSqjt0OYTI6jAg6xZbk=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 09:24:22 GMT"
+          "Value": "Thu, 04 Sep 2025 10:09:10 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -18255,7 +18392,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "2ei2kttbel"
+          "Value": "ugj3vgpcer"
         },
         {
           "Name": "label",
@@ -18263,144 +18400,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-KO4E8XBzoB2exWxN14yLHLsAkpUANQNovG7pEoZ+MwY="
-        }
-      ]
-    },
-    {
-      "Route": "js/Chat.js",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-2ei2kttbel.gz",
-      "Selectors": [
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip",
-          "Quality": "0.000188643652"
-        }
-      ],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "5300"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"KO4E8XBzoB2exWxN14yLHLsAkpUANQNovG7pEoZ+MwY=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 09:24:22 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "W/\"moEKVZNvu2cVUCX8Pnp7v9hG7Qf4QNUqdUCU2OsFhmI=\""
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-moEKVZNvu2cVUCX8Pnp7v9hG7Qf4QNUqdUCU2OsFhmI="
-        }
-      ]
-    },
-    {
-      "Route": "js/Chat.js",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\Chat.js",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "24389"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"moEKVZNvu2cVUCX8Pnp7v9hG7Qf4QNUqdUCU2OsFhmI=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 09:24:22 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-moEKVZNvu2cVUCX8Pnp7v9hG7Qf4QNUqdUCU2OsFhmI="
-        }
-      ]
-    },
-    {
-      "Route": "js/Chat.js.gz",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-2ei2kttbel.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "5300"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/javascript"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"KO4E8XBzoB2exWxN14yLHLsAkpUANQNovG7pEoZ+MwY=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 09:24:22 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-KO4E8XBzoB2exWxN14yLHLsAkpUANQNovG7pEoZ+MwY="
+          "Value": "sha256-vu+y0BtzpX5r9wV2ek5Utc6qBSqjt0OYTI6jAg6xZbk="
         }
       ]
     },
