@@ -1,345 +1,103 @@
-﻿@* @model IEnumerable<Post> *@
-@model IEnumerable<PostWithFollowStatusViewModel>
+﻿@model IEnumerable<AppUser>
 
-@{
-    ViewData["Title"] = "Blog Posts";
-}
-<link href="~/css/sidebar.css" rel="stylesheet" />
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore Users</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
 
-<style>
-    <style >
-    .save-toggle-btn {
-        background: transparent;
-        border: none;
-        cursor: pointer;
-        font-size: 1.5rem;
-        color: #555;
-        transition: color 0.3s ease;
-    }
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 30px;
+            font-weight: bold;
+            color: #333;
+        }
 
-    .save-toggle-btn.saved {
-        color: #007bff;
-    }
-</style>
+        .user-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
 
-<!-- Category Search -->
-<div class="my-4 text-center">
-    <div class="input-group w-50 mx-auto">
-        <input type="text" id="categorySearchInput" class="form-control" placeholder="Search category..." autocomplete="off" />
-        <button class="btn btn-success" id="searchCategoryBtn">
-            <i class="bi bi-search"></i> Search
-        </button>
-    </div>
-</div>
-
-<!-- Create Post Button -->
-<div class="text-end mb-4">
-    <a asp-action="Create" class="icon-expand-btn" data-hover-text="Create New Post">
-        <i class="bi bi-plus-circle svgIcon"></i>
-    </a>
-</div>
-
-    @if (!Model.Any())
-    {
-    <div class="alert text-center mt-4" style="background-color: rgb(200, 235, 250) !important; color: #0a0a0a;">
-        <i class="bi bi-info-circle"></i>
-        Looks like you're not following anyone at the moment. Don't worry! Start following some fresh new faces and enjoy reading their unique and inspiring posts. 📚✨
-
-        <br />
-
-        <a asp-action="Users" class="modern-btn mt-4 d-inline-block" style="margin-top: 30px;">
-            <i class="bi bi-person-plus me-2"></i> Explore New Users
-        </a>
-        <a asp-action="Explore" asp-controller="Post" class="modern-btn mt-4 d-inline-block me-2" style="margin-top: 30px;">
-            <i class="bi bi-compass me-2"></i> Explore New Posts
-        </a>
-    </div>
-    }
-
-
-    else
-    {
-    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-            @foreach (var post in Model)
-            {
-            <!-- Posts Grid -->
-            <div class="col">
-
-                <div class="card h-100 border-0 shadow-lg rounded-4 overflow-hidden">
-
-                    <!-- Post Image with Overlay -->
-                    <div class="overflow-hidden position-relative" style="height: 220px;">
-                        <img src="@(!string.IsNullOrEmpty(post.Post.FeatureImagePath) ? post.Post.FeatureImagePath : "/images/default-image.jpg")"
-                             class="card-img-top h-100 w-100 object-fit-cover transition"
-                             alt="@post.Post.Title"
-                             style="transition: transform 0.3s ease;" />
-
-                        <!-- Read More Overlay -->
-
-
-                        <a data-bs-toggle="modal" data-bs-target="#postModal" data-id="@post.Post.Id"
-                           class="read-more-overlay d-flex justify-content-center align-items-center text-white text-decoration-none">
-                            <span class="fs-6 fw-semibold"><i class="bi bi-book me-2"></i>Read More</span>
-                        </a>
-                    </div>
-
-                    <div class="card-body">
-                        <!-- User Info and Actions -->
-                        <div class="d-flex align-items-center justify-content-between mb-3">
-                            <a asp-action="Profile" asp-controller="Following" asp-route-userId="@post.Post.UserId" class="d-flex align-items-center gap-2 text-decoration-none text-dark">
-                                <img src="@post.Post.UserImageUrl" alt="User" class="rounded-circle" style="width: 30px; height: 30px;">
-                                <span>@post.Post.UserName</span>
-                            </a>
-
-
-                            <div class="d-flex align-items-center gap-2 actions">
-                                <button class="icon-expand-btn"
-                                        data-hover-text="@(post.IsSaved ? "Un Save" : "Save")"
-                                        data-post-id="@post.Post.Id"
-                                        data-return-page="FollowingPosts"
-                                        aria-label="@(post.IsSaved ? "Unsave post" : "Save post")">
-                                    <i class="bi svgIcon @(post.IsSaved ? "bi-bookmark-fill" : "bi-bookmark")"></i>
-                                </button>
-
-                                    @if (User.FindFirstValue(ClaimTypes.NameIdentifier) != post.Post.UserId)
-                                    {
-                                        if (post.IsFollowing)
-                                        {
-                                        <form asp-controller="Following" asp-action="Unfollow" asp-route-userId="@post.Post.UserId" method="post">
-                                                @Html.AntiForgeryToken()
-                                            <button type="submit" class="icon-expand-btn" data-hover-text="Un Follow">
-                                                <i class="bi bi-person-dash me-1 svgIcon"></i>
-                                            </button>
-                                        </form>
-                                        }
-                                        else
-                                        {
-                                        <form asp-controller="Following" asp-action="Follow" asp-route-userId="@post.Post.UserId" method="post">
-                                                @Html.AntiForgeryToken()
-                                            <button type="submit" class="icon-expand-btn" data-hover-text="Follow">
-                                                <i class="bi bi-person-plus me-1 svgIcon"></i>
-                                            </button>
-                                        </form>
-                                        }
-                                    }
-
-
-
-                                <form id="antiForgeryForm" style="display:none;">
-                                        @Html.AntiForgeryToken()
-                                </form>
-
-
-
-                            </div>
-
-                        </div>
-
-                        <!-- Post Title and Likes -->
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title fw-bold">@post.Post.Title</h5>
-                            <div class="d-flex align-items-center gap-1" style="cursor: pointer;">
-                                <i class="bi bi-heart-fill" style="color: @(post.Post.LikesCount > 0 ? "red" : "gray");"></i>
-                                <span>@post.Post.LikesCount</span>
-                            </div>
-                        </div>
-
-                        <!-- Date -->
-                        <p class="text-muted mb-2 DatePost">
-                            <i class="bi bi-calendar-event me-1"></i>
-                                @post.Post.PublishedDate.ToString("MMMM dd, yyyy")
-                        </p>
-
-                        <!-- Preview -->
-                            @{
-                                var contentTag = HtmlTagHelper.RemoveHtmlTags(post.Post.Content);
-                                var preview = contentTag.Length > 100 ? contentTag.Substring(0, 100) + "..." : contentTag;
-                            }
-
-                        <p class="card-text text-black">@preview</p>
-
-                        <!-- Category -->
-                            @if (post.Post.Category != null)
-                            {
-                            <span class="badge bg-info text-dark mt-2">
-                                <i class="bi bi-tag me-1"></i> @post.Post.Category.Name
-                            </span>
-                            }
-                    </div>
-
-                </div>
-
-            </div>
+            .user-card:hover {
+                transform: translateY(-10px);
             }
-    </div>
-    }
 
+        .user-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
 
+        .user-info {
+            padding: 15px;
+            text-align: center;
+        }
 
-<!-- Modal -->
-<div class="modal fade" id="postModal" tabindex="-1" aria-labelledby="postModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <!-- Modal Header -->
-            <div class="modal-header">
-                <h5 class="modal-title" id="postModalLabel">Post Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <!-- Modal Body -->
-            <div class="modal-body">
-            </div>
+        .user-name {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 10px 0;
+            color: #333;
+        }
+
+        .user-bio {
+            font-size: 14px;
+            color: #777;
+            margin-bottom: 15px;
+        }
+
+ 
+
+        .user-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 0 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-title">
+            Explore New Users
+        </div>
+
+        <div class="user-container">
+            @foreach (var user in Model)
+            {
+                <div class="user-card">
+                    <img src="@(Url.Content(user.ProfilePicture ?? "~/images/placeholder.jpg"))" alt="@user.FirstName @user.LastName" class="user-img">
+                    <div class="user-info">
+                        <div class="user-name">@user.FirstName @user.LastName</div>
+                        <div class="user-bio">@user.Bio</div>
+                        <form asp-action="Follow" asp-controller="Following" method="post">
+                            <input type="hidden" name="userId" value="@user.Id" />
+                            @* <button class="btn-follow"> *@
+                            @*     <i class="bi bi-person-plus"></i> Follow *@
+                            @* </button> *@
+                            <button type="submit" class="icon-expand-btn" data-hover-text="Follow">
+                                <i class="bi bi-person-plus me-1 svgIcon"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            }
         </div>
     </div>
-</div>
 
-
-    @section Scripts {
-    <script src="~/js/SavePost.js"></script>
-    <!-- jQuery and jQuery UI -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
-    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
-    <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
-
-
-    <script>
-        $(document).on('click', '[data-bs-toggle="modal"]', function (e) {
-            var button = $(e.currentTarget);
-            var postId = button.data('id');
-
-            console.log("Opening post with ID: " + postId);
-
-            $('#postModal').find('.modal-body').html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</div>');
-
-            $.ajax({
-                url: '@Url.Action("Detail", "Post")/' + postId,
-                type: 'GET',
-                success: function (response) {
-                    $('#postModal .modal-body').html(response);
-                    initLikeFeature(postId);
-                },
-                error: function () {
-                    $('#postModal .modal-body').html('<p class="text-danger">Failed to load post details.</p>');
-                }
-            });
-        });
-
-        // تنظيف المحتوى عند إغلاق المودال
-        $('#postModal').on('hidden.bs.modal', function () {
-            $(this).find('.modal-body').html('');
-        });
-
-        let postLikeConnection;
-
-        function initLikeFeature(postId) {
-            // إلغاء الاتصال القديم إذا موجود
-            if (postLikeConnection) {
-                postLikeConnection.stop();
-            }
-
-            // إنشاء اتصال جديد مع الهب
-            postLikeConnection = new signalR.HubConnectionBuilder()
-                .withUrl(`/postHub?postId=${postId}`)
-                .build();
-
-            // استقبال تحديثات اللايك
-            postLikeConnection.on("ReceiveLike", function (receivedPostId, likesCount) {
-                if (receivedPostId === postId) {
-                    $('#likesCount-' + postId).text(likesCount);
-                    // يمكنك تحديث لون الايقونة هنا إذا أردت
-                }
-            });
-
-            postLikeConnection.start().catch(err => console.error(err.toString()));
-
-        }
-
-        // دالة اللايك بإرسال طلب ajax
-        function toggleLike(postId) {
-            console.log("Sending like request for postId:", postId);
-
-            $.ajax({
-                url: '@Html.Raw(Url.Action("Like", "Post"))',
-                type: 'POST',
-                data: { postId: postId },
-                success: function (response) {
-                    if (response.success) {
-                        $('#likesCount-' + postId).text(response.likesCount);
-                        $('#likeIcon-' + postId).css('color', response.userLiked ? 'red' : 'gray');
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function (xhr) {
-                    console.log("Like error:", xhr.responseText);
-                    alert('An error occurred while processing your request.');
-                }
-            });
-        }
-
-
-        // هنا كود البحث autocomplete حسب طلبك (موجود عندك)
-        const categories = @Html.Raw(Json.Serialize(ViewBag.Categories));
-
-        $("#categorySearchInput").autocomplete({
-            source: categories.map(c => ({ label: c.name, value: c.id })),
-            minLength: 0,
-            select: function (event, ui) {
-                window.location.href = "?categoryId=" + ui.item.value;
-            }
-        }).focus(function () {
-            $(this).autocomplete("search", "");
-        });
-
-        function searchCategory() {
-            const inputVal = $("#categorySearchInput").val().toLowerCase().trim();
-            if (!inputVal) return;
-
-            const match = categories.find(c => c.name.toLowerCase().includes(inputVal));
-
-            if (match) {
-                window.location.href = "?categoryId=" + match.id;
-            } else {
-                alert("No matching category found.");
-            }
-        }
-
-        $("#searchCategoryBtn").on("click", function () {
-            searchCategory();
-        });
-
-        $("#categorySearchInput").on("keypress", function (e) {
-            if (e.which === 13) {
-                searchCategory();
-                e.preventDefault();
-            }
-        });
-
-
-        //update page defult when make like
-                // ⭐ الاتصال العام بـ SignalR لتحديث كل البوستات الظاهرة على الصفحة
-        const globalLikeConnection = new signalR.HubConnectionBuilder()
-            .withUrl("/postHub")
-            .build();
-
-        globalLikeConnection.start().then(function () {
-            console.log("Connected to global like hub.");
-
-            // اجمع جميع postId الظاهرة على الصفحة من الأزرار
-            $('[id^=likeButton-]').each(function () {
-                const postId = $(this).attr('id').split('-')[1];
-                globalLikeConnection.invoke("JoinGroup", postId);
-            });
-        }).catch(function (err) {
-            console.error("SignalR connection error:", err.toString());
-        });
-
-        // استقبال التحديثات
-        globalLikeConnection.on("ReceiveLike", function (postId, likesCount) {
-            $('#likesCount-' + postId).text(likesCount);
-        });
-
-    </script>
-
-    }
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

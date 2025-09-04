@@ -563,22 +563,20 @@ document.addEventListener('DOMContentLoaded', function () {
    
     const messageArea = document.querySelector('.chat-messages');
     const colorPicker = document.getElementById('bgColorPicker');
-
-    // استرجاع اللون السابق عند التحميل
+ 
     const savedBg = localStorage.getItem('chat-bg');
     if (savedBg) {
         messageArea.style.setProperty('--chat-bg', savedBg);
         colorPicker.value = savedBg;
     }
-
-    // عند تغيير اللون مباشرةً
+ 
     colorPicker.addEventListener('input', function () {
         const selectedColor = this.value;
 
-        // ✅ يتم تطبيق اللون مباشرةً
+ 
         messageArea.style.setProperty('--chat-bg', selectedColor);
 
-        // ✅ يتم تخزين اللون
+     
         localStorage.setItem('chat-bg', selectedColor);
     });
 });

@@ -25,15 +25,15 @@ namespace SyncSyntax.Models
         public DateTime DateOfBirth { get; set; }
 
         [Phone]
-        [StringLength (15)]
+        [StringLength(15)]
         public string? PhoneNumber { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public DateTime? LastSeen { get; set; }  
+        public DateTime? LastSeen { get; set; }
 
         public ICollection<PostLike> PostLikes { get; set; }
 
-      
+
         public ICollection<Following> FollowedUsers { get; set; }
 
         [MaxLength(50), MinLength(10)]

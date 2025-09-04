@@ -127,7 +127,7 @@
         {
             <form asp-controller="Following" asp-action="Unfollow" asp-route-userId="@Model.User.Id" method="post">
                 @Html.AntiForgeryToken()
-                <button type="submit" class="button unfollow-btn">
+                <button type="submit" class="icon-expand-btn" data-hover-text="UnFollow">
                     <i class="bi bi-person-dash me-1 svgIcon"></i>
                 </button>
             </form>

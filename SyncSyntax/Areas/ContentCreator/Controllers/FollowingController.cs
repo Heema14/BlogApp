@@ -242,13 +242,18 @@ public class FollowingController : Controller
     public async Task<IActionResult> Users()
     {
         var currentUser = await _userManager.GetUserAsync(User);
+        var adminUsers = await _userManager.GetUsersInRoleAsync("Admin");
 
         var users = await _context.Users
             .Where(u => u.Id != currentUser.Id)
-            .ToListAsync();
+            .ToListAsync(); // نجلب كل المستخدمين باستثناء currentUser
+
+        users = users.Where(u => !adminUsers.Any(a => a.Id == u.Id))
+                     .ToList(); // استبعاد الأدمين في الذاكرة
 
         return View(users);
     }
+
 
 
     [Authorize]
