@@ -1,14 +1,13 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
+using SyncSyntax.Models;
 using SyncSyntax.Hubs;
 using System.Security.Claims;
 using SyncSyntax.Areas.ContentCreator.ViewModels;
-using SyncSyntax.Models;
 
 namespace SyncSyntax.Areas.ContentCreator.Controllers
 {
@@ -20,19 +19,13 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly IHubContext<ChatHub> _hubContext;
         private readonly ILogger<PostController> _logger;
-        private readonly InMemoryChatCacheService _cache;
-        private readonly IWebHostEnvironment _webHostEnvironment;
-
-        public MessagesController(AppDbContext context, UserManager<AppUser> userManager, IHubContext<ChatHub> hubContext, ILogger<PostController> logger, IWebHostEnvironment webHostEnvironment, InMemoryChatCacheService cache)
+        public MessagesController(AppDbContext context, UserManager<AppUser> userManager, IHubContext<ChatHub> hubContext, ILogger<PostController> logger)
         {
             _context = context;
             _userManager = userManager;
             _hubContext = hubContext;
             _logger = logger;
-            _cache = cache;
-            _webHostEnvironment = webHostEnvironment;
         }
-
 
         public async Task<IActionResult> Index()
         {
@@ -70,18 +63,9 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 OtherUsers = otherUsers,
                 AvailableUsers = availableUsers
             };
-            var unreadNotificationsCount = _context.Notifications
-                       .Where(n => n.UserId == user.Id && !n.IsRead)
-                       .Count();
-
-            ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
-            var currentUserId = _userManager.GetUserId(User);
-            ViewBag.UnreadCount = _context.Messages
-                .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
 
             return View(model);
         }
-
 
         public async Task<IActionResult> Chat(string userId)
         {
@@ -99,41 +83,29 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 message.IsRead = true;
                 message.ReadAt = DateTime.UtcNow;
             }
-
             if (unreadMessages.Any())
                 await _context.SaveChangesAsync();
 
-            string cacheKey = $"chat:{user.Id}:{userId}";
-            var chatMessages = await _cache.GetMessagesAsync(cacheKey);
-
-            if (chatMessages == null)
-            {
-                chatMessages = await _context.Messages
-                    .Where(m => (m.SenderId == user.Id && m.ReceiverId == userId) ||
-                                (m.ReceiverId == user.Id && m.SenderId == userId))
-                    .OrderByDescending(m => m.SentAt)
-                    .Take(100)
-                    .ToListAsync();
-
-                await _cache.SetMessagesAsync(cacheKey, chatMessages);
-            }
-
-            chatMessages = chatMessages.OrderBy(m => m.SentAt).ToList();
+            var chatMessages = await _context.Messages
+               .Where(m => (m.SenderId == user.Id && m.ReceiverId == userId) ||
+                           (m.ReceiverId == user.Id && m.SenderId == userId))
+               .OrderBy(m => m.SentAt)
+               .ToListAsync();
 
             var pinnedMessage = await _context.Messages
-                .Where(m => ((m.SenderId == user.Id && m.ReceiverId == userId) ||
-                             (m.SenderId == userId && m.ReceiverId == user.Id)) &&
-                             m.IsPinned == true)
-                .FirstOrDefaultAsync();
+               .Where(m => ((m.SenderId == user.Id && m.ReceiverId == userId) ||
+                            (m.SenderId == userId && m.ReceiverId == user.Id)) &&
+                            m.IsPinned == true)
+               .FirstOrDefaultAsync();
 
             var chatUser = await _context.Users.FindAsync(userId);
 
             var messageIds = chatMessages.Select(m => m.Id).ToList();
 
             var reactions = await _context.MessageReactions
-                .Where(r => messageIds.Contains(r.MessageId))
-                .Include(r => r.User)
-                .ToListAsync();
+     .Where(r => messageIds.Contains(r.MessageId))
+     .Include(r => r.User)
+     .ToListAsync();
 
             var groupedReactions = reactions
                 .GroupBy(r => r.MessageId)
@@ -148,11 +120,13 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 );
 
             ViewBag.MessageReactions = groupedReactions;
+
             ViewBag.ChatUser = chatUser;
             ViewBag.PinnedMessage = pinnedMessage;
 
             return View(chatMessages);
         }
+
 
 
         [HttpPost]
@@ -174,12 +148,12 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 }
                 else
                 {
-                    return Forbid();
+                    return Forbid(); // المستقبل لا يمكنه حذف الرسالة للجميع
                 }
             }
             else if (scope == "me")
             {
-
+                // تحقق إذا تم حذفها مسبقًا
                 var alreadyDeleted = await _context.MessageDeletions
                     .AnyAsync(d => d.UserId == currentUserId && d.MessageId == message.Id);
 
@@ -417,48 +391,11 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         {
             var reactions = await _context.MessageReactions
                 .Where(r => r.MessageId == id)
-                .Select(r => new { r.Reaction, r.UserId, r.User.FirstName })
+                .Select(r => new { r.Reaction, r.UserId })
                 .ToListAsync();
 
             return Ok(reactions);
         }
-
-
-        [HttpPost]
-        public async Task<IActionResult> SendAudioMessage(IFormFile audioFile)
-        {
-            var user = await _userManager.GetUserAsync(User);
-            if (user == null)
-                return NotFound();
-
-            if (audioFile == null || audioFile.Length == 0)
-                return BadRequest("No audio file provided.");
-
-            var fileName = $"{Guid.NewGuid()}.webm";
-            var savePath = Path.Combine(_webHostEnvironment.WebRootPath, "images", "audios", fileName);
-
-            Directory.CreateDirectory(Path.GetDirectoryName(savePath));
-
-            using (var stream = new FileStream(savePath, FileMode.Create))
-            {
-                await audioFile.CopyToAsync(stream);
-            }
-
-            // Save audio path as message in DB
-            var message = new Message
-            {
-                SenderId = _userManager.GetUserId(User),
-                ReceiverId = user.Id,
-                SentAt = DateTime.UtcNow,
-                AudioPath = "/images/audios/" + fileName
-            };
-
-            _context.Messages.Add(message);
-            await _context.SaveChangesAsync();
-
-            return Ok();
-        }
-
 
 
     }

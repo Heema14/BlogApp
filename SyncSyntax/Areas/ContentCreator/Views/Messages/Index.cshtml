@@ -38,7 +38,7 @@
 
     <!-- If no conversations, show start new chat -->
     <div class="start-new-chat" style="display: @(Model.Conversations.Count == 0 ? "block" : "none")">
-        <h4>Start new chat</h4>
+        <h4>ابدأ محادثة جديدة</h4>
         @foreach (var user in Model.AvailableUsers)
         {
             <div class="chat-preview new-chat">
@@ -47,7 +47,7 @@
                         <img src="@user.ProfilePicture" class="profile-img" />
                         <div class="chat-info">
                             <span class="username">@user.FirstName @user.LastName</span>
-                            <small>Start chat</small>
+                            <small>ابدأ محادثة</small>
                         </div>
                     </div>
                 </a>
