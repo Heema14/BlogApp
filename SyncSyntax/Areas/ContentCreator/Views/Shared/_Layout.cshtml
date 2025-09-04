@@ -142,7 +142,7 @@
                 </a>
 
                 <a asp-action="FollowingPosts" asp-controller="Following"><i class="bi bi-house-door"></i><span> Home</span></a>
-@*                 <a href="#"><i class="bi bi-search"></i><span> Search</span></a>
+                @*                 <a href="#"><i class="bi bi-search"></i><span> Search</span></a>
  *@                <a asp-action="Explore" asp-controller="Post"><i class="bi bi-arrow-repeat"></i><span> Explore</span></a>
                 <a href="@Url.Action("Index", "Messages")" class="position-relative">
                     <i class="bi bi-envelope"></i>
@@ -198,7 +198,7 @@
     <!-- Bottom nav for mobile -->
     <div class="sidebar-bottom d-flex d-md-none">
         <a asp-action="FollowingPosts" asp-controller="Following"><i class="bi bi-house-door"></i></a>
-@*         <a href="#"><i class="bi bi-search"></i></a> *@
+        @*         <a href="#"><i class="bi bi-search"></i></a> *@
         <a asp-action="Explore" asp-controller="Post"><i class="bi bi-arrow-repeat"></i></a>
         <a href="@Url.Action("Index", "Messages")">
             <i class="bi bi-envelope"></i><span></span>
@@ -244,19 +244,18 @@
         $(function () {
         @if (TempData["Success"] != null)
         {
-            <text>toastr.success("@TempData["Success"]");</text>
+                <text>toastr.success("@TempData["Success"]");</text>
         }
         @if (TempData["Error"] != null)
         {
-            <text>toastr.error("@TempData["Error"]");</text>
+                <text>toastr.error("@TempData["Error"]");</text>
         }
         @if (TempData["Info"] != null)
         {
-            <text>toastr.info("@TempData["Info"]");</text>
+                <text>toastr.info("@TempData["Info"]");</text>
         }
         });
     </script>
 
 </body>
 </html>
- 

@@ -1,4 +1,5 @@
-﻿ @model ProfileViewModel
+﻿@model ProfileViewModel
+
 @{
     var currentUserId = User.Identity.Name;
 }
@@ -153,13 +154,13 @@
 @if (currentUserId == Model.User.UserName)
 {
     <div class="text-end mb-4">
-        <a asp-action="Create" asp-controller="Post" class="icon-expand-btn" data-hover-text="Create New Post"  >
+        <a asp-action="Create" asp-controller="Post" class="icon-expand-btn" data-hover-text="Create New Post">
             <i class="bi bi-plus-circle svgIcon"></i>
         </a>
     </div>
 }
 
- 
+
 <div class="nav-tabs-custom">
     <span>Articles</span>
 
@@ -210,7 +211,7 @@
                                             style="background-color: @(post.IsPublished ? "#6c757d" : "#198754")">
                                         <i class="bi @(post.IsPublished ? "bi-eye" : "bi-eye-slash") svgIcon"></i>
                                     </button>
- 
+
                                 }
                             </div>
 
@@ -218,13 +219,15 @@
                         </div>
 
                         <!-- Post Title and Likes -->
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="card-title fw-bold">@post.Title</h5>
-                            <div class="d-flex align-items-center gap-1" style="cursor: pointer;">
-                                <i class="bi bi-heart-fill" style="color: @(post.LikesCount > 0 ? "red" : "gray");"></i>
-                                <span>@post.LikesCount</span>
-                            </div>
+                        <div class="d-flex align-items-center gap-2 like-btn"
+                             style="cursor: pointer;"
+                             onclick="toggleLike(@post.Id)">
+                            <i id="likeIcon-@post.Id" class="bi bi-heart-fill"
+                               style="color:@(post.PostLikes.Any(l => l.UserId == Model.CurrentUserId) ? "red" : "gray");">
+                            </i>
+                            <span id="likesCount-@post.Id">@post.LikesCount</span>
                         </div>
+
 
                         <p class="text-muted mb-2 DatePost">
                             <i class="bi bi-calendar-event me-1"></i>
@@ -273,6 +276,32 @@
 
 @section Scripts {
     <script>
+        //for make like
+                function toggleLike(postId) {
+            $.ajax({
+                url: '/ContentCreator/Following/Like',
+                type: 'POST',
+                data: { postId: postId },
+                success: function (response) {
+                    if (response.success) {
+                        // تحديث الرقم
+                        $('#likesCount-' + postId).text(response.likesCount);
+                        // تغيير اللون
+                        $('#likeIcon-' + postId).css('color', response.userLiked ? 'red' : 'gray');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('That problem when make like!');
+                }
+            });
+        }
+
+
+
+
+
         function confirmDelete(postId) {
             Swal.fire({
                 title: 'Are you sure?',

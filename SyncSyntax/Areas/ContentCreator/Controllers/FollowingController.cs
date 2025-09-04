@@ -107,12 +107,12 @@ public class FollowingController : Controller
         //ViewBag.Users = _context.Users.Select(u => new { id = u.Id, name = u.UserName }).ToList();
         //ViewBag.Categories = _context.Categories.Select(c => new { id = c.Id, name = c.Name }).ToList();
         //ViewBag.Posts = _context.Posts.Select(p => new { id = p.Id, title = p.Title }).ToList();
-    //    ViewBag.Tags = _context.Posts
-    //.Where(p => !string.IsNullOrEmpty(p.Tags))
-    //.SelectMany(p => p.Tags.Split(','))
-    //.Distinct()
-    //.Select(tag => new { id = tag, name = "#" + tag })
-    //.ToList();
+        //    ViewBag.Tags = _context.Posts
+        //.Where(p => !string.IsNullOrEmpty(p.Tags))
+        //.SelectMany(p => p.Tags.Split(','))
+        //.Distinct()
+        //.Select(tag => new { id = tag, name = "#" + tag })
+        //.ToList();
 
         return View(viewModelList);
     }
@@ -195,7 +195,7 @@ public class FollowingController : Controller
         }
 
         var currentUser = _userManager.GetUserAsync(User).Result; // جلب المستخدم الحالي
-        var currentUserId = currentUser?.Id; // معرف المستخدم الحالي
+        var currentUserId = currentUser?.Id; // المستخدم الحالي
 
         var followersCount = _context.Followings
             .Count(f => f.FollowingId == userId);
@@ -205,6 +205,7 @@ public class FollowingController : Controller
 
         var posts = _context.Posts
             .Where(p => p.UserId == userId)
+            .Include(p => p.PostLikes)
             .Include(p => p.Category)
             .OrderByDescending(p => p.PublishedDate)
             .ToList();
@@ -224,9 +225,9 @@ public class FollowingController : Controller
             Posts = posts,
             IsFollowing = isFollowing,
             Bio = user.Bio,
-            CurrentUserId = currentUserId  
+            CurrentUserId = currentUserId
         };
-         
+
 
         var unreadNotificationsCount = _context.Notifications
        .Where(n => n.UserId == currentUserId && !n.IsRead)
@@ -253,7 +254,6 @@ public class FollowingController : Controller
 
         return View(users);
     }
-
 
 
     [Authorize]
@@ -317,4 +317,7 @@ public class FollowingController : Controller
         }
 
     }
+
+
+
 }

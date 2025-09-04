@@ -1,4 +1,5 @@
 ﻿@model PostDetailViewModel
+
 @{
     ViewData["Title"] = Model.Post.Title;
 }
@@ -92,13 +93,13 @@
     }
 
     .focus-mode {
-        background-color: #f5f5dc; 
-        color: #333;  
+        background-color: #f5f5dc;
+        color: #333;
     }
 
         .focus-mode .post-detail-container {
-            background-color: #f5f5dc; 
-            color: #333;  
+            background-color: #f5f5dc;
+            color: #333;
             padding: 20px;
             border-radius: 10px;
             transition: background-color 0.3s ease, color 0.3s ease;
@@ -116,17 +117,22 @@
     <div class="post-left">
         <img src="@Model.Post.FeatureImagePath" alt="@Model.Post.Title" />
         <div class="post-meta">
-            <div class="meta-item">
-                <i class="fa fa-heart" style="color: @(Model.UserLikedPost ? "red" : "gray")"></i>
-                <span>@Model.Post.LikesCount</span>
+
+            <div class="meta-item like-btn" data-postid="@Model.Post.Id" style="cursor:pointer;">
+                <i id="likeIcon-@Model.Post.Id" class="fa fa-heart"
+                   style="color:@(Model.UserLikedPost ? "red" : "gray");"></i>
+                <span id="likesCount-@Model.Post.Id">@Model.Post.LikesCount</span>
             </div>
+
             <div class="meta-item">
                 <i class="bi bi-eye"></i>
                 <span>@Model.Post.Views</span>
             </div>
+
             <div class="meta-item meta-user">
                 @Model.Post.UserName
             </div>
+
         </div>
     </div>
 
@@ -173,7 +179,54 @@
         }
     </div>
 </div>
+
+
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+<script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
 <script>
+     $(document).ready(function () {
+        var postId = $('.like-btn').data('postid');
+
+        // إنشاء اتصال SignalR لهذا البوست
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("/postLikeHub")
+            .build();
+
+        connection.on("ReceiveLike", function (postId, likesCount) {
+            $('#likesCount-' + postId).text(likesCount);
+        });
+
+        connection.start()
+            .then(function () {
+                connection.invoke("JoinGroup", postId)
+                    .catch(err => console.error(err.toString()));
+            })
+            .catch(err => console.error(err.toString()));
+
+        // تفعيل اللايك عند الضغط
+        $('.like-btn').click(function () {
+            $.ajax({
+                url: '/ContentCreator/Post/Like', // تحقق من كونترولر اللايك
+                type: 'POST',
+                data: { postId: postId },
+                success: function (response) {
+                    if (response.success) {
+                        $('#likesCount-' + postId).text(response.likesCount);
+                        $('#likeIcon-' + postId).css('color', response.userLiked ? 'red' : 'gray');
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('حدث خطأ أثناء تنفيذ الطلب.');
+                }
+            });
+        });
+    });
+
+
+
+
     const focusBtn = document.getElementById("focusModeBtn");
 
     focusBtn.addEventListener("click", () => {
@@ -186,7 +239,4 @@
             focusBtn.textContent = "Focus Mode";
         }
     });
-
-
-
 </script>

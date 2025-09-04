@@ -183,7 +183,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
                     TempData["Success"] = "Post updated successfully ✏️";
                 }
-                 
+
                 var hashtags = ExtractHashtags(post.Content);
                 post.Tags = string.Join(",", hashtags);
 
@@ -197,6 +197,8 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 return RedirectToAction("Profile", "Following");
             }
         }
+
+
         [HttpGet]
         public IActionResult Explore(string searchTerm, string filterBy, int? categoryId)
         {
@@ -205,6 +207,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             var postQuery = _context.Posts
                 .Include(p => p.Category)
                 .Include(p => p.User)
+                .Include(p => p.PostLikes)
                 .Where(p => p.IsPublished);
 
             if (!string.IsNullOrEmpty(searchTerm))
@@ -262,8 +265,8 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 .Count();
 
             ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
-           
-             
+
+
             ViewBag.UnreadCount = _context.Messages
                 .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
 
@@ -273,6 +276,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             return View(viewModelList);
         }
+
 
         [HttpGet]
         public JsonResult SearchSuggestions(string term, string filterBy)
@@ -310,6 +314,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
                 case "date":
                     suggestions = _context.Posts
+                        .AsEnumerable()
                         .Where(p => p.PublishedDate.ToString().Contains(term))
                         .Select(p => p.PublishedDate.ToString("yyyy-MM-dd"))
                         .Distinct()
@@ -321,8 +326,9 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                     suggestions = _context.Posts
                         .Where(p => !string.IsNullOrEmpty(p.Tags))
                         .AsEnumerable() // ✅ نقل التنفيذ للذاكرة
-                        .SelectMany(p => p.Tags.Split(','))
-                        .Where(tag => tag.StartsWith(term.ToLower()))
+                        .SelectMany(p => p.Tags.Split(',', StringSplitOptions.RemoveEmptyEntries))
+                        .Select(tag => tag.Trim())
+                        .Where(tag => tag.ToLower().StartsWith(term))
                         .Distinct()
                         .Take(10)
                         .ToList();
@@ -337,38 +343,40 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         [HttpGet]
         public IActionResult MyPosts(int? categoryId)
         {
-           
-            var userName = User.Identity.Name; 
+
+            var userName = User.Identity.Name;
 
             if (string.IsNullOrEmpty(userName))
             {
-               
+
                 _logger.LogWarning("User is not authenticated.");
-                return RedirectToAction("Login", "Account"); 
+                return RedirectToAction("Login", "Account");
             }
 
-            
+
             var postQuery = _context.Posts
-                                    .Where(p => p.UserName == userName) 
-                                    .Include(p => p.Category) 
+                                    .Where(p => p.UserName == userName)
+                                    .Include(p => p.PostLikes)
+                                    .Include(p => p.Category)
                                     .AsQueryable();
 
             if (categoryId.HasValue)
             {
-              
+
                 postQuery = postQuery.Where(p => p.CategoryId == categoryId);
             }
 
-            var posts = postQuery.AsNoTracking().ToList(); 
+            var posts = postQuery.AsNoTracking().ToList();
 
-            
+
             ViewBag.Categories = _context.Categories
                 .AsNoTracking()
                 .Select(c => new { id = c.Id, name = c.Name })
                 .ToList();
 
-            return View(posts); 
+            return View(posts);
         }
+
 
         public async Task<IActionResult> Detail(int id)
         {
@@ -411,19 +419,20 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 UserLikedPost = userLikedPost
             };
 
- 
+
             if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
             {
                 post.Views += 1;
                 _context.Posts.Update(post);
                 await _context.SaveChangesAsync();
 
-                return PartialView("PostDetail", viewModel);  
+                return PartialView("PostDetail", viewModel);
             }
 
 
             return View(viewModel);
         }
+
 
         [HttpGet]
         public IActionResult Delete(int id)
@@ -444,23 +453,20 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         }
 
 
+        [Authorize]
         [HttpPost]
-
         public async Task<IActionResult> Like(int postId)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
             if (string.IsNullOrEmpty(userId))
-            {
                 return Json(new { success = false, message = "You must be logged in." });
-            }
 
-            var post = _context.Posts.Include(p => p.PostLikes).FirstOrDefault(p => p.Id == postId);
+            var post = await _context.Posts
+                .Include(p => p.PostLikes)
+                .FirstOrDefaultAsync(p => p.Id == postId);
 
             if (post == null)
-            {
                 return Json(new { success = false, message = "Post not found." });
-            }
 
             var existingLike = post.PostLikes.FirstOrDefault(l => l.UserId == userId);
             bool userLiked;
@@ -485,17 +491,10 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             await _context.SaveChangesAsync();
 
-            // 🔔 إرسال التحديث عبر SignalR
-            await _postlikeHub.Clients.Group(postId.ToString())
-                .SendAsync("ReceiveLike", postId, post.LikesCount, userId);
-
-            return Json(new
-            {
-                success = true,
-                likesCount = post.LikesCount,
-                userLiked = userLiked
-            });
+            return Json(new { success = true, likesCount = post.LikesCount, userLiked });
         }
+
+
         public async Task<IActionResult> Saved()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -518,6 +517,8 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 .Count(m => m.ReceiverId == currentUserId && !m.IsRead);
             return View(savedPosts);
         }
+
+
         [HttpPost]
         public async Task<IActionResult> ToggleSave(int postId, string returnPage)
         {
@@ -565,16 +566,17 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             }
         }
 
+
         private List<string> ExtractHashtags(string content)
         {
             var hashtags = new List<string>();
             if (!string.IsNullOrEmpty(content))
             {
-                 
+
                 var matches = Regex.Matches(content, @"#\w+");
                 foreach (Match match in matches)
                 {
-                    
+
                     hashtags.Add(match.Value.Substring(1).ToLower());
                 }
             }

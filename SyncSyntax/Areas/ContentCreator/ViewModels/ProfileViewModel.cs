@@ -1,6 +1,4 @@
-﻿
-
-using SyncSyntax.Models;
+﻿using SyncSyntax.Models;
 
 public class ProfileViewModel
 {
@@ -12,5 +10,4 @@ public class ProfileViewModel
     public string CurrentUserId { get; set; }
     public List<Post> Posts { get; set; }
     public bool IsFollowing { get; set; }
-
 }
