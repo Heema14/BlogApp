@@ -12,17 +12,48 @@
             <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
                 Theme
             </button>
-            <ul class="dropdown-menu">
-                @* <li><a class="dropdown-item" href="#" data-theme="light">Light</a></li> *@
-                @* <li><a class="dropdown-item" href="#" data-theme="dark">Dark</a></li> *@
-                <li><hr class="dropdown-divider"></li>
-                <li>
-                    <label class="dropdown-item">
-                        Chat Background
-                        <input type="color" id="bgColorPicker" class="form-control form-control-color mt-1" title="Choose chat background color">
-                    </label>
-                </li>
-            </ul>
+            <div class="dropdown-menu p-3" style="min-width: 260px;">
+                <!-- Title -->
+                <div class="mb-2 fw-bold">Select Background:</div>
+                <hr>
+
+                <!-- 1. Color Picker -->
+                <div class="mb-3">
+                    <label class="form-label fw-bold">Chat Background Color</label>
+                    <input type="color" id="bgColorPicker" class="form-control form-control-color">
+                </div>
+
+                <hr>
+
+                <!-- 2. Suggested Images -->
+                <div class="mb-3">
+                    <div class="fw-bold mb-1">Suggested Images:</div>
+                    <div class="d-flex flex-wrap gap-2" id="suggestedImages">
+                        <img src="~/images/bg1.jpg" alt="bg1" class="bg-thumb">
+                        <img src="~/images/bg2.jpg" alt="bg2" class="bg-thumb">
+                        <img src="~/images/bg3.jpg" alt="bg3" class="bg-thumb">
+                        <img src="~/images/bg4.jpg" alt="bg4" class="bg-thumb">
+                        <img src="~/images/bg5.jpg" alt="bg1" class="bg-thumb">
+                        <img src="~/images/bg6.jpg" alt="bg2" class="bg-thumb">
+                        <img src="~/images/bg7.jpg" alt="bg3" class="bg-thumb">
+                        <img src="~/images/bg8.jpg" alt="bg4" class="bg-thumb">
+                    </div>
+                </div>
+
+                <hr>
+
+                <!-- 3. Upload Image -->
+                <div>
+                    <label class="form-label fw-bold">Upload Image</label>
+                    <input type="file" id="bgImageUpload" class="form-control" accept="image/*">
+                </div>
+                <hr>
+
+                <!-- 4. Reset Button -->
+                <div class="text-center">
+                    <button class="btn btn-sm btn-outline-danger" id="resetBg">Reset to Default</button>
+                </div>
+            </div>
         </div>
         <button id="toggleSelectModeBtn" class="btn btn-outline-primary">Select</button>
         <div id="bulkActions" style="display:none;" class="d-flex gap-2 align-items-center">

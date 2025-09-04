@@ -47,15 +47,30 @@
     color: #fafafa;
 }
 
-/* رسائل الدردشة */
-.chat-messages {
-    background-color: var(--chat-bg, #f0f0f0) !important;
+ .chat-messages {
+    /* background-color: var(--chat-bg, #f0f0f0) !important;*/
+    background: var(--chat-bg, #fff);
+    background-size: cover;
+    background-position: center;
     flex-grow: 1;
     overflow-y: auto;
     padding: 15px 20px;
     transition: background-color 0.3s ease;
 }
+.bg-thumb {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border 0.2s ease, transform 0.2s ease;
+}
 
+    .bg-thumb:hover {
+        border: 2px solid #007bff;
+        transform: scale(1.05);
+    }
 .message {
     max-width: 70%;
     margin-bottom: 15px;

@@ -563,20 +563,67 @@ document.addEventListener('DOMContentLoaded', function () {
    
     const messageArea = document.querySelector('.chat-messages');
     const colorPicker = document.getElementById('bgColorPicker');
- 
+    const suggestedImages = document.querySelectorAll('#suggestedImages img');
+    const bgImageUpload = document.getElementById('bgImageUpload');
+    const resetBtn = document.getElementById('resetBg');
+
+    // Load saved background
     const savedBg = localStorage.getItem('chat-bg');
+    const savedIsImage = localStorage.getItem('chat-bg-isImage') === 'true';
+
     if (savedBg) {
-        messageArea.style.setProperty('--chat-bg', savedBg);
-        colorPicker.value = savedBg;
+        if (savedIsImage) {
+            messageArea.style.backgroundImage = `url(${savedBg})`;
+            messageArea.style.backgroundColor = 'transparent';
+        } else {
+            messageArea.style.setProperty('--chat-bg', savedBg);
+            colorPicker.value = savedBg;
+            messageArea.style.backgroundImage = 'none';
+        }
     }
- 
+
+    // Color Picker
     colorPicker.addEventListener('input', function () {
         const selectedColor = this.value;
-
- 
-        messageArea.style.setProperty('--chat-bg', selectedColor);
-
-     
+        messageArea.style.backgroundColor = selectedColor;
+        messageArea.style.backgroundImage = 'none';
         localStorage.setItem('chat-bg', selectedColor);
+        localStorage.setItem('chat-bg-isImage', false);
     });
+
+    // Suggested Images
+    suggestedImages.forEach(img => {
+        img.addEventListener('click', () => {
+            const src = img.src;
+            messageArea.style.backgroundImage = `url(${src})`;
+            messageArea.style.backgroundColor = 'transparent';
+            localStorage.setItem('chat-bg', src);
+            localStorage.setItem('chat-bg-isImage', true);
+        });
+    });
+
+    // Upload Image
+    bgImageUpload.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function (event) {
+            messageArea.style.backgroundImage = `url(${event.target.result})`;
+            messageArea.style.backgroundColor = 'transparent';
+            localStorage.setItem('chat-bg', event.target.result);
+            localStorage.setItem('chat-bg-isImage', true);
+        }
+        reader.readAsDataURL(file);
+    });
+
+    // Reset to default
+    resetBtn.addEventListener('click', () => {
+        messageArea.style.backgroundImage = 'none';
+        messageArea.style.backgroundColor = '#fff';
+        colorPicker.value = '#ffffff';
+        localStorage.removeItem('chat-bg');
+        localStorage.removeItem('chat-bg-isImage');
+    });
+
+
 });
