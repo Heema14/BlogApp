@@ -156,13 +156,19 @@
             <div class="comments-section mb-4" id="comments-section-@Model.Post.Id">
                 @foreach (var comment in Model.Post.Comments)
                 {
-                    <div class="comment-card">
+                    var isCurrentUser = comment.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier);
+                    <div class="comment-card" id="comment-@comment.Id">
                         <h5>@comment.User?.UserName</h5>
                         <small>@comment.CommentDate.ToString("M/dd/yyyy, h:mm tt")</small>
                         <p>@comment.Content</p>
+                        @if (isCurrentUser)
+                        {
+                            <button class="btn btn-sm btn-danger delete-comment-btn" data-commentid="@comment.Id">Delete</button>
+                        }
                     </div>
                 }
             </div>
+
 
         }
         else
@@ -186,6 +192,7 @@
 </div>
 
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/post-like.js"></script>
@@ -204,7 +211,7 @@
     });
 
 
-        $(document).ready(function () {
+          $(document).ready(function () {
 
         $('.comment-form').each(function () {
             var postId = $(this).data('postid');
@@ -219,27 +226,66 @@
                 .catch(err => console.error(err.toString()));
 
             // استقبال التعليقات الجديدة
-            connection.on("ReceiveComment", function (userName, content, date) {
+            connection.on("ReceiveComment", function (userName, content, date, commentId, isCurrentUser) {
+                var deleteBtnHtml = isCurrentUser
+                    ? `<button class="btn btn-sm btn-danger delete-comment-btn" data-commentid="${commentId}">Delete</button>`
+                    : '';
+
                 var commentHtml = `
-                    <div class="comment-card">
+                    <div class="comment-card" id="comment-${commentId}">
                         <h5>${userName}</h5>
                         <small>${date}</small>
                         <p>${content}</p>
+                        ${deleteBtnHtml}
                     </div>`;
                 $('#comments-section-' + postId).append(commentHtml);
+            });
+
+            // استقبال حذف التعليق
+            connection.on("CommentDeleted", function(commentId){
+                $('#comment-' + commentId).remove();
             });
 
             // إرسال التعليق عند الضغط على submit
             $(this).submit(function (e) {
                 e.preventDefault();
                 var content = $(this).find('textarea[name="Content"]').val();
-
                 if (!content) return;
 
                 connection.invoke("BroadcastComment", content, postId)
                     .then(() => $(this).find('textarea[name="Content"]').val(''))
                     .catch(err => console.error(err.toString()));
             });
+                
+            // حذف تعليق عند الضغط على زر الحذف
+                $(document).on('click', '.delete-comment-btn', function() {
+        var commentId = $(this).data('commentid');
+        var postId = $(this).closest('.comments-section').attr('id').split('-')[2]; // استخراج postId من id القسم
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Do you really want to delete this comment?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // تنفيذ الحذف عبر SignalR
+                connection.invoke("DeleteComment", commentId)
+                    .then(() => {
+                        Swal.fire(
+                            'Deleted!',
+                            'The comment has been deleted.',
+                            'success'
+                        );
+                    })
+                    .catch(err => console.error(err.toString()));
+            }
+        });
+    });
 
         });
     });

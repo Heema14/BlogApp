@@ -39,7 +39,12 @@ public class CommentHub : Hub
 
         // إرسال التعليق لكل من في الجروب
         await Clients.Group(postId.ToString())
-            .SendAsync("ReceiveComment", userName, content, comment.CommentDate.ToString("M/dd/yyyy, h:mm tt"), comment.Id);
+            .SendAsync("ReceiveComment",
+            userName,
+            content,
+            comment.CommentDate.ToString("M/dd/yyyy, h:mm tt"),
+            comment.Id,
+            comment.UserId == Context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
     }
 
 
@@ -73,5 +78,7 @@ public class CommentHub : Hub
         await Clients.Group(postId.ToString())
             .SendAsync("CommentDeleted", commentId);
     }
+
+
 
 }
