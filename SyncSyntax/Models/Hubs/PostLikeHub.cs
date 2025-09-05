@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.SignalR;
-using SyncSyntax.Data;
+﻿using Microsoft.AspNetCore.SignalR;
 
 namespace SyncSyntax.Models.Hubs
 {

@@ -18,54 +18,60 @@ public class CommentHub : Hub
 
     public async Task BroadcastComment(string content, int postId)
     {
-        var userIdName = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (string.IsNullOrEmpty(userId) || string.IsNullOrWhiteSpace(content))
+            return;
 
         var comment = new Comment
         {
             Content = content,
-            CommentDate = DateTime.Now,
-            UserId = userIdName,  
+            CommentDate = DateTime.UtcNow,
+            UserId = userId,
             PostId = postId
         };
 
         _context.Comments.Add(comment);
         await _context.SaveChangesAsync();
 
-        var user = await _context.Users.FindAsync(userIdName);
+        var user = await _context.Users.FindAsync(userId);
         var userName = user?.UserName ?? "Unknown";
 
-        var post = await _context.Posts.FirstOrDefaultAsync(p => p.Id == postId);
-        if (post != null && post.UserId != userIdName) 
-        {
-            var notification = new Notification
-            {
-                UserId = post.UserId, 
-                Message = $"{userName} commented on your post '{post.Title}'", 
-                IsRead = false,
-                CreatedAt = DateTime.Now
-            };
-
-            _context.Notifications.Add(notification);
-            await _context.SaveChangesAsync();
-        }
-
-        await Clients.Group(postId.ToString()).SendAsync(
-            "ReceiveComment",
-            userName,
-            content,
-            comment.CommentDate.ToString("M/dd/yyyy, h:mm")
-        );
+        // إرسال التعليق لكل من في الجروب
+        await Clients.Group(postId.ToString())
+            .SendAsync("ReceiveComment", userName, content, comment.CommentDate.ToString("M/dd/yyyy, h:mm tt"), comment.Id);
     }
+
 
     public override async Task OnConnectedAsync()
     {
-        var httpContext = Context.GetHttpContext();
-        var postId = httpContext?.Request.Query["postId"];
+        var postId = Context.GetHttpContext()?.Request.Query["postId"];
         if (!string.IsNullOrEmpty(postId))
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, postId);
         }
-
         await base.OnConnectedAsync();
     }
+
+
+    public async Task DeleteComment(int commentId)
+    {
+        var comment = await _context.Comments
+            .Include(c => c.Post)
+            .FirstOrDefaultAsync(c => c.Id == commentId);
+
+        var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (comment == null || comment.UserId != userId)
+            return; // فقط صاحب التعليق يمكنه الحذف
+
+        int postId = comment.PostId;
+
+        _context.Comments.Remove(comment);
+        await _context.SaveChangesAsync();
+
+        // بث حذف التعليق لكل المستخدمين في الجروب
+        await Clients.Group(postId.ToString())
+            .SendAsync("CommentDeleted", commentId);
+    }
+
 }

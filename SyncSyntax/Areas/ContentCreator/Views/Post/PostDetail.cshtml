@@ -118,11 +118,14 @@
         <img src="@Model.Post.FeatureImagePath" alt="@Model.Post.Title" />
         <div class="post-meta">
 
-            <div class="meta-item like-btn" data-postid="@Model.Post.Id" style="cursor:pointer;">
+            <div class="meta-item like-btn"
+                 data-postid="@Model.Post.Id"
+                 style="cursor:pointer;">
                 <i id="likeIcon-@Model.Post.Id" class="fa fa-heart"
                    style="color:@(Model.UserLikedPost ? "red" : "gray");"></i>
                 <span id="likesCount-@Model.Post.Id">@Model.Post.LikesCount</span>
             </div>
+
 
             <div class="meta-item">
                 <i class="bi bi-eye"></i>
@@ -150,17 +153,17 @@
         <h3>Comments</h3>
         @if (Model.Post.Comments?.Any() ?? false)
         {
-            <div class="comments-section mb-4">
+            <div class="comments-section mb-4" id="comments-section-@Model.Post.Id">
                 @foreach (var comment in Model.Post.Comments)
                 {
                     <div class="comment-card">
                         <h5>@comment.User?.UserName</h5>
                         <small>@comment.CommentDate.ToString("M/dd/yyyy, h:mm tt")</small>
                         <p>@comment.Content</p>
-
                     </div>
                 }
             </div>
+
         }
         else
         {
@@ -169,64 +172,24 @@
 
         @if (User.Identity.IsAuthenticated)
         {
-            <form id="commentForm" class="mt-4">
+            <form class="comment-form" data-postid="@Model.Post.Id">
                 <div class="form-group mb-2">
                     <label for="Content">Content</label>
-                    <textarea id="Content" name="Content" rows="3" required class="form-control"></textarea>
+                    <textarea name="Content" rows="3" required class="form-control"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary px-4">Share comment</button>
             </form>
         }
+
     </div>
+
 </div>
 
 
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
+<script src="~/js/post-like.js"></script>
 <script>
-     $(document).ready(function () {
-        var postId = $('.like-btn').data('postid');
-
-        // إنشاء اتصال SignalR لهذا البوست
-        var connection = new signalR.HubConnectionBuilder()
-            .withUrl("/postLikeHub")
-            .build();
-
-        connection.on("ReceiveLike", function (postId, likesCount) {
-            $('#likesCount-' + postId).text(likesCount);
-        });
-
-        connection.start()
-            .then(function () {
-                connection.invoke("JoinGroup", postId)
-                    .catch(err => console.error(err.toString()));
-            })
-            .catch(err => console.error(err.toString()));
-
-        // تفعيل اللايك عند الضغط
-        $('.like-btn').click(function () {
-            $.ajax({
-                url: '/ContentCreator/Post/Like', // تحقق من كونترولر اللايك
-                type: 'POST',
-                data: { postId: postId },
-                success: function (response) {
-                    if (response.success) {
-                        $('#likesCount-' + postId).text(response.likesCount);
-                        $('#likeIcon-' + postId).css('color', response.userLiked ? 'red' : 'gray');
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function () {
-                    alert('حدث خطأ أثناء تنفيذ الطلب.');
-                }
-            });
-        });
-    });
-
-
-
-
     const focusBtn = document.getElementById("focusModeBtn");
 
     focusBtn.addEventListener("click", () => {
@@ -239,4 +202,46 @@
             focusBtn.textContent = "Focus Mode";
         }
     });
+
+
+        $(document).ready(function () {
+
+        $('.comment-form').each(function () {
+            var postId = $(this).data('postid');
+
+            // إنشاء اتصال SignalR لكل بوست
+            var connection = new signalR.HubConnectionBuilder()
+                .withUrl("/commentHub?postId=" + postId)
+                .build();
+
+            connection.start()
+                .then(() => console.log("Connected to CommentHub for post " + postId))
+                .catch(err => console.error(err.toString()));
+
+            // استقبال التعليقات الجديدة
+            connection.on("ReceiveComment", function (userName, content, date) {
+                var commentHtml = `
+                    <div class="comment-card">
+                        <h5>${userName}</h5>
+                        <small>${date}</small>
+                        <p>${content}</p>
+                    </div>`;
+                $('#comments-section-' + postId).append(commentHtml);
+            });
+
+            // إرسال التعليق عند الضغط على submit
+            $(this).submit(function (e) {
+                e.preventDefault();
+                var content = $(this).find('textarea[name="Content"]').val();
+
+                if (!content) return;
+
+                connection.invoke("BroadcastComment", content, postId)
+                    .then(() => $(this).find('textarea[name="Content"]').val(''))
+                    .catch(err => console.error(err.toString()));
+            });
+
+        });
+    });
+
 </script>

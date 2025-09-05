@@ -89,6 +89,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             return Json(new { success = true, isPublished = post.IsPublished });
         }
 
+
         public IActionResult Create()
         {
             var categories = _context.Categories.ToList();
@@ -391,7 +392,6 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 .Include(p => p.Comments)
                 .Include(p => p.PostLikes)
                     .ThenInclude(pl => pl.User)
-                .AsNoTracking()
                 .FirstOrDefaultAsync(p => p.Id == id);
 
             if (post == null)
@@ -474,7 +474,10 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             if (existingLike != null)
             {
                 _context.PostLikes.Remove(existingLike);
-                post.LikesCount = Math.Max(0, post.LikesCount - 1);
+
+                if (post.LikesCount > 0)
+                    post.LikesCount--;
+
                 userLiked = false;
             }
             else
@@ -485,11 +488,15 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                     UserId = userId,
                     LikedAt = DateTime.UtcNow
                 });
-                post.LikesCount += 1;
+                post.LikesCount++;
                 userLiked = true;
             }
 
             await _context.SaveChangesAsync();
+
+            // ✅ بث التغيير لكل الصفحات المتصلة بالـ Hub
+            await _postlikeHub.Clients.Group(postId.ToString())
+                .SendAsync("ReceiveLike", postId, post.LikesCount, userId);
 
             return Json(new { success = true, likesCount = post.LikesCount, userLiked });
         }

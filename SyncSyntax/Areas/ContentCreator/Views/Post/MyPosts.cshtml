@@ -55,14 +55,12 @@
                         </div>
 
                         <!-- Post Title and Likes -->
-                        <div class="d-flex align-items-center gap-2 like-btn"
-                             data-postid="@post.Id"
-                             style="cursor:pointer;">
-                            <i id="likeIcon-@post.Id" class="bi bi-heart-fill"
-                               style="color:@(post.PostLikes.Any(l => l.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) ? "red" : "gray");">
-                            </i>
-                            <span id="likesCount-@post.Id">@post.LikesCount</span>
-                        </div>
+                      <div class="like-btn" data-postid="@post.Id" style="cursor:pointer;">
+    <i id="likeIcon-@post.Id" class="bi bi-heart-fill"
+       style="color:@(post.PostLikes.Any(l => l.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) ? "red" : "gray");"></i>
+    <span id="likesCount-@post.Id">@post.LikesCount</span>
+</div>
+
 
                         <p class="text-muted mb-2 DatePost">
                             <i class="bi bi-calendar-event me-1"></i>
@@ -92,59 +90,9 @@
 </section>
 
 @section Scripts {
+
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
     <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
-    <script>
-            <script>
-        // تهيئة SignalR لكل بوست
-        $(document).ready(function () {
-            $('.like-btn').each(function () {
-                var postId = $(this).data('postid');
-                setupPostLikeHub(postId);
-            });
-        });
+    <script src="~/js/post-like.js"></script>
 
-        function setupPostLikeHub(postId) {
-            var connection = new signalR.HubConnectionBuilder()
-                .withUrl("/postLikeHub") // رابط Hub
-                .build();
-
-            // استقبال التحديثات من السيرفر
-            connection.on("ReceiveLike", function (postId, likesCount) {
-                $('#likesCount-' + postId).text(likesCount);
-            });
-
-            connection.start()
-                .then(function () {
-                    connection.invoke("JoinGroup", postId)
-                        .catch(err => console.error(err.toString()));
-                })
-                .catch(err => console.error(err.toString()));
-
-            // تخزين الاتصال في العنصر حتى يمكن إعادة استخدامه إذا أردت لاحقًا
-            $(`.like-btn[data-postid='${postId}']`).data('connection', connection);
-        }
-
-        // دالة تغيير حالة اللايك
-        $('.like-btn').click(function () {
-            var postId = $(this).data('postid');
-            $.ajax({
-                url: '/Post/Like',
-                type: 'POST',
-                data: { postId: postId },
-                success: function (response) {
-                    if (response.success) {
-                        $('#likesCount-' + postId).text(response.likesCount);
-                        $('#likeIcon-' + postId).css('color', response.userLiked ? 'red' : 'gray');
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function () {
-                    alert('حدث خطأ أثناء تنفيذ الطلب.');
-                }
-            });
-        });
-
-    </script>
 }
