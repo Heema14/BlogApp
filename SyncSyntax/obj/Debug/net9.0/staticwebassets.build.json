@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "2yRKpYlWXgwlBjauIeZXoeSAQamHX1mmNAEZjZPTCa0=",
+  "Hash": "J71Krbg6JADjLqY+g8pmcfiEwqB360TSWWbPHZRZloE=",
   "Source": "SyncSyntax",
   "BasePath": "_content/SyncSyntax",
   "Mode": "Default",
@@ -1025,6 +1025,27 @@
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\vendor\\bootstrap\\js\\bootstrap.min.js"
     },
     {
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\htdid2d5h1-jjygsnibix.gz",
+      "SourceId": "SyncSyntax",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\",
+      "BasePath": "_content/SyncSyntax",
+      "RelativePath": "js/post-like#[.{fingerprint=jjygsnibix}]?.js.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\post-like.js",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "ucfrq6hftx",
+      "Integrity": "gnd7wtyjs5Wt5Uf4HWB/ka6wG5RcaAICsjczKFY0bSg=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\post-like.js"
+    },
+    {
       "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ibqiy8rdc6-erw9l3u2r3.gz",
       "SourceId": "SyncSyntax",
       "SourceType": "Discovered",
@@ -1655,12 +1676,12 @@
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.bundle.min.js"
     },
     {
-      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\se1b29u40y-s4i0avyzy6.gz",
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\se1b29u40y-3nv4l2dkta.gz",
       "SourceId": "SyncSyntax",
       "SourceType": "Computed",
       "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\",
       "BasePath": "_content/SyncSyntax",
-      "RelativePath": "SyncSyntax#[.{fingerprint=s4i0avyzy6}]!.bundle.scp.css.gz",
+      "RelativePath": "SyncSyntax#[.{fingerprint=3nv4l2dkta}]!.bundle.scp.css.gz",
       "AssetKind": "All",
       "AssetMode": "Reference",
       "AssetRole": "Alternative",
@@ -1669,8 +1690,8 @@
       "RelatedAsset": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\SyncSyntax.bundle.scp.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "p6efuxivpg",
-      "Integrity": "kdccfBm+mQ8AA7NEU327EtL1ubQ2DyHS3LRdSkSfVeo=",
+      "Fingerprint": "02xfriyame",
+      "Integrity": "GHiLm5s5GRwRcEjt59dTNwWAlc3PTAnYsb8WvCXZOiA=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\SyncSyntax.bundle.scp.css"
@@ -1844,12 +1865,12 @@
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\vendor\\jquery\\jquery.slim.min.js"
     },
     {
-      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\xbgb78aoub-s4i0avyzy6.gz",
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\xbgb78aoub-3nv4l2dkta.gz",
       "SourceId": "SyncSyntax",
       "SourceType": "Computed",
       "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\",
       "BasePath": "_content/SyncSyntax",
-      "RelativePath": "SyncSyntax#[.{fingerprint=s4i0avyzy6}]?.styles.css.gz",
+      "RelativePath": "SyncSyntax#[.{fingerprint=3nv4l2dkta}]?.styles.css.gz",
       "AssetKind": "All",
       "AssetMode": "CurrentProject",
       "AssetRole": "Alternative",
@@ -1858,8 +1879,8 @@
       "RelatedAsset": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\scopedcss\\bundle\\SyncSyntax.styles.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "p6efuxivpg",
-      "Integrity": "kdccfBm+mQ8AA7NEU327EtL1ubQ2DyHS3LRdSkSfVeo=",
+      "Fingerprint": "02xfriyame",
+      "Integrity": "GHiLm5s5GRwRcEjt59dTNwWAlc3PTAnYsb8WvCXZOiA=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\scopedcss\\bundle\\SyncSyntax.styles.css"
@@ -2005,8 +2026,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "ScopedCss",
       "AssetTraitValue": "ApplicationBundle",
-      "Fingerprint": "s4i0avyzy6",
-      "Integrity": "zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw=",
+      "Fingerprint": "3nv4l2dkta",
+      "Integrity": "L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\scopedcss\\bundle\\SyncSyntax.styles.css"
@@ -2026,8 +2047,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "ScopedCss",
       "AssetTraitValue": "ProjectBundle",
-      "Fingerprint": "s4i0avyzy6",
-      "Integrity": "zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw=",
+      "Fingerprint": "3nv4l2dkta",
+      "Integrity": "L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\SyncSyntax.bundle.scp.css"
@@ -4112,6 +4133,48 @@
       "OriginalItemSpec": "wwwroot\\images\\uploadImgs\\86747d29-f2bd-4af1-b8c5-026fa3cece49.jpg"
     },
     {
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\ChatGPT Image Sep 4, 2025, 06_49_17 PM.png",
+      "SourceId": "SyncSyntax",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\",
+      "BasePath": "_content/SyncSyntax",
+      "RelativePath": "images/uploadImgs/ChatGPT Image Sep 4, 2025, 06_49_17 PM#[.{fingerprint}]?.png",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "pmpdzysepj",
+      "Integrity": "/zEZfa6tNE+d0lzXrz3iFkz5dFkSR9RqxqbH8CvQiIQ=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\uploadImgs\\ChatGPT Image Sep 4, 2025, 06_49_17 PM.png"
+    },
+    {
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\CODMW.jpg",
+      "SourceId": "SyncSyntax",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\",
+      "BasePath": "_content/SyncSyntax",
+      "RelativePath": "images/uploadImgs/CODMW#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "t85a872kc1",
+      "Integrity": "Dd0Zwx8ieqdq1Np9YS7yUvepTvaAZ9kZEw7PuXJ+58o=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\uploadImgs\\CODMW.jpg"
+    },
+    {
       "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\colton-sturgeon-peLGhFkbkow-unsplash.jpg",
       "SourceId": "SyncSyntax",
       "SourceType": "Discovered",
@@ -4131,6 +4194,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\uploadImgs\\colton-sturgeon-peLGhFkbkow-unsplash.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\d9e8b39e-3f59-4031-b696-72c143d1152c.jpg",
+      "SourceId": "SyncSyntax",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\",
+      "BasePath": "_content/SyncSyntax",
+      "RelativePath": "images/uploadImgs/d9e8b39e-3f59-4031-b696-72c143d1152c#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "x1xouwkzae",
+      "Integrity": "VRv5x5NFV+42BpRIYhlOGOZnol03WBi7Hj2k5DmiBTA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\uploadImgs\\d9e8b39e-3f59-4031-b696-72c143d1152c.jpg"
     },
     {
       "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\default-image.jpg",
@@ -4215,6 +4299,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\Chat.js"
+    },
+    {
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\post-like.js",
+      "SourceId": "SyncSyntax",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\",
+      "BasePath": "_content/SyncSyntax",
+      "RelativePath": "js/post-like#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "jjygsnibix",
+      "Integrity": "IbVPEfsmQR6MRd2HB7HET7k/09bf+67pekas1AFm4Lo=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\post-like.js"
     },
     {
       "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\SavePost.js",
@@ -17779,6 +17884,170 @@
       ]
     },
     {
+      "Route": "images/uploadImgs/ChatGPT Image Sep 4, 2025, 06_49_17 PM.pmpdzysepj.png",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\ChatGPT Image Sep 4, 2025, 06_49_17 PM.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2034606"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"/zEZfa6tNE+d0lzXrz3iFkz5dFkSR9RqxqbH8CvQiIQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Sep 2025 06:54:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "pmpdzysepj"
+        },
+        {
+          "Name": "label",
+          "Value": "images/uploadImgs/ChatGPT Image Sep 4, 2025, 06_49_17 PM.png"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-/zEZfa6tNE+d0lzXrz3iFkz5dFkSR9RqxqbH8CvQiIQ="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploadImgs/ChatGPT Image Sep 4, 2025, 06_49_17 PM.png",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\ChatGPT Image Sep 4, 2025, 06_49_17 PM.png",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "2034606"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/png"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"/zEZfa6tNE+d0lzXrz3iFkz5dFkSR9RqxqbH8CvQiIQ=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Sep 2025 06:54:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-/zEZfa6tNE+d0lzXrz3iFkz5dFkSR9RqxqbH8CvQiIQ="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploadImgs/CODMW.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\CODMW.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "114168"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Dd0Zwx8ieqdq1Np9YS7yUvepTvaAZ9kZEw7PuXJ+58o=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Sep 2025 06:54:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Dd0Zwx8ieqdq1Np9YS7yUvepTvaAZ9kZEw7PuXJ+58o="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploadImgs/CODMW.t85a872kc1.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\CODMW.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "114168"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Dd0Zwx8ieqdq1Np9YS7yUvepTvaAZ9kZEw7PuXJ+58o=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Sep 2025 06:54:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "t85a872kc1"
+        },
+        {
+          "Name": "label",
+          "Value": "images/uploadImgs/CODMW.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Dd0Zwx8ieqdq1Np9YS7yUvepTvaAZ9kZEw7PuXJ+58o="
+        }
+      ]
+    },
+    {
       "Route": "images/uploadImgs/colton-sturgeon-peLGhFkbkow-unsplash.gu342k9ui5.jpg",
       "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\colton-sturgeon-peLGhFkbkow-unsplash.jpg",
       "Selectors": [],
@@ -17857,6 +18126,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-eA6kF7Or2h09pXD5AHXezN/kbAz0LjjOLn3sC5vYLt4="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploadImgs/d9e8b39e-3f59-4031-b696-72c143d1152c.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\d9e8b39e-3f59-4031-b696-72c143d1152c.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "11513"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VRv5x5NFV+42BpRIYhlOGOZnol03WBi7Hj2k5DmiBTA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Sep 2025 06:54:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-VRv5x5NFV+42BpRIYhlOGOZnol03WBi7Hj2k5DmiBTA="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploadImgs/d9e8b39e-3f59-4031-b696-72c143d1152c.x1xouwkzae.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\d9e8b39e-3f59-4031-b696-72c143d1152c.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "11513"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VRv5x5NFV+42BpRIYhlOGOZnol03WBi7Hj2k5DmiBTA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Sep 2025 06:54:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "x1xouwkzae"
+        },
+        {
+          "Name": "label",
+          "Value": "images/uploadImgs/d9e8b39e-3f59-4031-b696-72c143d1152c.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-VRv5x5NFV+42BpRIYhlOGOZnol03WBi7Hj2k5DmiBTA="
         }
       ]
     },
@@ -18401,6 +18752,304 @@
         {
           "Name": "integrity",
           "Value": "sha256-vu+y0BtzpX5r9wV2ek5Utc6qBSqjt0OYTI6jAg6xZbk="
+        }
+      ]
+    },
+    {
+      "Route": "js/post-like.jjygsnibix.js",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\htdid2d5h1-jjygsnibix.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.001345895020"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "742"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gnd7wtyjs5Wt5Uf4HWB/ka6wG5RcaAICsjczKFY0bSg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Sep 2025 06:54:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"IbVPEfsmQR6MRd2HB7HET7k/09bf+67pekas1AFm4Lo=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "jjygsnibix"
+        },
+        {
+          "Name": "label",
+          "Value": "js/post-like.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-IbVPEfsmQR6MRd2HB7HET7k/09bf+67pekas1AFm4Lo="
+        }
+      ]
+    },
+    {
+      "Route": "js/post-like.jjygsnibix.js",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\post-like.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1711"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"IbVPEfsmQR6MRd2HB7HET7k/09bf+67pekas1AFm4Lo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Sep 2025 06:54:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "jjygsnibix"
+        },
+        {
+          "Name": "label",
+          "Value": "js/post-like.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-IbVPEfsmQR6MRd2HB7HET7k/09bf+67pekas1AFm4Lo="
+        }
+      ]
+    },
+    {
+      "Route": "js/post-like.jjygsnibix.js.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\htdid2d5h1-jjygsnibix.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "742"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gnd7wtyjs5Wt5Uf4HWB/ka6wG5RcaAICsjczKFY0bSg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Sep 2025 06:54:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "jjygsnibix"
+        },
+        {
+          "Name": "label",
+          "Value": "js/post-like.js.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-gnd7wtyjs5Wt5Uf4HWB/ka6wG5RcaAICsjczKFY0bSg="
+        }
+      ]
+    },
+    {
+      "Route": "js/post-like.js",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\htdid2d5h1-jjygsnibix.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.001345895020"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "742"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gnd7wtyjs5Wt5Uf4HWB/ka6wG5RcaAICsjczKFY0bSg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Sep 2025 06:54:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"IbVPEfsmQR6MRd2HB7HET7k/09bf+67pekas1AFm4Lo=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-IbVPEfsmQR6MRd2HB7HET7k/09bf+67pekas1AFm4Lo="
+        }
+      ]
+    },
+    {
+      "Route": "js/post-like.js",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\post-like.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1711"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"IbVPEfsmQR6MRd2HB7HET7k/09bf+67pekas1AFm4Lo=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Sep 2025 06:54:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-IbVPEfsmQR6MRd2HB7HET7k/09bf+67pekas1AFm4Lo="
+        }
+      ]
+    },
+    {
+      "Route": "js/post-like.js.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\htdid2d5h1-jjygsnibix.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "742"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"gnd7wtyjs5Wt5Uf4HWB/ka6wG5RcaAICsjczKFY0bSg=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Sep 2025 06:54:05 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-gnd7wtyjs5Wt5Uf4HWB/ka6wG5RcaAICsjczKFY0bSg="
         }
       ]
     },
@@ -37857,13 +38506,13 @@
       ]
     },
     {
-      "Route": "SyncSyntax.bundle.scp.css",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\se1b29u40y-s4i0avyzy6.gz",
+      "Route": "SyncSyntax.3nv4l2dkta.bundle.scp.css",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\se1b29u40y-3nv4l2dkta.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.001602564103"
+          "Quality": "0.001455604076"
         }
       ],
       "ResponseHeaders": [
@@ -37873,19 +38522,19 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "623"
+          "Value": "686"
         },
         {
           "Name": "ETag",
-          "Value": "\"kdccfBm+mQ8AA7NEU327EtL1ubQ2DyHS3LRdSkSfVeo=\""
+          "Value": "\"GHiLm5s5GRwRcEjt59dTNwWAlc3PTAnYsb8WvCXZOiA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 24 Jul 2025 14:23:03 GMT"
+          "Value": "Tue, 09 Sep 2025 07:32:18 GMT"
         },
         {
           "Name": "Cache-Control",
-          "Value": "no-cache"
+          "Value": "max-age=31536000, immutable"
         },
         {
           "Name": "Content-Encoding",
@@ -37901,18 +38550,26 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw=\""
+          "Value": "W/\"L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I=\""
         }
       ],
       "EndpointProperties": [
         {
+          "Name": "fingerprint",
+          "Value": "3nv4l2dkta"
+        },
+        {
+          "Name": "label",
+          "Value": "SyncSyntax.bundle.scp.css"
+        },
+        {
           "Name": "integrity",
-          "Value": "sha256-zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw="
+          "Value": "sha256-L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I="
         }
       ]
     },
     {
-      "Route": "SyncSyntax.bundle.scp.css",
+      "Route": "SyncSyntax.3nv4l2dkta.bundle.scp.css",
       "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\SyncSyntax.bundle.scp.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -37922,7 +38579,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2277"
+          "Value": "3417"
         },
         {
           "Name": "Content-Type",
@@ -37930,121 +38587,21 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw=\""
+          "Value": "\"L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 24 Jul 2025 14:23:03 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw="
-        }
-      ]
-    },
-    {
-      "Route": "SyncSyntax.bundle.scp.css.gz",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\se1b29u40y-s4i0avyzy6.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "623"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"kdccfBm+mQ8AA7NEU327EtL1ubQ2DyHS3LRdSkSfVeo=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 24 Jul 2025 14:23:03 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "no-cache"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "integrity",
-          "Value": "sha256-kdccfBm+mQ8AA7NEU327EtL1ubQ2DyHS3LRdSkSfVeo="
-        }
-      ]
-    },
-    {
-      "Route": "SyncSyntax.s4i0avyzy6.bundle.scp.css",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\se1b29u40y-s4i0avyzy6.gz",
-      "Selectors": [
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip",
-          "Quality": "0.001602564103"
-        }
-      ],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "623"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"kdccfBm+mQ8AA7NEU327EtL1ubQ2DyHS3LRdSkSfVeo=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 24 Jul 2025 14:23:03 GMT"
+          "Value": "Tue, 09 Sep 2025 07:32:18 GMT"
         },
         {
           "Name": "Cache-Control",
           "Value": "max-age=31536000, immutable"
-        },
-        {
-          "Name": "Content-Encoding",
-          "Value": "gzip"
-        },
-        {
-          "Name": "Vary",
-          "Value": "Content-Encoding"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "W/\"zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "s4i0avyzy6"
+          "Value": "3nv4l2dkta"
         },
         {
           "Name": "label",
@@ -38052,13 +38609,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw="
+          "Value": "sha256-L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I="
         }
       ]
     },
     {
-      "Route": "SyncSyntax.s4i0avyzy6.bundle.scp.css",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\SyncSyntax.bundle.scp.css",
+      "Route": "SyncSyntax.3nv4l2dkta.bundle.scp.css.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\se1b29u40y-3nv4l2dkta.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -38067,7 +38624,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2277"
+          "Value": "686"
         },
         {
           "Name": "Content-Type",
@@ -38075,56 +38632,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw=\""
+          "Value": "\"GHiLm5s5GRwRcEjt59dTNwWAlc3PTAnYsb8WvCXZOiA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 24 Jul 2025 14:23:03 GMT"
-        },
-        {
-          "Name": "Cache-Control",
-          "Value": "max-age=31536000, immutable"
-        }
-      ],
-      "EndpointProperties": [
-        {
-          "Name": "fingerprint",
-          "Value": "s4i0avyzy6"
-        },
-        {
-          "Name": "label",
-          "Value": "SyncSyntax.bundle.scp.css"
-        },
-        {
-          "Name": "integrity",
-          "Value": "sha256-zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw="
-        }
-      ]
-    },
-    {
-      "Route": "SyncSyntax.s4i0avyzy6.bundle.scp.css.gz",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\se1b29u40y-s4i0avyzy6.gz",
-      "Selectors": [],
-      "ResponseHeaders": [
-        {
-          "Name": "Accept-Ranges",
-          "Value": "bytes"
-        },
-        {
-          "Name": "Content-Length",
-          "Value": "623"
-        },
-        {
-          "Name": "Content-Type",
-          "Value": "text/css"
-        },
-        {
-          "Name": "ETag",
-          "Value": "\"kdccfBm+mQ8AA7NEU327EtL1ubQ2DyHS3LRdSkSfVeo=\""
-        },
-        {
-          "Name": "Last-Modified",
-          "Value": "Thu, 24 Jul 2025 14:23:03 GMT"
+          "Value": "Tue, 09 Sep 2025 07:32:18 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -38142,7 +38654,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "s4i0avyzy6"
+          "Value": "3nv4l2dkta"
         },
         {
           "Name": "label",
@@ -38150,18 +38662,18 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-kdccfBm+mQ8AA7NEU327EtL1ubQ2DyHS3LRdSkSfVeo="
+          "Value": "sha256-GHiLm5s5GRwRcEjt59dTNwWAlc3PTAnYsb8WvCXZOiA="
         }
       ]
     },
     {
-      "Route": "SyncSyntax.s4i0avyzy6.styles.css",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\xbgb78aoub-s4i0avyzy6.gz",
+      "Route": "SyncSyntax.3nv4l2dkta.styles.css",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\xbgb78aoub-3nv4l2dkta.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.001602564103"
+          "Quality": "0.001455604076"
         }
       ],
       "ResponseHeaders": [
@@ -38171,15 +38683,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "623"
+          "Value": "686"
         },
         {
           "Name": "ETag",
-          "Value": "\"kdccfBm+mQ8AA7NEU327EtL1ubQ2DyHS3LRdSkSfVeo=\""
+          "Value": "\"GHiLm5s5GRwRcEjt59dTNwWAlc3PTAnYsb8WvCXZOiA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 24 Jul 2025 14:23:03 GMT"
+          "Value": "Tue, 09 Sep 2025 07:32:18 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -38199,13 +38711,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw=\""
+          "Value": "W/\"L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "s4i0avyzy6"
+          "Value": "3nv4l2dkta"
         },
         {
           "Name": "label",
@@ -38213,12 +38725,12 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw="
+          "Value": "sha256-L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I="
         }
       ]
     },
     {
-      "Route": "SyncSyntax.s4i0avyzy6.styles.css",
+      "Route": "SyncSyntax.3nv4l2dkta.styles.css",
       "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\scopedcss\\bundle\\SyncSyntax.styles.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -38228,7 +38740,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2277"
+          "Value": "3417"
         },
         {
           "Name": "Content-Type",
@@ -38236,11 +38748,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw=\""
+          "Value": "\"L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 24 Jul 2025 14:23:03 GMT"
+          "Value": "Tue, 09 Sep 2025 07:32:18 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -38250,7 +38762,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "s4i0avyzy6"
+          "Value": "3nv4l2dkta"
         },
         {
           "Name": "label",
@@ -38258,13 +38770,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw="
+          "Value": "sha256-L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I="
         }
       ]
     },
     {
-      "Route": "SyncSyntax.s4i0avyzy6.styles.css.gz",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\xbgb78aoub-s4i0avyzy6.gz",
+      "Route": "SyncSyntax.3nv4l2dkta.styles.css.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\xbgb78aoub-3nv4l2dkta.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -38273,7 +38785,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "623"
+          "Value": "686"
         },
         {
           "Name": "Content-Type",
@@ -38281,11 +38793,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"kdccfBm+mQ8AA7NEU327EtL1ubQ2DyHS3LRdSkSfVeo=\""
+          "Value": "\"GHiLm5s5GRwRcEjt59dTNwWAlc3PTAnYsb8WvCXZOiA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 24 Jul 2025 14:23:03 GMT"
+          "Value": "Tue, 09 Sep 2025 07:32:18 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -38303,7 +38815,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "s4i0avyzy6"
+          "Value": "3nv4l2dkta"
         },
         {
           "Name": "label",
@@ -38311,18 +38823,18 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-kdccfBm+mQ8AA7NEU327EtL1ubQ2DyHS3LRdSkSfVeo="
+          "Value": "sha256-GHiLm5s5GRwRcEjt59dTNwWAlc3PTAnYsb8WvCXZOiA="
         }
       ]
     },
     {
-      "Route": "SyncSyntax.styles.css",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\xbgb78aoub-s4i0avyzy6.gz",
+      "Route": "SyncSyntax.bundle.scp.css",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\se1b29u40y-3nv4l2dkta.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.001602564103"
+          "Quality": "0.001455604076"
         }
       ],
       "ResponseHeaders": [
@@ -38332,15 +38844,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "623"
+          "Value": "686"
         },
         {
           "Name": "ETag",
-          "Value": "\"kdccfBm+mQ8AA7NEU327EtL1ubQ2DyHS3LRdSkSfVeo=\""
+          "Value": "\"GHiLm5s5GRwRcEjt59dTNwWAlc3PTAnYsb8WvCXZOiA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 24 Jul 2025 14:23:03 GMT"
+          "Value": "Tue, 09 Sep 2025 07:32:18 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -38360,13 +38872,150 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw=\""
+          "Value": "W/\"L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw="
+          "Value": "sha256-L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I="
+        }
+      ]
+    },
+    {
+      "Route": "SyncSyntax.bundle.scp.css",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\scopedcss\\projectbundle\\SyncSyntax.bundle.scp.css",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "3417"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Sep 2025 07:32:18 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I="
+        }
+      ]
+    },
+    {
+      "Route": "SyncSyntax.bundle.scp.css.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\se1b29u40y-3nv4l2dkta.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "686"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"GHiLm5s5GRwRcEjt59dTNwWAlc3PTAnYsb8WvCXZOiA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Sep 2025 07:32:18 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-GHiLm5s5GRwRcEjt59dTNwWAlc3PTAnYsb8WvCXZOiA="
+        }
+      ]
+    },
+    {
+      "Route": "SyncSyntax.styles.css",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\xbgb78aoub-3nv4l2dkta.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.001455604076"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "686"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"GHiLm5s5GRwRcEjt59dTNwWAlc3PTAnYsb8WvCXZOiA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 09 Sep 2025 07:32:18 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/css"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I="
         }
       ]
     },
@@ -38381,7 +39030,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "2277"
+          "Value": "3417"
         },
         {
           "Name": "Content-Type",
@@ -38389,11 +39038,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw=\""
+          "Value": "\"L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 24 Jul 2025 14:23:03 GMT"
+          "Value": "Tue, 09 Sep 2025 07:32:18 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -38403,13 +39052,13 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-zGGXVQeOQjYm/wYLIobCsGjyK95G1DXzRcyhwGOrHnw="
+          "Value": "sha256-L8aIEpxK1N0q9pgEx5HE6yXtbB09MsFrrQ3Ongfk28I="
         }
       ]
     },
     {
       "Route": "SyncSyntax.styles.css.gz",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\xbgb78aoub-s4i0avyzy6.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\xbgb78aoub-3nv4l2dkta.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -38418,7 +39067,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "623"
+          "Value": "686"
         },
         {
           "Name": "Content-Type",
@@ -38426,11 +39075,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"kdccfBm+mQ8AA7NEU327EtL1ubQ2DyHS3LRdSkSfVeo=\""
+          "Value": "\"GHiLm5s5GRwRcEjt59dTNwWAlc3PTAnYsb8WvCXZOiA=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 24 Jul 2025 14:23:03 GMT"
+          "Value": "Tue, 09 Sep 2025 07:32:18 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -38448,7 +39097,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-kdccfBm+mQ8AA7NEU327EtL1ubQ2DyHS3LRdSkSfVeo="
+          "Value": "sha256-GHiLm5s5GRwRcEjt59dTNwWAlc3PTAnYsb8WvCXZOiA="
         }
       ]
     },

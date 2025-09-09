@@ -1,107 +1,60 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+ 
 using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
 
-namespace SyncSyntax.Areas.Admin.Controllers
+[Area("Admin")]
+public class CategoryController : Controller
 {
-    [Area("Admin")]
-    [Authorize(Roles = "Admin")]
-    public class CategoryController : Controller
+    private readonly AppDbContext _context;
+    public CategoryController(AppDbContext context) => _context = context;
+
+    public IActionResult Index() => View();
+
+    // Get all categories with posts count
+    public async Task<JsonResult> List()
     {
-        private readonly AppDbContext _context;
-        private readonly ILogger<CategoryController> _logger;
+        var categories = await _context.Categories
+            .Select(c => new {
+                c.Id,
+                c.Name,
+                c.Description,
+                PostsCount = _context.Posts.Count(p => p.CategoryId == c.Id)
+            }).ToListAsync();
 
-        public CategoryController(AppDbContext context, ILogger<CategoryController> logger)
+        return Json(categories);
+    }
+
+    // Add/Edit category
+    [HttpPost]
+    public async Task<JsonResult> Save([FromForm] Category category)
+    {
+        if (category.Id == 0)
+            _context.Categories.Add(category);
+        else
         {
-            _context = context;
-            _logger = logger;
-        }
-
-
-        [Authorize]
-        public async Task<IActionResult> Index()
-        {
-            var categories = await _context.Categories.AsNoTracking().ToListAsync();
-            return View(categories);
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] Category category)
-        {
-            _logger.LogInformation("Create(Category) via Fetch called.");
-
-            if (!ModelState.IsValid)
+            var existing = await _context.Categories.FindAsync(category.Id);
+            if (existing != null)
             {
-                _logger.LogWarning("Invalid model: {@ModelState}", ModelState);
-                return BadRequest(new { success = false, message = "Invalid data." });
-            }
-
-            try
-            {
-                await _context.Categories.AddAsync(category);
-                await _context.SaveChangesAsync();
-
-                _logger.LogInformation("Category created successfully: {@Category}", category);
-                return Json(new { success = true });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error creating category.");
-                return StatusCode(500, new { success = false, message = "Server error." });
+                existing.Name = category.Name;
+                existing.Description = category.Description;
             }
         }
+        await _context.SaveChangesAsync();
+        return Json(new { success = true });
+    }
 
-
-        [HttpGet]
-        public async Task<IActionResult> Edit(int id)
+    // Delete category
+    [HttpPost]
+    public async Task<JsonResult> Delete(int id)
+    {
+        var category = await _context.Categories.FindAsync(id);
+        if (category != null)
         {
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-                return NotFound();
-
-            return PartialView("~/Views/Shared/_EditPartial.cshtml", category);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Edit([FromForm] Category category)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(new { success = false, message = "Invalid data." });
-
-            try
-            {
-                _context.Categories.Update(category);
-                await _context.SaveChangesAsync();
-                return Json(new { success = true });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating category");
-                return StatusCode(500, new { success = false, message = "Server error." });
-            }
-        }
-
-
-        [HttpPost]
-        public async Task<IActionResult> DeleteConfirm(int id)
-        {
-            _logger.LogInformation("DeleteConfirm(Category) called with invalid model state: {@CategoryID}", id);
-
-            var category = await _context.Categories.FindAsync(id);
-            if (category == null)
-                return Json(new { success = false, message = "Category not found." });
-
             _context.Categories.Remove(category);
-            _logger.LogInformation("DeleteConfirm(Category) called with Remove: {@CategoryID}", id);
-
             await _context.SaveChangesAsync();
-
-            return Json(new { success = true });
         }
-
+        return Json(new { success = true });
     }
 }

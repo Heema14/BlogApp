@@ -256,7 +256,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             {
                 Post = post,
                 IsFollowing = followingIds.Contains(post.UserId),
-                IsSaved = savedPostIds.Contains(post.Id)  // هذي الخاصية
+                IsSaved = savedPostIds.Contains(post.Id)   
             }).ToList();
 
             ViewData["Categories"] = _context.Categories.ToList();

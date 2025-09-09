@@ -57,9 +57,9 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/Auth/SignIn";  // Redirect path for unauthorized users 🔐
-    options.AccessDeniedPath = "/Auth/AccessDenied"; // ⛔
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(20); // ⏰
+    options.LoginPath = "/Auth/SignIn";  
+    options.AccessDeniedPath = "/Auth/AccessDenied";  
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(20); 
     options.SlidingExpiration = true;
 });
 

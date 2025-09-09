@@ -1147,8 +1147,6 @@ C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\ahud5y
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\ac63znhi33-khhs5umk4w.gz
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\x2x0vt2p43-dcowqscbhr.gz
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\b227vorgrh-hiqumc4mhz.gz
-C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\xbgb78aoub-s4i0avyzy6.gz
-C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\se1b29u40y-s4i0avyzy6.gz
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\staticwebassets.build.json
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\staticwebassets.development.json
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\staticwebassets.build.endpoints.json
@@ -1167,3 +1165,7 @@ C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\SyncSyntax.genrun
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\ref\SyncSyntax.dll
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\71wgmqromi-55l22kleba.gz
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\ezqh74081w-ugj3vgpcer.gz
+C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\htdid2d5h1-jjygsnibix.gz
+C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\scopedcss\Areas\Admin\Views\Shared\_Layout.cshtml.rz.scp.css
+C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\xbgb78aoub-3nv4l2dkta.gz
+C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\se1b29u40y-3nv4l2dkta.gz

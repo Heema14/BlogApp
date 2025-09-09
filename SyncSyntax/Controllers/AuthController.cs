@@ -62,6 +62,7 @@ namespace SyncSyntax.Controllers
                     DateOfBirth = model.DateOfBirth,
                 };
 
+            
                 if (model.ProfilePicture != null && model.ProfilePicture.Length > 0)
                 {
                     var allowedExtensions = _config.GetSection("uploading:allowedFileExtension").Get<List<string>>();
@@ -91,6 +92,7 @@ namespace SyncSyntax.Controllers
 
                 if (result.Succeeded)
                 {
+                    
                     if (!await _roleManager.RoleExistsAsync("ContentCreator"))
                         await _roleManager.CreateAsync(new IdentityRole("ContentCreator"));
 
@@ -107,7 +109,18 @@ namespace SyncSyntax.Controllers
                     await _context.SaveChangesAsync();
 
                     TempData["Success"] = "Account created successfully! Welcome 🎉";
-                    return RedirectToAction("FollowingPosts", "Following", new { area = "ContentCreator" });
+                     
+                    if (await _userManager.IsInRoleAsync(user, "Admin"))
+                    {
+                        return RedirectToAction("Index", "Home", new { area = "Admin" });
+                    }
+                    else if (await _userManager.IsInRoleAsync(user, "ContentCreator"))
+                    {
+                        return RedirectToAction("FollowingPosts", "Following", new { area = "ContentCreator" });
+                    }
+
+                   
+                    return RedirectToAction("Index", "Home");
                 }
 
                 foreach (var error in result.Errors)
@@ -124,7 +137,7 @@ namespace SyncSyntax.Controllers
         public IActionResult SignIn() => View();
 
         [HttpPost]
-         
+
         public async Task<IActionResult> SignIn(SignInViewModel model)
         {
             if (!ModelState.IsValid)
@@ -150,8 +163,20 @@ namespace SyncSyntax.Controllers
             }
 
             TempData["Success"] = $"Welcome back, {user.UserName}!";
-            return RedirectToAction("FollowingPosts", "Following", new { area = "ContentCreator" });
+
+          
+            if (await _userManager.IsInRoleAsync(user, "Admin"))
+            {
+                return RedirectToAction("Index", "Home", new { area = "Admin" });
+            }
+            else if (await _userManager.IsInRoleAsync(user, "ContentCreator"))
+            {
+                return RedirectToAction("FollowingPosts", "Following", new { area = "ContentCreator" });
+            }
+ 
+            return RedirectToAction("Index", "Home", new { area = "" });
         }
+
 
         public async Task<IActionResult> EditProfile()
         {

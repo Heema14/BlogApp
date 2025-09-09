@@ -1,0 +1,210 @@
+﻿@using System.Text.Json
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<h1 class="mb-4">Admin Dashboard</h1>
+
+<div class="row flex-row flex-nowrap overflow-auto g-4">
+    <!-- Users -->
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card text-white h-100 card-gradient-primary">
+            <div class="card-body text-center">
+                <i class="bi bi-people-fill fs-2 mb-2"></i>
+                <h5 class="card-title">Users</h5>
+                <h2 class="counter" data-count="@Model.TotalUsers">0</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Posts -->
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card text-white h-100 card-gradient-success">
+            <div class="card-body text-center">
+                <i class="bi bi-file-earmark-text-fill fs-2 mb-2"></i>
+                <h5 class="card-title">Posts</h5>
+                <h2 class="counter" data-count="@Model.TotalPosts">0</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Categories -->
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card text-white h-100 card-gradient-warning">
+            <div class="card-body text-center">
+                <i class="bi bi-tags-fill fs-2 mb-2"></i>
+                <h5 class="card-title">Categories</h5>
+                <h2 class="counter" data-count="@Model.TotalCategories">0</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tags -->
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card text-white h-100 card-gradient-danger">
+            <div class="card-body text-center">
+                <i class="bi bi-hash fs-2 mb-2"></i>
+                <h5 class="card-title">Tags</h5>
+                <h2 class="counter" data-count="@Model.TotalTags">0</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Likes -->
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card text-white h-100 card-gradient-info">
+            <div class="card-body text-center">
+                <i class="bi bi-hand-thumbs-up-fill fs-2 mb-2"></i>
+                <h5 class="card-title">Likes</h5>
+                <h2 class="counter" data-count="@Model.TotalLikes">0</h2>
+            </div>
+        </div>
+    </div>
+
+    <!-- Comments -->
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card text-white h-100 card-gradient-secondary">
+            <div class="card-body text-center">
+                <i class="bi bi-chat-dots-fill fs-2 mb-2"></i>
+                <h5 class="card-title">Comments</h5>
+                <h2 class="counter" data-count="@Model.TotalComments">0</h2>
+            </div>
+        </div>
+    </div>
+    <!-- Views -->
+    <div class="col-6 col-md-4 col-lg-2">
+        <div class="card text-white h-100 card-gradient-dark">
+            <div class="card-body text-center">
+                <i class="bi bi-eye-fill fs-2 mb-2"></i>
+                <h5 class="card-title">Views</h5>
+                <h2 class="counter" data-count="@Model.TotalViews">0</h2>
+            </div>
+        </div>
+    </div>
+
+</div>
+<!-- Chart -->
+<div id="chart" class="mt-5"></div>
+
+
+<style>
+    h1 {
+        font-weight: 600;
+    }
+
+    .card h2 {
+        font-size: 2rem;
+        font-weight: 700;
+    }
+
+    .card i {
+        display: block;
+    }
+
+    .card {
+        border: none;
+        border-radius: 1rem;
+        transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+    /* Gradients */
+    .card-gradient-primary {
+        background: linear-gradient(45deg,#4e73df,#224abe);
+    }
+
+    .card-gradient-success {
+        background: linear-gradient(45deg,#1cc88a,#17a673);
+    }
+
+    .card-gradient-warning {
+        background: linear-gradient(45deg,#f6c23e,#dda20a);
+    }
+
+    .card-gradient-danger {
+        background: linear-gradient(45deg,#e74a3b,#be2617);
+    }
+
+    .card-gradient-info {
+        background: linear-gradient(45deg,#36b9cc,#2c9faf);
+    }
+
+    .card-gradient-secondary {
+        background: linear-gradient(45deg,#858796,#5a5c69);
+    }
+
+    .card-gradient-dark {
+        background: linear-gradient(45deg,#343a40,#1c1e21);
+    }
+
+</style>
+
+<!-- Counter Animation -->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        const counters = document.querySelectorAll('.counter');
+        counters.forEach(counter => {
+            const updateCount = () => {
+                const target = +counter.getAttribute('data-count');
+                const count = +counter.innerText;
+                const increment = Math.ceil(target / 100);
+
+                if(count < target) {
+                    counter.innerText = count + increment;
+                    setTimeout(updateCount, 15);
+                } else {
+                    counter.innerText = target;
+                }
+            };
+            updateCount();
+        });
+    });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+        console.log(@Html.Raw(JsonSerializer.Serialize(ViewBag.ChartData)));
+    console.log(@Html.Raw(JsonSerializer.Serialize(ViewBag.ChartLabels)));
+
+     document.addEventListener("DOMContentLoaded", function() {
+        var chartData = @Html.Raw(JsonSerializer.Serialize(ViewBag.ChartData));
+        var maxData = Math.max(...chartData);
+
+         var maxY = Math.max(100, Math.ceil(maxData / 50) * 50);
+
+         var options = {
+        chart: { type: 'line', height: 350 },
+        series: [{
+            name: 'New Users',
+            data: chartData
+        }],
+        xaxis: {
+            categories: @Html.Raw(JsonSerializer.Serialize(ViewBag.ChartLabels))
+        },
+           yaxis: {
+        min: 0,
+        max: maxY,
+        tickAmount: maxY / 50,
+        labels: {
+            formatter: function(val) {
+                return val % 50 === 0 ? val : '';
+            }
+        }
+    },
+        stroke: { curve: 'smooth' },
+        markers: { size: 5 },
+    };
+
+
+        var chart = new ApexCharts(document.querySelector("#chart"), options);
+        chart.render();
+    });
+
+
+</script>

@@ -30,26 +30,22 @@ public class FollowingController : Controller
     {
         var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
-        // جلب معرفات المستخدمين الذين أتابعهم
-        var followedUsers = _context.Followings
+         var followedUsers = _context.Followings
             .Where(f => f.FollowerId == userId)
             .Select(f => f.FollowingId)
             .ToList();
 
-        // الاستعلام الأساسي لمنشورات المتابعين فقط
-        var postQuery = _context.Posts
+         var postQuery = _context.Posts
             .Include(p => p.Category)
             .Include(p => p.User)
             .Where(p => followedUsers.Contains(p.UserId) && p.IsPublished);
 
-        // تصفية حسب الفئة (CategoryId)
-        if (categoryId.HasValue)
+         if (categoryId.HasValue)
         {
             postQuery = postQuery.Where(p => p.CategoryId == categoryId);
         }
 
-        // تصفية حسب البحث
-        if (!string.IsNullOrEmpty(searchTerm))
+         if (!string.IsNullOrEmpty(searchTerm))
         {
             switch (filterBy)
             {
@@ -103,17 +99,7 @@ public class FollowingController : Controller
 
         ViewBag.UnreadCount = _context.Messages
             .Count(m => m.ReceiverId == userId && !m.IsRead);
-
-        //ViewBag.Users = _context.Users.Select(u => new { id = u.Id, name = u.UserName }).ToList();
-        //ViewBag.Categories = _context.Categories.Select(c => new { id = c.Id, name = c.Name }).ToList();
-        //ViewBag.Posts = _context.Posts.Select(p => new { id = p.Id, title = p.Title }).ToList();
-        //    ViewBag.Tags = _context.Posts
-        //.Where(p => !string.IsNullOrEmpty(p.Tags))
-        //.SelectMany(p => p.Tags.Split(','))
-        //.Distinct()
-        //.Select(tag => new { id = tag, name = "#" + tag })
-        //.ToList();
-
+ 
         return View(viewModelList);
     }
 
