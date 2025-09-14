@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
 [Area("Admin")]
 
@@ -13,7 +14,13 @@ public class UsersController : Controller
 
     public IActionResult Index()
     {
-        var users = _context.Users.ToList();  
-        return View(users);
+        var usersWithCounts = _context.Users
+        .Select(u => new UserWithPostsCountViewModel
+        {
+            User = u,
+            PostsCount = _context.Posts.Count(p => p.UserId == u.Id)
+        }).ToList();
+
+        return View(usersWithCounts);
     }
 }
