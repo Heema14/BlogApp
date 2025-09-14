@@ -63,6 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
         <span class="emoji-option">😂</span>
         <span class="emoji-option">😮</span>
         <span class="emoji-option">😢</span>
+        <span class="emoji-option emoji-plus">➕</span>
        
     </div>
 
@@ -639,8 +640,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const searchBtn = document.getElementById('bulkSearch');
     const searchBar = document.getElementById('chatSearchBar');
     const searchInput = document.getElementById('chatSearchInput');
-    //const messagesContainer = document.getElementById('messagesContainer');
-    const closeBtn = document.getElementById('closeSearch');
+     const closeBtn = document.getElementById('closeSearch');
     const searchCount = document.getElementById('searchCount');
 
     searchBtn.addEventListener('click', (e) => {
@@ -663,7 +663,7 @@ document.addEventListener('DOMContentLoaded', function () {
         messages.forEach(msg => {
             const p = msg.querySelector('p');
             const text = p.textContent;
-            p.innerHTML = text; // إزالة أي highlight قديم
+            p.innerHTML = text;  
 
             if (query) {
                 const regex = new RegExp(`(${query})`, 'gi');
@@ -676,8 +676,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         searchCount.textContent = matchCount > 0 ? `${matchCount} result(s)` : '';
-
-        // تمرير تلقائي لأول نتيجة
+ 
         if (firstMatch) {
             firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
@@ -697,4 +696,66 @@ document.addEventListener('DOMContentLoaded', function () {
             p.innerHTML = p.textContent;
         });
     }
+
+
+    //emoji library
+    import('https://cdn.jsdelivr.net/npm/emoji-picker-element@1.8.0/index.js').then(() => {
+        const picker = document.createElement('emoji-picker');
+        picker.style.position = 'absolute';
+        picker.style.bottom = '60px';
+        picker.style.right = '20px';
+        picker.style.zIndex = '1000';
+        picker.style.display = 'none';
+        document.body.appendChild(picker);
+
+        const input = document.querySelector('#messageInput');
+        const emojiBtn = document.querySelector('#emojiBtn');
+
+         emojiBtn.addEventListener('click', () => {
+            picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
+        });
+
+        let currentMessageDiv = null;
+
+        document.addEventListener('click', function (e) {
+            const target = e.target;
+
+             if (target.classList.contains('emoji-plus')) {
+                const rect = target.getBoundingClientRect();
+                picker.style.top = `${rect.top - picker.offsetHeight}px`;
+                picker.style.left = `${rect.left}px`;
+                picker.style.display = 'block';
+                e.stopPropagation();
+
+                currentMessageDiv = target.closest('.message');
+            } else if (!picker.contains(target) && target !== emojiBtn) {
+                picker.style.display = 'none';
+                currentMessageDiv = null;
+            }
+        });
+
+        picker.addEventListener('emoji-click', event => {
+            const emoji = event.detail.unicode;
+
+            if (currentMessageDiv) {
+                const messageId = parseInt(currentMessageDiv.getAttribute('data-id'));
+                const senderId = document.getElementById("senderId").value;
+
+                if (typeof connection !== "undefined") {
+                    connection.invoke("SendReaction", senderId, messageId, emoji)
+                        .catch(err => console.error("Error sending reaction:", err));
+                }
+
+                picker.style.display = 'none';
+                currentMessageDiv = null;
+            } else {
+                 const start = input.selectionStart;
+                const end = input.selectionEnd;
+                input.value = input.value.slice(0, start) + emoji + input.value.slice(end);
+                input.focus();
+                input.selectionStart = input.selectionEnd = start + emoji.length;
+                picker.style.display = 'none';
+            }
+        });
+    });
 });

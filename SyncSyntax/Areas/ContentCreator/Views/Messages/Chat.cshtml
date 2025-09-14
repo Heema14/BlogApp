@@ -196,8 +196,7 @@
                     <div class="reaction-summary">
                         @foreach (var r in reactions)
                         {
-                            @*                             <span class="reaction-count">${r.reaction} ${r.count}</span>
- *@
+ 
                             <span class="reaction-count" data-message-id="@message.Id" data-emoji="@r.Emoji" title="@string.Join(", ", r.Users)">
                                 @r.Emoji @r.Count
                             </span>
@@ -282,50 +281,7 @@
     <!-- مكتبة الإيموجي الجاهزة -->
     <script src="https://unpkg.com/picmo@latest/dist/umd/index.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/picmo@latest/dist/styles.css">
-    <script type="module">
-        import 'https://cdn.jsdelivr.net/npm/emoji-picker-element@@^1/index.js';
-
-        document.addEventListener('DOMContentLoaded', () => {
-          const picker = document.createElement('emoji-picker');
-          picker.style.position = 'absolute';
-          picker.style.bottom = '60px';
-          picker.style.right = '20px';
-          picker.style.zIndex = '1000';
-          picker.style.display = 'none';
-
-          document.body.appendChild(picker);
-
-          const input = document.querySelector('#messageInput');
-          const emojiBtn = document.querySelector('#emojiBtn');
-
-          emojiBtn.addEventListener('click', () => {
-            picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
-          });
-
-          picker.addEventListener('emoji-click', event => {
-            const emoji = event.detail.unicode;
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-            input.value = input.value.slice(0, start) + emoji + input.value.slice(end);
-            input.focus();
-            input.selectionStart = input.selectionEnd = start + emoji.length;
-
-          });
-
-
-          document.addEventListener('click', (e) => {
-            if (!picker.contains(e.target) && e.target !== emojiBtn) {
-              picker.style.display = 'none';
-            }
-          });
-        });
-
-
-
-
-
-    </script>
-
+ 
     <script src="~/js/Chat.js"></script>
 
 }
