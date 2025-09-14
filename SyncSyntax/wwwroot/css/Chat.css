@@ -194,3 +194,19 @@
     font-size: 1.4rem;
     padding: 0 10px;
 }
+.highlight {
+    background-color: yellow;
+}
+
+#chatSearchBar {
+    max-width: 400px;
+}
+
+#closeSearch {
+    cursor: pointer;
+}
+
+#searchCount {
+    font-size: 0.85rem;
+    color: gray;
+}

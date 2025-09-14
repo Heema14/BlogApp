@@ -64,14 +64,41 @@
                 <button class="btn btn-light dropdown-toggle" type="button" id="bulkOptionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                     ⋮
                 </button>
+                <!-- شريط البحث فوق المحادثة -->
+                <div id="chatSearchBar" class="d-none mb-2 position-relative">
+                    <input type="text" id="chatSearchInput" class="form-control" placeholder="Search in chat...">
+                    <span id="searchCount" class="position-absolute end-0 top-0 m-1 me-5"></span>
+                    <button id="closeSearch" class="btn btn-sm btn-outline-secondary position-absolute end-0 top-0 m-1">✖</button>
+                </div>
+
                 <ul class="dropdown-menu" aria-labelledby="bulkOptionsDropdown">
-                    <li><a class="dropdown-item" id="bulkDeleteMe" href="#">Delete for me</a></li>
-                    <li><a class="dropdown-item" id="bulkDeleteAll" href="#">Delete for everyone</a></li>
-                    <li><a class="dropdown-item" id="bulkCopy" href="#">Copy</a></li>
-                    <li><a class="dropdown-item" id="bulkExport" href="#">Export Chat</a></li>
-                    @*                     <li><a class="dropdown-item text-danger" id="clearChatBtn" href="#">Clear Chat</a></li>
- *@
+                    <li>
+                        <a class="dropdown-item" id="bulkDeleteMe" href="#">
+                            <i class="bi bi-person-x me-2"></i> Delete for me
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" id="bulkDeleteAll" href="#">
+                            <i class="bi bi-trash me-2"></i> Delete for everyone
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" id="bulkCopy" href="#">
+                            <i class="bi bi-files me-2"></i> Copy
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" id="bulkExport" href="#">
+                            <i class="bi bi-box-arrow-up-right me-2"></i> Export Chat
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" id="bulkSearch" href="#">
+                            <i class="bi bi-search me-2"></i> Search in Chat
+                        </a>
+                    </li>
                 </ul>
+
             </div>
             <button id="cancelSelectBtn" class="btn btn-secondary" style="display: none;">Cancel</button>
         </div>

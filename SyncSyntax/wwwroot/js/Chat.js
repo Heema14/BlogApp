@@ -635,5 +635,66 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.removeItem('chat-bg-isImage');
     });
 
+    //search in chat
+    const searchBtn = document.getElementById('bulkSearch');
+    const searchBar = document.getElementById('chatSearchBar');
+    const searchInput = document.getElementById('chatSearchInput');
+    //const messagesContainer = document.getElementById('messagesContainer');
+    const closeBtn = document.getElementById('closeSearch');
+    const searchCount = document.getElementById('searchCount');
 
+    searchBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        searchBar.classList.toggle('d-none');
+        if (!searchBar.classList.contains('d-none')) {
+            searchInput.focus();
+        } else {
+            clearHighlights();
+            searchCount.textContent = '';
+        }
+    });
+
+    searchInput.addEventListener('input', () => {
+        const query = searchInput.value.toLowerCase();
+        const messages = messagesContainer.querySelectorAll('.message');
+        let matchCount = 0;
+        let firstMatch = null;
+
+        messages.forEach(msg => {
+            const p = msg.querySelector('p');
+            const text = p.textContent;
+            p.innerHTML = text; // إزالة أي highlight قديم
+
+            if (query) {
+                const regex = new RegExp(`(${query})`, 'gi');
+                if (regex.test(text)) {
+                    p.innerHTML = text.replace(regex, '<span class="highlight">$1</span>');
+                    matchCount++;
+                    if (!firstMatch) firstMatch = msg;
+                }
+            }
+        });
+
+        searchCount.textContent = matchCount > 0 ? `${matchCount} result(s)` : '';
+
+        // تمرير تلقائي لأول نتيجة
+        if (firstMatch) {
+            firstMatch.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    });
+
+    closeBtn.addEventListener('click', () => {
+        searchBar.classList.add('d-none');
+        searchInput.value = '';
+        searchCount.textContent = '';
+        clearHighlights();
+    });
+
+    function clearHighlights() {
+        const messages = messagesContainer.querySelectorAll('.message');
+        messages.forEach(msg => {
+            const p = msg.querySelector('p');
+            p.innerHTML = p.textContent;
+        });
+    }
 });
