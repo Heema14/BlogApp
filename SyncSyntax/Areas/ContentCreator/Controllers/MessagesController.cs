@@ -18,8 +18,8 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         private readonly AppDbContext _context;
         private readonly UserManager<AppUser> _userManager;
         private readonly IHubContext<ChatHub> _hubContext;
-        private readonly ILogger<PostController> _logger;
-        public MessagesController(AppDbContext context, UserManager<AppUser> userManager, IHubContext<ChatHub> hubContext, ILogger<PostController> logger)
+        private readonly ILogger<MessagesController> _logger;
+        public MessagesController(AppDbContext context, UserManager<AppUser> userManager, IHubContext<ChatHub> hubContext, ILogger<MessagesController> logger)
         {
             _context = context;
             _userManager = userManager;

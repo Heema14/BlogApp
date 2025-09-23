@@ -1,0 +1,72 @@
+﻿@model List<Message>
+@{
+    var currentUserId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+    var chatUser = ViewBag.ChatUser;
+    var pinnedMessage = ViewBag.PinnedMessage as Message;
+}
+
+
+<div class="chat-container">
+    <div class="chat-header">
+        <input type="hidden" id="senderId" value="@currentUserId" />
+        <input type="hidden" id="receiverId" value="@chatUser.Id" />
+
+        <div class="profile">
+            <img src="@chatUser.ProfilePicture" alt="Profile Picture" class="profile-img" />
+
+            <div class="d-flex flex-column">
+                <h4>@chatUser.FirstName @chatUser.LastName</h4>
+                
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="messagesContainer" class="chat-messages">
+        @foreach (var message in Model)
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="message @(message.SenderId == currentUserId ? "sent" : "received")"
+                 data-id="@message.Id"
+                 data-sender-id="@message.SenderId">
+				<p>@message.Content</p>
+
+            
+                @if (ViewBag.MessageReactions != null && ViewBag.MessageReactions.ContainsKey(message.Id))
+                {
+                    var reactions = ViewBag.MessageReactions[message.Id];
+                    <div class="reaction-summary">
+                        @foreach (var r in reactions)
+                        {
+ 
+                            <span class="reaction-count" data-message-id="@message.Id" data-emoji="@r.Emoji" title="@string.Join(", ", r.Users)">
+                                @r.Emoji @r.Count
+                            </span>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <div class="reaction-summary"></div>
+                }
+
+
+                <small>
+                    @message.SentAt.ToLocalTime().ToString("HH:mm")
+                    @if (message.SenderId == currentUserId && message.IsRead)
+                    {
+                        <span title="Read">✅</span>
+                    }
+                </small>
+            </div>
+        }
+    </div>
+  
+</div>
+
+
+
+<link rel="stylesheet" href="~/css/Chat.css" />
+

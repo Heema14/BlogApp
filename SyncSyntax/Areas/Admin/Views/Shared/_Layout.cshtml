@@ -152,6 +152,10 @@
                 <a asp-action="Categories" asp-controller="Home">
                     <i class="bi bi-tags"></i><span> Categories</span>
                 </a>
+                <a asp-action="Index" asp-controller="Messages" asp-area="Admin">
+                    <i class="bi bi-chat-dots"></i> <span>Messages</span>
+                </a>
+
                 <hr class="text-white" />
 
                 <a asp-controller="Auth" asp-area="" asp-action="SignOut" class="text-danger">
@@ -172,7 +176,10 @@
         <a asp-action="Index" asp-controller="Users"><i class="bi bi-people"></i></a>
    
         <a asp-action="Categories" asp-controller="Home"><i class="bi bi-tags"></i></a>
-  
+        <a asp-action="Index" asp-controller="Messages" asp-area="Admin"><i class="bi bi-chat-dots"></i></a>
+
+    
+
        
     </div>
 

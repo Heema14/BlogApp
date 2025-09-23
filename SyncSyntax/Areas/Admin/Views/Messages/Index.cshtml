@@ -1,5 +1,4 @@
-﻿ 
-@model ChatViewModel
+﻿@model ChatViewModel
 
 <div class="chat-list">
 
@@ -8,20 +7,18 @@
         <p class="no-messages">@ViewData["Message"]</p>
     }
 
- 
     @{
- 
         var previousUserIds = new List<string>();
     }
 
     @if (Model.Conversations != null && Model.Conversations.Any())
     {
-        <h5 class="section-title"> Latest Conversations</h5>
+        <h5 class="section-title">New Messages</h5>
 
         @foreach (var conversation in Model.Conversations)
         {
             var otherUserId = conversation.SenderId == Model.CurrentUserId ? conversation.ReceiverId : conversation.SenderId;
-            previousUserIds.Add(otherUserId); 
+            previousUserIds.Add(otherUserId);
 
             var otherUser = Model.OtherUsers.FirstOrDefault(u => u.Id == otherUserId);
 
@@ -42,61 +39,6 @@
         }
     }
 
- 
-    <hr class="divider" />
-
-
-    @if (Model.AvailableUsers != null)
-    {
-        var newUsers = Model.AvailableUsers
-        .Where(u => !previousUserIds.Contains(u.Id))
-        .ToList();
-
-        @if (newUsers.Any())
-        {
-            @if (newUsers.Any(u => u.FirstName.Equals("Admin", StringComparison.OrdinalIgnoreCase)))
-            {
-                <div class="start-new-chat">
-                    <h4>Start New Conversations</h4>
-                    @foreach (var user in newUsers)
-                    {
-                        <div class="chat-preview new-chat">
-                            <a href="@Url.Action("Chat", "Messages", new { userId = user.Id })">
-                                <div class="chat-user">
-                                    <img src="@user.ProfilePicture" class="profile-img" />
-                                    <div class="chat-info">
-                                        <span class="username">@user.FirstName @user.LastName</span>
-                                        <small>    💡 If you want to improve the site, add new features, or suggest enhancements, feel free to send us your ideas!</small>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    }
-                </div>
-
-
-            }
-         else{
-                <div class="start-new-chat">
-                    <h4>Start New Conversations</h4>
-                    @foreach (var user in newUsers)
-                    {
-                        <div class="chat-preview new-chat">
-                            <a href="@Url.Action("Chat", "Messages", new { userId = user.Id })">
-                                <div class="chat-user">
-                                    <img src="@user.ProfilePicture" class="profile-img" />
-                                    <div class="chat-info">
-                                        <span class="username">@user.FirstName @user.LastName</span>
-                                        <small>Start new conversation</small>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    }
-                </div>
-         }
-        }
-    }
 
 </div>
 
@@ -218,4 +160,5 @@
             font-size: 12px;
         }
 </style>
+
 
