@@ -247,21 +247,18 @@
         $('#comments-section-' + postId).append(commentHtml);
     });
 
-            // بدء الاتصال
             connection.start().catch(err => console.error(err.toString()));
 
-            // إرسال تعليق (Ajax + SignalR)
             $form.submit(function (e) {
                 e.preventDefault();
                 var content = $form.find('textarea[name="Content"]').val();
                 if (!content) return;
 
                 $.ajax({
-                    url: '/ContentCreator/Post/AddComment',   // 🔹 غيرها لمسارك في الـ Controller
+                    url: '/ContentCreator/Post/AddComment',
                     method: 'POST',
                     data: { postId: postId, content: content },
                     success: function (res) {
-                        // عرض التعليق مباشرة (من الرد)
                         var commentHtml = `
                             <div class="comment-card" id="comment-${res.commentId}">
                                 <h5>${res.userName}</h5>
@@ -274,7 +271,6 @@
 
                         $form.find('textarea[name="Content"]').val('');
 
-                        // إشعار SignalR للباقي
                         connection.invoke("BroadcastComment", res.content, postId)
                             .catch(err => console.error(err.toString()));
                     },
