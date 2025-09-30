@@ -39,12 +39,15 @@ public class CommentHub : Hub
 
         // إرسال التعليق لكل من في الجروب
         await Clients.Group(postId.ToString())
-            .SendAsync("ReceiveComment",
-            userName,
-            content,
-            comment.CommentDate.ToString("M/dd/yyyy, h:mm tt"),
-            comment.Id,
-            comment.UserId == Context.User.FindFirst(ClaimTypes.NameIdentifier)?.Value);
+      .SendAsync("ReceiveComment",
+          userName,
+          content,
+          comment.CommentDate.ToString("M/dd/yyyy, h:mm tt"),
+          comment.Id,
+          comment.UserId == userId,
+          userId
+      );
+
     }
 
 
@@ -80,5 +83,20 @@ public class CommentHub : Hub
     }
 
 
+    public async Task EditComment(int commentId, string newContent)
+    {
+        var comment = await _context.Comments.FirstOrDefaultAsync(c => c.Id == commentId);
+        var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (comment == null || comment.UserId != userId) return;
+
+        comment.Content = newContent;
+        comment.CommentDate = DateTime.Now;
+        await _context.SaveChangesAsync();
+
+        // بث التعديل لجميع المستخدمين في الجروب
+        await Clients.Group(comment.PostId.ToString())
+            .SendAsync("CommentEdited", commentId, newContent, comment.CommentDate.ToString("M/dd/yyyy, h:mm"));
+    }
 
 }

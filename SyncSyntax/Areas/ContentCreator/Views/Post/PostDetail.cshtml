@@ -163,6 +163,12 @@
                         <p>@comment.Content</p>
                         @if (isCurrentUser)
                         {
+                            <button class="btn btn-sm btn-primary edit-comment-btn"
+                                    data-commentid="@comment.Id"
+                                    data-content="@comment.Content">
+                                Edit
+                            </button>
+
                             <button class="btn btn-sm btn-danger delete-comment-btn" data-commentid="@comment.Id">Delete</button>
                         }
                     </div>
@@ -180,7 +186,7 @@
         {
             <form class="comment-form" data-postid="@Model.Post.Id">
                 <div class="form-group mb-2">
-                    <label for="Content">Content</label>
+                    <label for="Content">Add Comment</label>
                     <textarea name="Content" rows="3" required class="form-control"></textarea>
                 </div>
                 <button type="submit" class="btn btn-primary px-4">Share comment</button>
@@ -196,98 +202,146 @@
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
 <script src="~/js/post-like.js"></script>
+
 <script>
     const focusBtn = document.getElementById("focusModeBtn");
-
     focusBtn.addEventListener("click", () => {
         document.body.classList.toggle("focus-mode");
-
-        // تغيير نص الزر حسب الوضع الحالي
-        if (document.body.classList.contains("focus-mode")) {
-            focusBtn.textContent = "Exit Focus Mode";
-        } else {
-            focusBtn.textContent = "Focus Mode";
-        }
+        focusBtn.textContent = document.body.classList.contains("focus-mode")
+            ? "Exit Focus Mode"
+            : "Focus Mode";
     });
 
-
-          $(document).ready(function () {
-
+    $(document).ready(function () {
         $('.comment-form').each(function () {
-            var postId = $(this).data('postid');
+            var $form = $(this);
+            var postId = $form.data('postid');
 
-            // إنشاء اتصال SignalR لكل بوست
+            // إنشاء اتصال SignalR
             var connection = new signalR.HubConnectionBuilder()
                 .withUrl("/commentHub?postId=" + postId)
                 .build();
 
-            connection.start()
-                .then(() => console.log("Connected to CommentHub for post " + postId))
-                .catch(err => console.error(err.toString()));
+            // استقبال تعليق جديد من SignalR (للمستخدمين الآخرين)
+    connection.on("ReceiveComment", function (userName, content, date, commentId, isCurrentUser, userId) {
+        var currentUserId = '@User.FindFirstValue(ClaimTypes.NameIdentifier)';
 
-            // استقبال التعليقات الجديدة
-            connection.on("ReceiveComment", function (userName, content, date, commentId, isCurrentUser) {
-                var deleteBtnHtml = isCurrentUser
-                    ? `<button class="btn btn-sm btn-danger delete-comment-btn" data-commentid="${commentId}">Delete</button>`
-                    : '';
+        // تجاهل التعليق إذا هو لنفس المستخدم
+        if(userId === currentUserId) return;
 
-                var commentHtml = `
-                    <div class="comment-card" id="comment-${commentId}">
-                        <h5>${userName}</h5>
-                        <small>${date}</small>
-                        <p>${content}</p>
-                        ${deleteBtnHtml}
-                    </div>`;
-                $('#comments-section-' + postId).append(commentHtml);
-            });
+        var deleteBtnHtml = isCurrentUser
+            ? `<button class="btn btn-sm btn-danger delete-comment-btn" data-commentid="${commentId}">Delete</button>`
+            : '';
 
-            // استقبال حذف التعليق
-            connection.on("CommentDeleted", function(commentId){
-                $('#comment-' + commentId).remove();
-            });
+        var editBtnHtml = isCurrentUser
+            ? `<button class="btn btn-sm btn-primary edit-comment-btn" data-commentid="${commentId}" data-content="${content}">Edit</button>`
+            : '';
 
-            // إرسال التعليق عند الضغط على submit
-            $(this).submit(function (e) {
+        var commentHtml = `
+            <div class="comment-card" id="comment-${commentId}">
+                <h5>${userName}</h5>
+                <small>${date}</small>
+                <p class="comment-content">${content}</p>
+                ${editBtnHtml} ${deleteBtnHtml}
+            </div>`;
+        $('#comments-section-' + postId).append(commentHtml);
+    });
+
+            // بدء الاتصال
+            connection.start().catch(err => console.error(err.toString()));
+
+            // إرسال تعليق (Ajax + SignalR)
+            $form.submit(function (e) {
                 e.preventDefault();
-                var content = $(this).find('textarea[name="Content"]').val();
+                var content = $form.find('textarea[name="Content"]').val();
                 if (!content) return;
 
-                connection.invoke("BroadcastComment", content, postId)
-                    .then(() => $(this).find('textarea[name="Content"]').val(''))
-                    .catch(err => console.error(err.toString()));
+                $.ajax({
+                    url: '/ContentCreator/Post/AddComment',   // 🔹 غيرها لمسارك في الـ Controller
+                    method: 'POST',
+                    data: { postId: postId, content: content },
+                    success: function (res) {
+                        // عرض التعليق مباشرة (من الرد)
+                        var commentHtml = `
+                            <div class="comment-card" id="comment-${res.commentId}">
+                                <h5>${res.userName}</h5>
+                                <small>${res.date}</small>
+                                <p class="comment-content">${res.content}</p>
+                                <button class="btn btn-sm btn-primary edit-comment-btn" data-commentid="${res.commentId}" data-content="${res.content}">Edit</button>
+                                <button class="btn btn-sm btn-danger delete-comment-btn" data-commentid="${res.commentId}">Delete</button>
+                            </div>`;
+                        $('#comments-section-' + postId).append(commentHtml);
+
+                        $form.find('textarea[name="Content"]').val('');
+
+                        // إشعار SignalR للباقي
+                        connection.invoke("BroadcastComment", res.content, postId)
+                            .catch(err => console.error(err.toString()));
+                    },
+                    error: function () {
+                        Swal.fire('Error', 'Could not add comment.', 'error');
+                    }
+                });
             });
-                
-            // حذف تعليق عند الضغط على زر الحذف
-                $(document).on('click', '.delete-comment-btn', function() {
-        var commentId = $(this).data('commentid');
-        var postId = $(this).closest('.comments-section').attr('id').split('-')[2]; // استخراج postId من id القسم
 
-        Swal.fire({
-            title: 'Are you sure?',
-            text: "Do you really want to delete this comment?",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#d33',
-            cancelButtonColor: '#3085d6',
-            confirmButtonText: 'Yes, delete it!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // تنفيذ الحذف عبر SignalR
-                connection.invoke("DeleteComment", commentId)
-                    .then(() => {
-                        Swal.fire(
-                            'Deleted!',
-                            'The comment has been deleted.',
-                            'success'
-                        );
-                    })
-                    .catch(err => console.error(err.toString()));
-            }
+            // حذف تعليق
+            $(document).on('click', '.delete-comment-btn', function () {
+                var commentId = $(this).data('commentid');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you really want to delete this comment?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it!',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        connection.invoke("DeleteComment", commentId)
+                            .then(() => {
+                                $('#comment-' + commentId).remove();
+                                Swal.fire('Deleted!', 'The comment has been deleted.', 'success');
+                            })
+                            .catch(err => console.error(err.toString()));
+                    }
+                });
+            });
+
+            // تعديل تعليق
+            $(document).on('click', '.edit-comment-btn', function () {
+                var commentId = $(this).data('commentid');
+                var currentContent = $(this).data('content');
+
+                Swal.fire({
+                    title: 'Edit your comment',
+                    input: 'textarea',
+                    inputValue: currentContent,
+                    showCancelButton: true,
+                    confirmButtonText: 'Save',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed && result.value) {
+                        connection.invoke("EditComment", commentId, result.value)
+                            .catch(err => console.error(err.toString()));
+                    }
+                });
+            });
+
+            // استقبال تعديل من SignalR
+            connection.on("CommentEdited", function (commentId, newContent, newDate) {
+                var commentCard = $('#comment-' + commentId);
+                commentCard.find('.comment-content').text(newContent);
+                commentCard.find('small').text(newDate);
+                commentCard.find('.edit-comment-btn').attr('data-content', newContent);
+                Swal.fire('Updated!', 'Your comment has been updated.', 'success');
+            });
+
+            // استقبال حذف من SignalR
+            connection.on("CommentDeleted", function (commentId) {
+                $('#comment-' + commentId).remove();
+            });
         });
     });
-
-        });
-    });
-
 </script>
+

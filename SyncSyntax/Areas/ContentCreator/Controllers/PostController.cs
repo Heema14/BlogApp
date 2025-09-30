@@ -434,6 +434,32 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         }
 
 
+        [HttpPost]
+        public IActionResult AddComment(int postId, string content)
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userName = User.Identity.Name;
+            var comment = new Comment
+            {
+                PostId = postId,
+                Content = content,
+                UserId = userId,
+                CommentDate = DateTime.Now
+            };
+            _context.Comments.Add(comment);
+            _context.SaveChanges();
+
+            return Json(new
+            {
+                commentId = comment.Id,
+                userName,
+                content = comment.Content,
+                date = comment.CommentDate.ToString("M/dd/yyyy, h:mm tt")
+            });
+        }
+
+
+
         [HttpGet]
         public IActionResult Delete(int id)
         {
