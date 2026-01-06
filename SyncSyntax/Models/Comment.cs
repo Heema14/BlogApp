@@ -20,7 +20,7 @@ namespace SyncSyntax.Models
 
         [ValidateNever]
         public Post? Post { get; set; }
-
+         
         [Required]
         public string UserId { get; set; }
         [ForeignKey(nameof(UserId))]
