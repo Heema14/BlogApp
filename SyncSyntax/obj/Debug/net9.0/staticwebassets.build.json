@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "J71Krbg6JADjLqY+g8pmcfiEwqB360TSWWbPHZRZloE=",
+  "Hash": "Pg/OiA++iXNlklFqv15aBZBYSA+kFDwZJiMEDZ+BgSo=",
   "Source": "SyncSyntax",
   "BasePath": "_content/SyncSyntax",
   "Mode": "Default",
@@ -500,12 +500,12 @@
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\lib\\bootstrap\\dist\\js\\bootstrap.min.js.map"
     },
     {
-      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\71wgmqromi-55l22kleba.gz",
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\71wgmqromi-426g4c632i.gz",
       "SourceId": "SyncSyntax",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\",
       "BasePath": "_content/SyncSyntax",
-      "RelativePath": "css/Chat#[.{fingerprint=55l22kleba}]?.css.gz",
+      "RelativePath": "css/Chat#[.{fingerprint=426g4c632i}]?.css.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -514,8 +514,8 @@
       "RelatedAsset": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\css\\Chat.css",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "dbgwbbwaq2",
-      "Integrity": "Z27nqxgg3mDZk3r+OfHL9MKHnSc29FDzOa0ixMlNBm4=",
+      "Fingerprint": "n6vna1mkdf",
+      "Integrity": "n0sdT2jyur5gVRNyRZdU46NSsBYmxa96qNxbcei1O40=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\css\\Chat.css"
@@ -836,12 +836,12 @@
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\assets\\webfonts\\fa-solid-900.svg"
     },
     {
-      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-ugj3vgpcer.gz",
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-ouy3mikk76.gz",
       "SourceId": "SyncSyntax",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\",
       "BasePath": "_content/SyncSyntax",
-      "RelativePath": "js/Chat#[.{fingerprint=ugj3vgpcer}]?.js.gz",
+      "RelativePath": "js/Chat#[.{fingerprint=ouy3mikk76}]?.js.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -850,8 +850,8 @@
       "RelatedAsset": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\Chat.js",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "qdtwnfcrlp",
-      "Integrity": "vu+y0BtzpX5r9wV2ek5Utc6qBSqjt0OYTI6jAg6xZbk=",
+      "Fingerprint": "xp6fxikhah",
+      "Integrity": "O2dq8bUcaf22HQmLdOKL1wtQV4oViLDefybsQj0oOnY=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\Chat.js"
@@ -3244,8 +3244,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "55l22kleba",
-      "Integrity": "ibnA42nZDns7npuJOC1lYaCJBA2Jpr8WNQdtTR54HA4=",
+      "Fingerprint": "426g4c632i",
+      "Integrity": "rNag6yc63WYnV4aeWTAT2HT/EBO2ZyRd1BcAvcEFFG8=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\css\\Chat.css"
@@ -4112,6 +4112,27 @@
       "OriginalItemSpec": "wwwroot\\images\\uploadImgs\\56e85d90-d023-47ab-9788-356b4fbfd475.jpg"
     },
     {
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\7a8cd4d8-18d2-48e6-8c08-5e3ecebc8888.jpg",
+      "SourceId": "SyncSyntax",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\",
+      "BasePath": "_content/SyncSyntax",
+      "RelativePath": "images/uploadImgs/7a8cd4d8-18d2-48e6-8c08-5e3ecebc8888#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "yn7aojczfu",
+      "Integrity": "svYYADlVfpXUePNY5JBPF1+4ufcPFok6BriaXIvyUw8=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\uploadImgs\\7a8cd4d8-18d2-48e6-8c08-5e3ecebc8888.jpg"
+    },
+    {
       "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\86747d29-f2bd-4af1-b8c5-026fa3cece49.jpg",
       "SourceId": "SyncSyntax",
       "SourceType": "Discovered",
@@ -4131,6 +4152,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\uploadImgs\\86747d29-f2bd-4af1-b8c5-026fa3cece49.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\a4.jpg",
+      "SourceId": "SyncSyntax",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\",
+      "BasePath": "_content/SyncSyntax",
+      "RelativePath": "images/uploadImgs/a4#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "gqv564753w",
+      "Integrity": "6DUcT0xPB+pot2+80zTpBuT0+3gQj1eAX1tmg0W+LHY=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\uploadImgs\\a4.jpg"
     },
     {
       "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\ChatGPT Image Sep 4, 2025, 06_49_17 PM.png",
@@ -4238,6 +4280,27 @@
       "OriginalItemSpec": "wwwroot\\images\\uploadImgs\\default-image.jpg"
     },
     {
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\Food.jpg",
+      "SourceId": "SyncSyntax",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\",
+      "BasePath": "_content/SyncSyntax",
+      "RelativePath": "images/uploadImgs/Food#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "pdtyy2fsrt",
+      "Integrity": "w5z6uzKehzPt3K7D927V7IAFev03+c6oM8IfpfBEMfA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\uploadImgs\\Food.jpg"
+    },
+    {
       "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\logoBlogApp.jpg",
       "SourceId": "SyncSyntax",
       "SourceType": "Discovered",
@@ -4257,6 +4320,69 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\images\\uploadImgs\\logoBlogApp.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\M4Studio.jpg",
+      "SourceId": "SyncSyntax",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\",
+      "BasePath": "_content/SyncSyntax",
+      "RelativePath": "images/uploadImgs/M4Studio#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "ivs8md6iql",
+      "Integrity": "Lk6NKtLJPx8Hj6+U9BxLGQf9hGCkt/sxWRCCxJs2MyA=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\uploadImgs\\M4Studio.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\TeckDev.jpg",
+      "SourceId": "SyncSyntax",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\",
+      "BasePath": "_content/SyncSyntax",
+      "RelativePath": "images/uploadImgs/TeckDev#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "u23f313518",
+      "Integrity": "VrT3HtyQxEFxR21UWjUX7ncRC1XSk3DgcLxXaZxxPAk=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\uploadImgs\\TeckDev.jpg"
+    },
+    {
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\WhatsApp Image 2025-06-22 at 16.32.41_2f4faa21.jpg",
+      "SourceId": "SyncSyntax",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\",
+      "BasePath": "_content/SyncSyntax",
+      "RelativePath": "images/uploadImgs/WhatsApp Image 2025-06-22 at 16.32.41_2f4faa21#[.{fingerprint}]?.jpg",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "bkjkjn1r41",
+      "Integrity": "9eDNFozNlpT3Cv61VlvroBMYRWATsi7PZxNLLHUkGVE=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\images\\uploadImgs\\WhatsApp Image 2025-06-22 at 16.32.41_2f4faa21.jpg"
     },
     {
       "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\لولجو الهيثم.png",
@@ -4294,8 +4420,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "ugj3vgpcer",
-      "Integrity": "TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI=",
+      "Fingerprint": "ouy3mikk76",
+      "Integrity": "0I6gqXuWHZasn3L0JHCAK2SoRJbA3WaUNIscCUXK2PE=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\Chat.js"
@@ -13278,13 +13404,13 @@
       ]
     },
     {
-      "Route": "css/Chat.55l22kleba.css",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\71wgmqromi-55l22kleba.gz",
+      "Route": "css/Chat.426g4c632i.css",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\71wgmqromi-426g4c632i.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000775193798"
+          "Quality": "0.000735835173"
         }
       ],
       "ResponseHeaders": [
@@ -13294,15 +13420,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1289"
+          "Value": "1358"
         },
         {
           "Name": "ETag",
-          "Value": "\"Z27nqxgg3mDZk3r+OfHL9MKHnSc29FDzOa0ixMlNBm4=\""
+          "Value": "\"n0sdT2jyur5gVRNyRZdU46NSsBYmxa96qNxbcei1O40=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 09:24:22 GMT"
+          "Value": "Sun, 14 Sep 2025 10:11:38 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -13322,13 +13448,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"ibnA42nZDns7npuJOC1lYaCJBA2Jpr8WNQdtTR54HA4=\""
+          "Value": "W/\"rNag6yc63WYnV4aeWTAT2HT/EBO2ZyRd1BcAvcEFFG8=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "55l22kleba"
+          "Value": "426g4c632i"
         },
         {
           "Name": "label",
@@ -13336,12 +13462,12 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-ibnA42nZDns7npuJOC1lYaCJBA2Jpr8WNQdtTR54HA4="
+          "Value": "sha256-rNag6yc63WYnV4aeWTAT2HT/EBO2ZyRd1BcAvcEFFG8="
         }
       ]
     },
     {
-      "Route": "css/Chat.55l22kleba.css",
+      "Route": "css/Chat.426g4c632i.css",
       "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\css\\Chat.css",
       "Selectors": [],
       "ResponseHeaders": [
@@ -13351,7 +13477,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4171"
+          "Value": "4370"
         },
         {
           "Name": "Content-Type",
@@ -13359,11 +13485,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"ibnA42nZDns7npuJOC1lYaCJBA2Jpr8WNQdtTR54HA4=\""
+          "Value": "\"rNag6yc63WYnV4aeWTAT2HT/EBO2ZyRd1BcAvcEFFG8=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 09:24:22 GMT"
+          "Value": "Sun, 14 Sep 2025 10:11:38 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -13373,7 +13499,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "55l22kleba"
+          "Value": "426g4c632i"
         },
         {
           "Name": "label",
@@ -13381,13 +13507,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-ibnA42nZDns7npuJOC1lYaCJBA2Jpr8WNQdtTR54HA4="
+          "Value": "sha256-rNag6yc63WYnV4aeWTAT2HT/EBO2ZyRd1BcAvcEFFG8="
         }
       ]
     },
     {
-      "Route": "css/Chat.55l22kleba.css.gz",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\71wgmqromi-55l22kleba.gz",
+      "Route": "css/Chat.426g4c632i.css.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\71wgmqromi-426g4c632i.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -13396,7 +13522,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1289"
+          "Value": "1358"
         },
         {
           "Name": "Content-Type",
@@ -13404,11 +13530,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"Z27nqxgg3mDZk3r+OfHL9MKHnSc29FDzOa0ixMlNBm4=\""
+          "Value": "\"n0sdT2jyur5gVRNyRZdU46NSsBYmxa96qNxbcei1O40=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 09:24:22 GMT"
+          "Value": "Sun, 14 Sep 2025 10:11:38 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -13426,7 +13552,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "55l22kleba"
+          "Value": "426g4c632i"
         },
         {
           "Name": "label",
@@ -13434,18 +13560,18 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-Z27nqxgg3mDZk3r+OfHL9MKHnSc29FDzOa0ixMlNBm4="
+          "Value": "sha256-n0sdT2jyur5gVRNyRZdU46NSsBYmxa96qNxbcei1O40="
         }
       ]
     },
     {
       "Route": "css/Chat.css",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\71wgmqromi-55l22kleba.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\71wgmqromi-426g4c632i.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000775193798"
+          "Quality": "0.000735835173"
         }
       ],
       "ResponseHeaders": [
@@ -13455,15 +13581,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1289"
+          "Value": "1358"
         },
         {
           "Name": "ETag",
-          "Value": "\"Z27nqxgg3mDZk3r+OfHL9MKHnSc29FDzOa0ixMlNBm4=\""
+          "Value": "\"n0sdT2jyur5gVRNyRZdU46NSsBYmxa96qNxbcei1O40=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 09:24:22 GMT"
+          "Value": "Sun, 14 Sep 2025 10:11:38 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -13483,13 +13609,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"ibnA42nZDns7npuJOC1lYaCJBA2Jpr8WNQdtTR54HA4=\""
+          "Value": "W/\"rNag6yc63WYnV4aeWTAT2HT/EBO2ZyRd1BcAvcEFFG8=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-ibnA42nZDns7npuJOC1lYaCJBA2Jpr8WNQdtTR54HA4="
+          "Value": "sha256-rNag6yc63WYnV4aeWTAT2HT/EBO2ZyRd1BcAvcEFFG8="
         }
       ]
     },
@@ -13504,7 +13630,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "4171"
+          "Value": "4370"
         },
         {
           "Name": "Content-Type",
@@ -13512,11 +13638,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"ibnA42nZDns7npuJOC1lYaCJBA2Jpr8WNQdtTR54HA4=\""
+          "Value": "\"rNag6yc63WYnV4aeWTAT2HT/EBO2ZyRd1BcAvcEFFG8=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 09:24:22 GMT"
+          "Value": "Sun, 14 Sep 2025 10:11:38 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -13526,13 +13652,13 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-ibnA42nZDns7npuJOC1lYaCJBA2Jpr8WNQdtTR54HA4="
+          "Value": "sha256-rNag6yc63WYnV4aeWTAT2HT/EBO2ZyRd1BcAvcEFFG8="
         }
       ]
     },
     {
       "Route": "css/Chat.css.gz",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\71wgmqromi-55l22kleba.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\71wgmqromi-426g4c632i.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -13541,7 +13667,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "1289"
+          "Value": "1358"
         },
         {
           "Name": "Content-Type",
@@ -13549,11 +13675,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"Z27nqxgg3mDZk3r+OfHL9MKHnSc29FDzOa0ixMlNBm4=\""
+          "Value": "\"n0sdT2jyur5gVRNyRZdU46NSsBYmxa96qNxbcei1O40=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 09:24:22 GMT"
+          "Value": "Sun, 14 Sep 2025 10:11:38 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -13571,7 +13697,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-Z27nqxgg3mDZk3r+OfHL9MKHnSc29FDzOa0ixMlNBm4="
+          "Value": "sha256-n0sdT2jyur5gVRNyRZdU46NSsBYmxa96qNxbcei1O40="
         }
       ]
     },
@@ -17802,6 +17928,88 @@
       ]
     },
     {
+      "Route": "images/uploadImgs/7a8cd4d8-18d2-48e6-8c08-5e3ecebc8888.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\7a8cd4d8-18d2-48e6-8c08-5e3ecebc8888.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "15175"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"svYYADlVfpXUePNY5JBPF1+4ufcPFok6BriaXIvyUw8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 05 Jan 2026 12:13:31 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-svYYADlVfpXUePNY5JBPF1+4ufcPFok6BriaXIvyUw8="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploadImgs/7a8cd4d8-18d2-48e6-8c08-5e3ecebc8888.yn7aojczfu.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\7a8cd4d8-18d2-48e6-8c08-5e3ecebc8888.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "15175"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"svYYADlVfpXUePNY5JBPF1+4ufcPFok6BriaXIvyUw8=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 05 Jan 2026 12:13:31 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "yn7aojczfu"
+        },
+        {
+          "Name": "label",
+          "Value": "images/uploadImgs/7a8cd4d8-18d2-48e6-8c08-5e3ecebc8888.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-svYYADlVfpXUePNY5JBPF1+4ufcPFok6BriaXIvyUw8="
+        }
+      ]
+    },
+    {
       "Route": "images/uploadImgs/86747d29-f2bd-4af1-b8c5-026fa3cece49.jpg",
       "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\86747d29-f2bd-4af1-b8c5-026fa3cece49.jpg",
       "Selectors": [],
@@ -17880,6 +18088,88 @@
         {
           "Name": "integrity",
           "Value": "sha256-wSwHFJ1udmizp9/ltj7XRVHj0lbM623gZz8G+9oM6fg="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploadImgs/a4.gqv564753w.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\a4.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1627751"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"6DUcT0xPB+pot2+80zTpBuT0+3gQj1eAX1tmg0W+LHY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 10 Sep 2025 15:52:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "gqv564753w"
+        },
+        {
+          "Name": "label",
+          "Value": "images/uploadImgs/a4.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-6DUcT0xPB+pot2+80zTpBuT0+3gQj1eAX1tmg0W+LHY="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploadImgs/a4.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\a4.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "1627751"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"6DUcT0xPB+pot2+80zTpBuT0+3gQj1eAX1tmg0W+LHY=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Wed, 10 Sep 2025 15:52:48 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-6DUcT0xPB+pot2+80zTpBuT0+3gQj1eAX1tmg0W+LHY="
         }
       ]
     },
@@ -18070,7 +18360,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 07 Aug 2025 12:46:49 GMT"
+          "Value": "Wed, 10 Sep 2025 15:25:07 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -18115,7 +18405,7 @@
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 07 Aug 2025 12:46:49 GMT"
+          "Value": "Wed, 10 Sep 2025 15:25:07 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -18294,6 +18584,88 @@
       ]
     },
     {
+      "Route": "images/uploadImgs/Food.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\Food.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4231241"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"w5z6uzKehzPt3K7D927V7IAFev03+c6oM8IfpfBEMfA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 05 Jan 2026 12:13:31 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-w5z6uzKehzPt3K7D927V7IAFev03+c6oM8IfpfBEMfA="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploadImgs/Food.pdtyy2fsrt.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\Food.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "4231241"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"w5z6uzKehzPt3K7D927V7IAFev03+c6oM8IfpfBEMfA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 05 Jan 2026 12:13:31 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "pdtyy2fsrt"
+        },
+        {
+          "Name": "label",
+          "Value": "images/uploadImgs/Food.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-w5z6uzKehzPt3K7D927V7IAFev03+c6oM8IfpfBEMfA="
+        }
+      ]
+    },
+    {
       "Route": "images/uploadImgs/logoBlogApp.dcp9vhv0ci.jpg",
       "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\logoBlogApp.jpg",
       "Selectors": [],
@@ -18372,6 +18744,252 @@
         {
           "Name": "integrity",
           "Value": "sha256-c8QiX6rjDgSBCYNgYZ8yeV0/S8MNSV11vjlC9Eg32fA="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploadImgs/M4Studio.ivs8md6iql.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\M4Studio.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "109554"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Lk6NKtLJPx8Hj6+U9BxLGQf9hGCkt/sxWRCCxJs2MyA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 05 Jan 2026 12:13:31 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "ivs8md6iql"
+        },
+        {
+          "Name": "label",
+          "Value": "images/uploadImgs/M4Studio.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-Lk6NKtLJPx8Hj6+U9BxLGQf9hGCkt/sxWRCCxJs2MyA="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploadImgs/M4Studio.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\M4Studio.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "109554"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"Lk6NKtLJPx8Hj6+U9BxLGQf9hGCkt/sxWRCCxJs2MyA=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 05 Jan 2026 12:13:31 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-Lk6NKtLJPx8Hj6+U9BxLGQf9hGCkt/sxWRCCxJs2MyA="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploadImgs/TeckDev.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\TeckDev.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "154238"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VrT3HtyQxEFxR21UWjUX7ncRC1XSk3DgcLxXaZxxPAk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 05 Jan 2026 12:13:31 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-VrT3HtyQxEFxR21UWjUX7ncRC1XSk3DgcLxXaZxxPAk="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploadImgs/TeckDev.u23f313518.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\TeckDev.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "154238"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"VrT3HtyQxEFxR21UWjUX7ncRC1XSk3DgcLxXaZxxPAk=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 05 Jan 2026 12:13:31 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "u23f313518"
+        },
+        {
+          "Name": "label",
+          "Value": "images/uploadImgs/TeckDev.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-VrT3HtyQxEFxR21UWjUX7ncRC1XSk3DgcLxXaZxxPAk="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploadImgs/WhatsApp Image 2025-06-22 at 16.32.41_2f4faa21.bkjkjn1r41.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\WhatsApp Image 2025-06-22 at 16.32.41_2f4faa21.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "160388"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9eDNFozNlpT3Cv61VlvroBMYRWATsi7PZxNLLHUkGVE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 05 Jan 2026 12:13:31 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "bkjkjn1r41"
+        },
+        {
+          "Name": "label",
+          "Value": "images/uploadImgs/WhatsApp Image 2025-06-22 at 16.32.41_2f4faa21.jpg"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-9eDNFozNlpT3Cv61VlvroBMYRWATsi7PZxNLLHUkGVE="
+        }
+      ]
+    },
+    {
+      "Route": "images/uploadImgs/WhatsApp Image 2025-06-22 at 16.32.41_2f4faa21.jpg",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\images\\uploadImgs\\WhatsApp Image 2025-06-22 at 16.32.41_2f4faa21.jpg",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "160388"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "image/jpeg"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"9eDNFozNlpT3Cv61VlvroBMYRWATsi7PZxNLLHUkGVE=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Mon, 05 Jan 2026 12:13:31 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=3600, must-revalidate"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-9eDNFozNlpT3Cv61VlvroBMYRWATsi7PZxNLLHUkGVE="
         }
       ]
     },
@@ -18459,12 +19077,12 @@
     },
     {
       "Route": "js/Chat.js",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-ugj3vgpcer.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-ouy3mikk76.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000187125749"
+          "Quality": "0.000153704273"
         }
       ],
       "ResponseHeaders": [
@@ -18474,15 +19092,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "5343"
+          "Value": "6505"
         },
         {
           "Name": "ETag",
-          "Value": "\"vu+y0BtzpX5r9wV2ek5Utc6qBSqjt0OYTI6jAg6xZbk=\""
+          "Value": "\"O2dq8bUcaf22HQmLdOKL1wtQV4oViLDefybsQj0oOnY=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 10:09:10 GMT"
+          "Value": "Tue, 06 Jan 2026 10:51:21 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -18502,13 +19120,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI=\""
+          "Value": "W/\"0I6gqXuWHZasn3L0JHCAK2SoRJbA3WaUNIscCUXK2PE=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI="
+          "Value": "sha256-0I6gqXuWHZasn3L0JHCAK2SoRJbA3WaUNIscCUXK2PE="
         }
       ]
     },
@@ -18523,7 +19141,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "24609"
+          "Value": "30082"
         },
         {
           "Name": "Content-Type",
@@ -18531,11 +19149,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI=\""
+          "Value": "\"0I6gqXuWHZasn3L0JHCAK2SoRJbA3WaUNIscCUXK2PE=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 10:09:10 GMT"
+          "Value": "Tue, 06 Jan 2026 10:51:21 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -18545,13 +19163,13 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI="
+          "Value": "sha256-0I6gqXuWHZasn3L0JHCAK2SoRJbA3WaUNIscCUXK2PE="
         }
       ]
     },
     {
       "Route": "js/Chat.js.gz",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-ugj3vgpcer.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-ouy3mikk76.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -18560,7 +19178,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "5343"
+          "Value": "6505"
         },
         {
           "Name": "Content-Type",
@@ -18568,11 +19186,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"vu+y0BtzpX5r9wV2ek5Utc6qBSqjt0OYTI6jAg6xZbk=\""
+          "Value": "\"O2dq8bUcaf22HQmLdOKL1wtQV4oViLDefybsQj0oOnY=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 10:09:10 GMT"
+          "Value": "Tue, 06 Jan 2026 10:51:21 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -18590,18 +19208,18 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-vu+y0BtzpX5r9wV2ek5Utc6qBSqjt0OYTI6jAg6xZbk="
+          "Value": "sha256-O2dq8bUcaf22HQmLdOKL1wtQV4oViLDefybsQj0oOnY="
         }
       ]
     },
     {
-      "Route": "js/Chat.ugj3vgpcer.js",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-ugj3vgpcer.gz",
+      "Route": "js/Chat.ouy3mikk76.js",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-ouy3mikk76.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.000187125749"
+          "Quality": "0.000153704273"
         }
       ],
       "ResponseHeaders": [
@@ -18611,15 +19229,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "5343"
+          "Value": "6505"
         },
         {
           "Name": "ETag",
-          "Value": "\"vu+y0BtzpX5r9wV2ek5Utc6qBSqjt0OYTI6jAg6xZbk=\""
+          "Value": "\"O2dq8bUcaf22HQmLdOKL1wtQV4oViLDefybsQj0oOnY=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 10:09:10 GMT"
+          "Value": "Tue, 06 Jan 2026 10:51:21 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -18639,13 +19257,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI=\""
+          "Value": "W/\"0I6gqXuWHZasn3L0JHCAK2SoRJbA3WaUNIscCUXK2PE=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "ugj3vgpcer"
+          "Value": "ouy3mikk76"
         },
         {
           "Name": "label",
@@ -18653,12 +19271,12 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI="
+          "Value": "sha256-0I6gqXuWHZasn3L0JHCAK2SoRJbA3WaUNIscCUXK2PE="
         }
       ]
     },
     {
-      "Route": "js/Chat.ugj3vgpcer.js",
+      "Route": "js/Chat.ouy3mikk76.js",
       "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\Chat.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -18668,7 +19286,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "24609"
+          "Value": "30082"
         },
         {
           "Name": "Content-Type",
@@ -18676,11 +19294,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI=\""
+          "Value": "\"0I6gqXuWHZasn3L0JHCAK2SoRJbA3WaUNIscCUXK2PE=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 10:09:10 GMT"
+          "Value": "Tue, 06 Jan 2026 10:51:21 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -18690,7 +19308,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "ugj3vgpcer"
+          "Value": "ouy3mikk76"
         },
         {
           "Name": "label",
@@ -18698,13 +19316,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-TtSULuH6FZ4IkhVqFJZAJuk1j23jOMbpD1q3fQBxHyI="
+          "Value": "sha256-0I6gqXuWHZasn3L0JHCAK2SoRJbA3WaUNIscCUXK2PE="
         }
       ]
     },
     {
-      "Route": "js/Chat.ugj3vgpcer.js.gz",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-ugj3vgpcer.gz",
+      "Route": "js/Chat.ouy3mikk76.js.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\ezqh74081w-ouy3mikk76.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -18713,7 +19331,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "5343"
+          "Value": "6505"
         },
         {
           "Name": "Content-Type",
@@ -18721,11 +19339,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"vu+y0BtzpX5r9wV2ek5Utc6qBSqjt0OYTI6jAg6xZbk=\""
+          "Value": "\"O2dq8bUcaf22HQmLdOKL1wtQV4oViLDefybsQj0oOnY=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 04 Sep 2025 10:09:10 GMT"
+          "Value": "Tue, 06 Jan 2026 10:51:21 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -18743,7 +19361,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "ugj3vgpcer"
+          "Value": "ouy3mikk76"
         },
         {
           "Name": "label",
@@ -18751,7 +19369,7 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-vu+y0BtzpX5r9wV2ek5Utc6qBSqjt0OYTI6jAg6xZbk="
+          "Value": "sha256-O2dq8bUcaf22HQmLdOKL1wtQV4oViLDefybsQj0oOnY="
         }
       ]
     },

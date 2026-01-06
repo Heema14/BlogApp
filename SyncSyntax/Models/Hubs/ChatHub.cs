@@ -6,7 +6,7 @@ using System;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
-namespace SyncSyntax.Hubs
+namespace SyncSyntax.Models.Hubs
 {
     public class ChatHub : Hub
     {

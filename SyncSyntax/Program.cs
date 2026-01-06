@@ -6,7 +6,6 @@ using Microsoft.EntityFrameworkCore;
 using Serilog;
 using StackExchange.Redis;
 using SyncSyntax.Data;
-using SyncSyntax.Hubs;
 using SyncSyntax.Models;
 using SyncSyntax.Models.Hubs;
 using SyncSyntax.Models.IServices;

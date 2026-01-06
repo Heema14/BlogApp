@@ -189,13 +189,19 @@ wwwroot\images\pic08.jpg
 wwwroot\images\pic09.jpg
 wwwroot\images\uploadImgs\33698620-4b29-4b93-a53f-a57f834e2116.png
 wwwroot\images\uploadImgs\56e85d90-d023-47ab-9788-356b4fbfd475.jpg
+wwwroot\images\uploadImgs\7a8cd4d8-18d2-48e6-8c08-5e3ecebc8888.jpg
 wwwroot\images\uploadImgs\86747d29-f2bd-4af1-b8c5-026fa3cece49.jpg
+wwwroot\images\uploadImgs\a4.jpg
 wwwroot\images\uploadImgs\ChatGPT Image Sep 4, 2025, 06_49_17 PM.png
 wwwroot\images\uploadImgs\CODMW.jpg
 wwwroot\images\uploadImgs\colton-sturgeon-peLGhFkbkow-unsplash.jpg
 wwwroot\images\uploadImgs\d9e8b39e-3f59-4031-b696-72c143d1152c.jpg
 wwwroot\images\uploadImgs\default-image.jpg
+wwwroot\images\uploadImgs\Food.jpg
 wwwroot\images\uploadImgs\logoBlogApp.jpg
+wwwroot\images\uploadImgs\M4Studio.jpg
+wwwroot\images\uploadImgs\TeckDev.jpg
+wwwroot\images\uploadImgs\WhatsApp Image 2025-06-22 at 16.32.41_2f4faa21.jpg
 wwwroot\images\uploadImgs\لولجو الهيثم.png
 wwwroot\js\Chat.js
 wwwroot\js\post-like.js

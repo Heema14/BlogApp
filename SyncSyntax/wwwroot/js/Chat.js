@@ -331,10 +331,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let allFromMe = selectedMessages.every(msg => msg.dataset.senderId === currentUserId);
 
+        // إظهار أو إخفاء الخيارات بناءً على الرسائل المحددة
         bulkDeleteAll.style.display = allFromMe ? 'block' : 'none';
         cancelSelectBtn.style.display = 'inline-block';
+
+        // إظهار الخيارات المخفية بعد الضغط على الزر "⋮"
+        document.querySelectorAll('#bulkDeleteMe, #bulkDeleteAll, #bulkCopy, #bulkExport').forEach(item => {
+            item.style.display = 'block'; // عرض الخيارات المخفية
+        });
     }
-    //Bulk Delete for me
+
+    // عند الضغط على الزر "⋮"، إظهار الخيارات المخفية
+    document.getElementById('bulkOptionsDropdown').addEventListener('click', function () {
+        document.querySelectorAll('#bulkDeleteMe, #bulkDeleteAll, #bulkCopy, #bulkExport').forEach(item => {
+            item.style.display = 'block';
+        });
+    });    //Bulk Delete for me
     document.getElementById('bulkDeleteMe').addEventListener('click', () => {
         document.getElementById('deleteSelectedMe').click();
     });

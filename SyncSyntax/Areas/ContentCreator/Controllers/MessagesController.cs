@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
-using SyncSyntax.Hubs;
 using System.Security.Claims;
 using SyncSyntax.Areas.ContentCreator.ViewModels;
+using SyncSyntax.Models.Hubs;
 
 namespace SyncSyntax.Areas.ContentCreator.Controllers
 {
