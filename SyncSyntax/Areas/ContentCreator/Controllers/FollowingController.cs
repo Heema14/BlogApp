@@ -170,8 +170,20 @@ public class FollowingController : Controller
         return RedirectToAction("Profile", new { userId = userId });
     }
 
+    public async Task<IActionResult> ByUsername(string username)
+    {
+        var user = await _userManager.FindByNameAsync(username);
+        if (user == null) return NotFound();
+
+         return RedirectToAction(
+            actionName: "Profile",
+            controllerName: "Following",
+            routeValues: new { userId = user.Id, area = "ContentCreator" }  
+        );
+    }
     public IActionResult Profile(string userId)
     {
+
         Console.WriteLine("UserID received: " + userId);
 
         var user = _context.Users.FirstOrDefault(u => u.Id == userId);

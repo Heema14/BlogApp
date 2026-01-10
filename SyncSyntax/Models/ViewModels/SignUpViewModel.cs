@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 
 namespace SyncSyntax.Models.ViewModels
@@ -25,6 +26,11 @@ namespace SyncSyntax.Models.ViewModels
 
         [Required]
         [EmailAddress]
+        [Remote(
+       action: "IsEmailAvailable",
+       controller: "Auth",
+       ErrorMessage = "This email is already registered."
+   )]
         public string Email { get; set; }
 
         [Phone]

@@ -43,13 +43,45 @@ namespace SyncSyntax.Controllers
         [HttpGet]
         public IActionResult SignUp() => View();
 
+        [HttpGet]
+        public async Task<IActionResult> IsEmailAvailable(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return Json(true);
+
+            var user = await _userManager.FindByEmailAsync(email);
+
+            return Json(user == null
+                ? true
+                : $"Email '{email}' is already registered.");
+        }
+
         [HttpPost]
         public async Task<IActionResult> SignUp(SignUpViewModel model)
         {
             if (ModelState.IsValid)
             {
-                var username = model.Email.Split('@')[0];
+                string baseUsername = $"{model.FirstName}_{model.LastName}"
+                    .Trim()
+                    .ToLowerInvariant();
 
+                // optional: normalize spaces & remove multiple underscores
+                baseUsername = baseUsername.Replace(" ", "_");
+                while (baseUsername.Contains("__"))
+                    baseUsername = baseUsername.Replace("__", "_");
+
+                // optional: keep only allowed chars (letters, numbers, underscore)
+                baseUsername = System.Text.RegularExpressions.Regex.Replace(baseUsername, @"[^a-z0-9_]", "");
+
+                // make it unique
+                string username = baseUsername;
+                int counter = 1;
+
+                while (await _userManager.FindByNameAsync(username) != null)
+                {
+                    username = $"{baseUsername}{counter}";
+                    counter++;
+                }
                 var user = new AppUser
                 {
                     Email = model.Email,
@@ -128,6 +160,7 @@ namespace SyncSyntax.Controllers
                     _logger.LogWarning("Error creating user: " + error.Description);
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
+
             }
 
             return View(model);

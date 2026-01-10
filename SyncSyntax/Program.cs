@@ -35,13 +35,12 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
-    options.Password.RequireDigit = true;              // مش لازم رقم
-    options.Password.RequireLowercase = true;          // لازم حرف صغير
-    options.Password.RequireUppercase = true;          // لازم حرف كبير
-    options.Password.RequireNonAlphanumeric = false;    // مش لازم رمز
-    options.Password.RequiredLength = 6;                // أقل طول = 6
+    options.Password.RequireDigit = true;              
+    options.Password.RequireLowercase = true;          
+    options.Password.RequireUppercase = true;          
+    options.Password.RequireNonAlphanumeric = false;     
+    options.Password.RequiredLength = 6;                 
     options.Password.RequiredUniqueChars = 2;
-
     options.User.AllowedUserNameCharacters =
         "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.-_@ ";
     options.User.RequireUniqueEmail = true;
