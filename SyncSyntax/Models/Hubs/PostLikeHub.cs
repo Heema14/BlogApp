@@ -18,6 +18,7 @@ namespace SyncSyntax.Models.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, postId);
 
             await base.OnConnectedAsync();
+
         }
 
         public async Task JoinGroup(string postId)
