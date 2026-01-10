@@ -15,6 +15,11 @@
 
     <div class="input-group w-75 mx-auto">
         <input type="text" id="searchInput" name="searchTerm" class="form-control" placeholder="Search..." />
+        <input type="file"
+               id="qrFileInput"
+               accept="image/*"
+               style="display:none;" />
+
         <button type="button" id="clearSearch" class="btn btn-outline-secondary">
             <i class="bi bi-x-circle"></i>
         </button>
@@ -25,11 +30,112 @@
             <option value="publisher" selected="@(selectedFilter == "publisher")">Publisher</option>
             <option value="date" selected="@(selectedFilter == "date")">Published Date</option>
             <option value="tag" selected="@(selectedFilter == "tag")">Tag</option>
+            <option value="qr" selected="@(selectedFilter == "qr")">QR</option>
+
 
         </select>
 
         <button type="submit" class="modern-btn">
             <i class="bi bi-search"></i> Search
         </button>
+        <button type="button" id="qrScanBtn" class="modern-btn" style="display:none;">
+            <i class="bi bi-qr-code-scan"></i> Scan QR
+        </button>
+
     </div>
+
 </form>
+<div class="modal fade" id="qrScanModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Scan QR from image</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="qrStatus" class="text-muted">Choose an image that contains a QR code.</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/html5-qrcode"></script>
+<script>
+    const filterSelect = document.querySelector('select[name="filterBy"]');
+    const qrScanBtn = document.getElementById('qrScanBtn');
+    const qrFileInput = document.getElementById('qrFileInput');
+    const searchInput = document.getElementById('searchInput');
+
+    function updateUiForFilter() {
+      const isQr = filterSelect.value === "qr";
+
+      // If QR selected: disable typing, show scan button, hide submit search button (optional)
+      searchInput.disabled = isQr;
+
+      qrScanBtn.style.display = isQr ? "inline-flex" : "none";
+    }
+
+    updateUiForFilter();
+    filterSelect.addEventListener("change", updateUiForFilter);
+
+    qrScanBtn.addEventListener("click", () => {
+      // Open file picker
+      qrFileInput.value = "";
+      qrFileInput.click();
+
+      // Show modal (optional)
+      const modalEl = document.getElementById('qrScanModal');
+      if (modalEl) {
+        document.getElementById('qrStatus').innerText = "Choose an image that contains a QR code.";
+        new bootstrap.Modal(modalEl).show();
+      }
+    });
+
+    qrFileInput.addEventListener("change", async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if (!file) return;
+
+      try {
+        if (document.getElementById('qrStatus')) {
+          document.getElementById('qrStatus').innerText = "Scanning...";
+        }
+
+        // Decode QR from the selected image
+        const html5QrCode = new Html5Qrcode(/* element id not needed for file scan */ "qr-temp");
+        const decodedText = await html5QrCode.scanFile(file, true);
+
+        if (document.getElementById('qrStatus')) {
+          document.getElementById('qrStatus').innerText = "QR decoded. Redirecting...";
+        }
+
+        // decodedText should be the profile URL (because your QR encodes profileUrl)
+        // Security: only allow your own domain (recommended)
+        const allowedOrigin = window.location.origin;
+        let targetUrl = decodedText;
+
+        // If it's a relative URL like /ContentCreator/..., make it absolute
+        if (decodedText.startsWith("/")) {
+          targetUrl = allowedOrigin + decodedText;
+        }
+
+        // Optional: prevent redirecting to other websites
+        const urlObj = new URL(targetUrl);
+        if (urlObj.origin !== allowedOrigin) {
+          throw new Error("QR code is not from this website.");
+        }
+
+        window.location.href = targetUrl;
+      } catch (err) {
+        console.error(err);
+        if (document.getElementById('qrStatus')) {
+          document.getElementById('qrStatus').innerText =
+            "Could not read a QR code from that image. Try a clearer photo.";
+        } else {
+          alert("Could not read a QR code from that image. Try a clearer photo.");
+        }
+      }
+    });
+</script>
+
+<!-- hidden temp div for html5-qrcode (some browsers require an element id) -->
+<div id="qr-temp" style="display:none;"></div>

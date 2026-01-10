@@ -115,7 +115,15 @@
     <div class="profile-bio">
         <div>@Model.User.Bio</div>
     </div>
- 
+    <!-- QR Button -->
+    <button type="button"
+            class="icon-expand-btn"
+            data-bs-toggle="modal"
+            data-bs-target="#qrModal"
+            onclick="loadQrCode()"
+            data-hover-text="QR">
+        <i class="bi bi-qr-code me-1 svgIcon"></i>
+    </button>
     @if (currentUserId == Model.User.UserName)
     {
         <div class="profile-actions">
@@ -272,10 +280,38 @@
     </div>
 </section>
 
+<!-- QR Modal -->
+<div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="qrModalLabel">Scan to view profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+
+            <div class="modal-body text-center">
+                <img id="qrImage"
+                     src=""
+                     alt="Profile QR Code"
+                     style="max-width: 100%; height: auto;" />
+                <div class="mt-3">
+                    <a id="downloadQr" class="btn btn-outline-secondary" download="profile-qr.png">
+                        Download
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 @section Scripts {
     <script>
+         function loadQrCode() {
+            const qrUrl = '@Url.Content("~/qr/u/")' + '@Model.User.UserName' + '?ts=' + new Date().getTime();
+            document.getElementById('qrImage').src = qrUrl;
+            document.getElementById('downloadQr').href = qrUrl;
+        }
         //for make like
                 function toggleLike(postId) {
             $.ajax({

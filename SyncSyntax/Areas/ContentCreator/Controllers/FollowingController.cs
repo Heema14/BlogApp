@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using QRCoder;
 using SyncSyntax.Data;
 using SyncSyntax.Models;
 using SyncSyntax.Models.Hubs;
@@ -170,17 +171,31 @@ public class FollowingController : Controller
         return RedirectToAction("Profile", new { userId = userId });
     }
 
-    public async Task<IActionResult> ByUsername(string username)
+    [HttpGet("/u/{username}")]
+    public async Task<IActionResult> ProfileQr(string username)
     {
         var user = await _userManager.FindByNameAsync(username);
         if (user == null) return NotFound();
 
-         return RedirectToAction(
-            actionName: "Profile",
-            controllerName: "Following",
-            routeValues: new { userId = user.Id, area = "ContentCreator" }  
+        var profileUrl = Url.Action(
+            action: "Profile",
+            controller: "Following",
+            values: new { area = "ContentCreator", userId = user.Id },
+            protocol: Request.Scheme
         );
+
+        if (string.IsNullOrWhiteSpace(profileUrl))
+            return Problem("Could not generate profile URL. Check routing/areas.");
+
+        var generator = new QRCodeGenerator();
+        var data = generator.CreateQrCode(profileUrl, QRCodeGenerator.ECCLevel.Q);
+
+        var pngQr = new PngByteQRCode(data);
+        byte[] bytes = pngQr.GetGraphic(20);
+
+        return File(bytes, "image/png");
     }
+
     public IActionResult Profile(string userId)
     {
 
