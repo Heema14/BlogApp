@@ -17,7 +17,7 @@ namespace SyncSyntax.Models.Hubs
 
             await Groups.AddToGroupAsync(Context.ConnectionId, postId);
 
-            await base.OnConnectedAsync();
+            await base.OnConnectedAsync(); 
 
         }
 
