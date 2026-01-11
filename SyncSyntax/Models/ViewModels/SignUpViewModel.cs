@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SyncSyntax.Validation;
 using System.ComponentModel.DataAnnotations;
 
 namespace SyncSyntax.Models.ViewModels
@@ -22,6 +23,8 @@ namespace SyncSyntax.Models.ViewModels
 
         [Required]
         [DataType(DataType.Date)]
+        [MinAge(10, ErrorMessage = "You must be at least 10 years old.")]
+        [Remote("ValidateAge", "Auth", ErrorMessage = "You must be at least 10 years old.")]
         public DateTime DateOfBirth { get; set; }
 
         [Required]

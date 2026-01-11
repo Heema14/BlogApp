@@ -40,9 +40,22 @@ namespace SyncSyntax.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public IActionResult SignUp() => View();
+        [AcceptVerbs("Get", "Post")]
+        public IActionResult ValidateAge(DateTime dateOfBirth)
+        {
+            var today = DateTime.Today;
 
+            if (dateOfBirth > today)
+                return Json("Date of birth cannot be in the future.");
+
+            var age = today.Year - dateOfBirth.Year;
+            if (dateOfBirth.Date > today.AddYears(-age)) age--;
+
+            if (age < 10)
+                return Json("You must be at least 10 years old.");
+
+            return Json(true);
+        }
         [HttpGet]
         public async Task<IActionResult> IsEmailAvailable(string email)
         {
@@ -56,12 +69,18 @@ namespace SyncSyntax.Controllers
                 : $"Email '{email}' is already registered.");
         }
 
+        [HttpGet]
+        public IActionResult SignUp() => View();
+
+  
         [HttpPost]
         public async Task<IActionResult> SignUp(SignUpViewModel model)
         {
-            if (ModelState.IsValid)
-            {
-                string baseUsername = $"{model.FirstName}_{model.LastName}"
+            if (!ModelState.IsValid)
+                return View(model);
+            //if (ModelState.IsValid)
+            //{
+            string baseUsername = $"{model.FirstName}_{model.LastName}"
                     .Trim()
                     .ToLowerInvariant();
 
@@ -161,7 +180,7 @@ namespace SyncSyntax.Controllers
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
 
-            }
+            //}
 
             return View(model);
         }
