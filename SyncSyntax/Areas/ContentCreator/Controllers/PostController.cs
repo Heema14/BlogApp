@@ -519,8 +519,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
             }
 
             await _context.SaveChangesAsync();
-
-            // ✅ بث التغيير لكل الصفحات المتصلة بالـ Hub
+        
             await _postlikeHub.Clients.Group(postId.ToString())
                 .SendAsync("ReceiveLike", postId, post.LikesCount, userId);
 

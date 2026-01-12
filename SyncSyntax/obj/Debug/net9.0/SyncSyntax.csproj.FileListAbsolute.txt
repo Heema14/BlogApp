@@ -1163,7 +1163,6 @@ C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\refint\SyncSyntax
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\SyncSyntax.pdb
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\SyncSyntax.genruntimeconfig.cache
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\ref\SyncSyntax.dll
-C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\htdid2d5h1-jjygsnibix.gz
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\scopedcss\Areas\Admin\Views\Shared\_Layout.cshtml.rz.scp.css
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\xbgb78aoub-3nv4l2dkta.gz
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\se1b29u40y-3nv4l2dkta.gz
@@ -1175,3 +1174,4 @@ C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\bin\Debug\net9.0\System.Drawing.Co
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\bin\Debug\net9.0\runtimes\win\lib\net6.0\Microsoft.Win32.SystemEvents.dll
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\bin\Debug\net9.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\bin\Debug\net9.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
+C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\htdid2d5h1-ucg8rt2lt3.gz

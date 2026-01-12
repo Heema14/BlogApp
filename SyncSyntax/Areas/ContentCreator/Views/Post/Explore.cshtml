@@ -160,100 +160,41 @@ else
 
 
 @section Scripts {
-    <script src="~/js/SavePost.js"></script>
-    <!-- jQuery and jQuery UI -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.13.3/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
 
+@*     <!-- SignalR (make sure you already include this somewhere in your layout or here) -->
+    <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+ *@
     <script>
-            $(document).on('click', '[data-bs-toggle="modal"]', function (e) {
-            var button = $(e.currentTarget);
-            var postId = button.data('id');
-
-            console.log("Opening post with ID: " + postId);
-
-            $('#postModal').find('.modal-body').html('<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</div>');
-
-            $.ajax({
-                url: '@Url.Action("Detail", "Post")/' + postId,
-                type: 'GET',
-                success: function (response) {
-                    $('#postModal .modal-body').html(response);
-                    setupPostLikeHub(postId);
- 
-                },
-                error: function () {
-                    $('#postModal .modal-body').html('<p class="text-danger">Failed to load post details.</p>');
-                }
-            });
-        });
-
-
-
-        // SignalR connection  
-        let postConnection = null;
-
-        function setupPostLikeHub(postId) {
-            if (postConnection) {
-                postConnection.stop();
-                postConnection = null;
-            }
-
-            postConnection = new signalR.HubConnectionBuilder()
-                .withUrl(`/postHub?postId=${postId}`)
-                .build();
-
-                postConnection.on("ReceiveLike", function (postId, likesCount, userId) {
-            $(`.like-btn[data-postid="${postId}"] .likes-count`).text(likesCount);
-        });
-
-
-            postConnection.start().catch(err => console.error(err.toString()));
-        }
-
-                    $(document).off('click', '.like-btn').on('click', '.like-btn', function () {
-            const postId = $(this).data('postid');
-            toggleLike(postId, this);
-        });
-
-                function toggleLike(postId) {
-          $.ajax({
-            url: '@Url.Action("Like", "Post")',
-            type: 'POST',
-            data: { postId },
-            success: function (response) {
-              if (!response.success) return alert(response.message);
-
-              // Update ALL instances (modal + explore) for this post
-              const $allButtons = $(`.like-btn[data-postid="${postId}"]`);
-
-              $allButtons.find('.likes-count').text(response.likesCount);
-              $allButtons.find('.like-icon').css('color', response.userLiked ? 'red' : 'gray');
-            },
-            error: function () {
-              alert('An error occurred while processing your request.');
-            }
-          });
-        }
-
-
-
-         
-        $('#postModal').on('hidden.bs.modal', function () {
-            if (postConnection) {
-                postConnection.stop();
-                postConnection = null;
-            }
-            $(this).find('.modal-body').html('');
-        });
-
-        const searchSuggestionsUrl = '@Url.Action("SearchSuggestions", "Post")';
-
+        window.postLikeEndpoints = {
+          likeUrl: '@Url.Action("Like", "Post")'
+        };
     </script>
 
+    <script src="~/js/post-like.js"></script>
 
+    <script>
+        $(document).on('click', '[data-bs-toggle="modal"]', function (e) {
+          var button = $(e.currentTarget);
+          var postId = button.data('id');
 
+          $('#postModal').find('.modal-body').html(
+            '<div class="text-center"><i class="fa fa-spinner fa-spin"></i> Loading...</div>'
+          );
+
+          $.ajax({
+            url: '@Url.Action("Detail", "Post")/' + postId,
+            type: 'GET',
+            success: function (response) {
+              $('#postModal .modal-body').html(response);
+              setupPostLikeHub(postId); 
+            },
+            error: function () {
+              $('#postModal .modal-body').html('<p class="text-danger">Failed to load post details.</p>');
+            }
+          });
+        });
+    </script>
+
+    <script src="~/js/SavePost.js"></script>
     <script src="~/js/Search.js"></script>
-
 }
