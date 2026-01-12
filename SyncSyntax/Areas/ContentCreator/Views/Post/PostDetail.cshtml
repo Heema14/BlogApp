@@ -121,9 +121,9 @@
             <div class="meta-item like-btn"
                  data-postid="@Model.Post.Id"
                  style="cursor:pointer;">
-                <i id="likeIcon-@Model.Post.Id" class="fa fa-heart"
+                <i class="fa fa-heart like-icon"
                    style="color:@(Model.UserLikedPost ? "red" : "gray");"></i>
-                <span id="likesCount-@Model.Post.Id">@Model.Post.LikesCount</span>
+                <span class="likes-count">@Model.Post.LikesCount</span>
             </div>
 
 
@@ -199,9 +199,9 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
+@* <script src="~/lib/microsoft/signalr/dist/browser/signalr.min.js"></script>
 <script src="~/lib/microsoft/signalr/dist/browser/signalr.js"></script>
-<script src="~/js/post-like.js"></script>
+<script src="~/js/post-like.js"></script> *@
 
 <script>
     const focusBtn = document.getElementById("focusModeBtn");

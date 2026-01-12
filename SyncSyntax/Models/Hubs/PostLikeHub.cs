@@ -13,13 +13,16 @@ namespace SyncSyntax.Models.Hubs
         public override async Task OnConnectedAsync()
         {
             var httpContext = Context.GetHttpContext();
-            var postId = httpContext.Request.Query["postId"];
+            var postId = httpContext?.Request.Query["postId"].ToString();
 
-            await Groups.AddToGroupAsync(Context.ConnectionId, postId);
+            if (!string.IsNullOrWhiteSpace(postId))
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, postId);
+            }
 
-            await base.OnConnectedAsync(); 
-
+            await base.OnConnectedAsync();
         }
+
 
         public async Task JoinGroup(string postId)
         {

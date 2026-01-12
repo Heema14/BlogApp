@@ -101,9 +101,12 @@ else
                         <!-- Post Title and Likes -->
                         <div class="d-flex justify-content-between align-items-center">
                             <h5 class="card-title fw-bold">@post.Post.Title</h5>
-                            <div class="d-flex align-items-center gap-1 like-btn" style="cursor: pointer;" onclick="toggleLike(@post.Post.Id)">
-                                <i id="likeIcon-@post.Post.Id" class="bi bi-heart-fill" style="color: @(post.Post.PostLikes.Any(l => l.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) ? "red" : "gray");"></i>
-                                <span id="likesCount-@post.Post.Id">@post.Post.LikesCount</span>
+                            <div class="d-flex align-items-center gap-1 like-btn"
+                                 style="cursor:pointer;"
+                                 data-postid="@post.Post.Id">
+                                <i class="bi bi-heart-fill like-icon"
+                                   style="color:@(post.Post.PostLikes.Any(l => l.UserId == User.FindFirstValue(ClaimTypes.NameIdentifier)) ? "red" : "gray");"></i>
+                                <span class="likes-count">@post.Post.LikesCount</span>
                             </div>
                         </div>
 
@@ -164,7 +167,7 @@ else
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.3/themes/base/jquery-ui.css">
 
     <script>
-                $(document).on('click', '[data-bs-toggle="modal"]', function (e) {
+            $(document).on('click', '[data-bs-toggle="modal"]', function (e) {
             var button = $(e.currentTarget);
             var postId = button.data('id');
 
@@ -177,14 +180,8 @@ else
                 type: 'GET',
                 success: function (response) {
                     $('#postModal .modal-body').html(response);
-
-                    // **Setup SignalR connection for Likes inside modal after content loads**
                     setupPostLikeHub(postId);
-
-                    // **Attach toggleLike function to button inside modal**
-                    $('#likeButton-' + postId).off('click').on('click', function () {
-                        toggleLike(postId);
-                    });
+ 
                 },
                 error: function () {
                     $('#postModal .modal-body').html('<p class="text-danger">Failed to load post details.</p>');
@@ -194,7 +191,7 @@ else
 
 
 
-        // SignalR connection holder
+        // SignalR connection  
         let postConnection = null;
 
         function setupPostLikeHub(postId) {
@@ -207,36 +204,42 @@ else
                 .withUrl(`/postHub?postId=${postId}`)
                 .build();
 
-            postConnection.on("ReceiveLike", function (postId, likesCount) {
-                console.log("Received like update:", postId, likesCount);
-                $('#likesCount-' + postId).text(likesCount);
-            });
+                postConnection.on("ReceiveLike", function (postId, likesCount, userId) {
+            $(`.like-btn[data-postid="${postId}"] .likes-count`).text(likesCount);
+        });
+
 
             postConnection.start().catch(err => console.error(err.toString()));
         }
 
-             function toggleLike(postId) {
-            $.ajax({
-                url: '@Url.Action("Like", "Post")',
-                type: 'POST',
-                data: { postId: postId },
-                success: function (response) {
-                    if (response.success) {
-                        $('#likesCount-' + postId).text(response.likesCount);
-                        $('#likeIcon-' + postId).css('color', response.userLiked ? 'red' : 'gray');
-                    } else {
-                        alert(response.message);
-                    }
-                },
-                error: function () {
-                    alert('An error occurred while processing your request.');
-                }
-            });
+                    $(document).off('click', '.like-btn').on('click', '.like-btn', function () {
+            const postId = $(this).data('postid');
+            toggleLike(postId, this);
+        });
+
+                function toggleLike(postId) {
+          $.ajax({
+            url: '@Url.Action("Like", "Post")',
+            type: 'POST',
+            data: { postId },
+            success: function (response) {
+              if (!response.success) return alert(response.message);
+
+              // Update ALL instances (modal + explore) for this post
+              const $allButtons = $(`.like-btn[data-postid="${postId}"]`);
+
+              $allButtons.find('.likes-count').text(response.likesCount);
+              $allButtons.find('.like-icon').css('color', response.userLiked ? 'red' : 'gray');
+            },
+            error: function () {
+              alert('An error occurred while processing your request.');
+            }
+          });
         }
 
 
 
-        // Clear modal content and stop SignalR when modal closes
+         
         $('#postModal').on('hidden.bs.modal', function () {
             if (postConnection) {
                 postConnection.stop();
