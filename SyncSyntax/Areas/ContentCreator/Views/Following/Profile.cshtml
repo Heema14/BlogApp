@@ -290,16 +290,32 @@
             </div>
 
             <div class="modal-body text-center">
+
+                <!-- Loader -->
+                <div id="qrLoader" class="my-4">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Generating QR code...</p>
+                </div>
+
+                <!-- QR Image (hidden at first) -->
                 <img id="qrImage"
                      src=""
                      alt="Profile QR Code"
-                     style="max-width: 100%; height: auto;" />
+                     style="max-width: 100%; height: auto; display: none;" />
+
                 <div class="mt-3">
-                    <a id="downloadQr" class="btn btn-outline-secondary" download="profile-qr.png">
+                    <a id="downloadQr"
+                       class="btn btn-outline-secondary"
+                       download="profile-qr.png"
+                       style="display: none;">
                         Download
                     </a>
                 </div>
+
             </div>
+
         </div>
     </div>
 </div>
@@ -307,11 +323,49 @@
 
 @section Scripts {
     <script>
-         function loadQrCode() {
-            const qrUrl = '@Url.Content("~/qr/u/")' + '@Model.User.UserName' + '?ts=' + new Date().getTime();
-            document.getElementById('qrImage').src = qrUrl;
-            document.getElementById('downloadQr').href = qrUrl;
+            function loadQrCode() {
+            const qrUrl =
+                '@Url.Content("~/qr/u/")' +
+                '@Model.User.UserName' +
+                '?ts=' + new Date().getTime();
+
+            const qrImage = document.getElementById('qrImage');
+            const loader = document.getElementById('qrLoader');
+            const downloadBtn = document.getElementById('downloadQr');
+
+            const MIN_DELAY_MS = 1200; // <- change this (e.g. 800, 1500, 2000)
+            const startTime = Date.now();
+
+            // Reset UI
+            loader.style.display = 'block';
+            qrImage.style.display = 'none';
+            downloadBtn.style.display = 'none';
+
+            // Remove previous handlers (prevents stacking if modal opened multiple times)
+            qrImage.onload = null;
+            qrImage.onerror = null;
+
+            qrImage.onload = function () {
+                const elapsed = Date.now() - startTime;
+                const remaining = Math.max(0, MIN_DELAY_MS - elapsed);
+
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    qrImage.style.display = 'block';
+                    downloadBtn.style.display = 'inline-block';
+                }, remaining);
+            };
+
+            qrImage.onerror = function () {
+                loader.innerHTML = '<p class="text-danger">Failed to load QR code</p>';
+            };
+
+            qrImage.src = qrUrl;
+            downloadBtn.href = qrUrl;
         }
+                      document.getElementById('qrModal')
+        .addEventListener('shown.bs.modal', loadQrCode);
+
         //for make like
                 function toggleLike(postId) {
             $.ajax({
