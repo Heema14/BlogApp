@@ -55,6 +55,7 @@ C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\wwwroot\lib\bootstrap\dist\css\boo
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\wwwroot\lib\bootstrap\dist\js\bootstrap.bundle.js.map
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\wwwroot\lib\bootstrap\dist\js\bootstrap.js
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\wwwroot\assets\css\main.css
+C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\wwwroot\js\sharepost.js
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\wwwroot\lib\bootstrap\dist\js\bootstrap.esm.min.js.map
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\wwwroot\lib\bootstrap\dist\css\bootstrap.min.css.map
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\wwwroot\lib\bootstrap\dist\css\bootstrap-reboot.rtl.min.css.map
@@ -207,6 +208,7 @@ wwwroot\js\Chat.js
 wwwroot\js\post-like.js
 wwwroot\js\SavePost.js
 wwwroot\js\Search.js
+wwwroot\js\sharepost.js
 wwwroot\js\site.js
 wwwroot\lib\bootstrap\dist\css\bootstrap.css
 wwwroot\lib\bootstrap\dist\css\bootstrap.css.map

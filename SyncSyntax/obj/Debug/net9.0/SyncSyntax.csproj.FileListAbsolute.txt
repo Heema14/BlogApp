@@ -1175,3 +1175,4 @@ C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\bin\Debug\net9.0\runtimes\win\lib\
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\bin\Debug\net9.0\runtimes\unix\lib\net6.0\System.Drawing.Common.dll
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\bin\Debug\net9.0\runtimes\win\lib\net6.0\System.Drawing.Common.dll
 C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\htdid2d5h1-e5yk0qg14r.gz
+C:\Users\awadallah\Desktop\BlogApp\SyncSyntax\obj\Debug\net9.0\compressed\l097txt8km-njrc8r0ke6.gz

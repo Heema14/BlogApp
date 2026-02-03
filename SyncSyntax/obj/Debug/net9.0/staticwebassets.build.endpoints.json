@@ -14565,6 +14565,304 @@
       ]
     },
     {
+      "Route": "js/sharepost.js",
+      "AssetFile": "js/sharepost.js.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.002352941176"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "424"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"HhorZ/Iw+vDW6kPwgy4kcm4sdqe3XS8f7RHztYzlQT4=\""
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Feb 2026 11:32:09 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU="
+        }
+      ]
+    },
+    {
+      "Route": "js/sharepost.js",
+      "AssetFile": "js/sharepost.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "783"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Feb 2026 11:32:09 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU="
+        }
+      ]
+    },
+    {
+      "Route": "js/sharepost.js.gz",
+      "AssetFile": "js/sharepost.js.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "424"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"HhorZ/Iw+vDW6kPwgy4kcm4sdqe3XS8f7RHztYzlQT4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Feb 2026 11:32:09 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-HhorZ/Iw+vDW6kPwgy4kcm4sdqe3XS8f7RHztYzlQT4="
+        }
+      ]
+    },
+    {
+      "Route": "js/sharepost.njrc8r0ke6.js",
+      "AssetFile": "js/sharepost.js.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.002352941176"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "424"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"HhorZ/Iw+vDW6kPwgy4kcm4sdqe3XS8f7RHztYzlQT4=\""
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Feb 2026 11:32:09 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "njrc8r0ke6"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU="
+        },
+        {
+          "Name": "label",
+          "Value": "js/sharepost.js"
+        }
+      ]
+    },
+    {
+      "Route": "js/sharepost.njrc8r0ke6.js",
+      "AssetFile": "js/sharepost.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "783"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Feb 2026 11:32:09 GMT"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "njrc8r0ke6"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU="
+        },
+        {
+          "Name": "label",
+          "Value": "js/sharepost.js"
+        }
+      ]
+    },
+    {
+      "Route": "js/sharepost.njrc8r0ke6.js.gz",
+      "AssetFile": "js/sharepost.js.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "424"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"HhorZ/Iw+vDW6kPwgy4kcm4sdqe3XS8f7RHztYzlQT4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Feb 2026 11:32:09 GMT"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "njrc8r0ke6"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-HhorZ/Iw+vDW6kPwgy4kcm4sdqe3XS8f7RHztYzlQT4="
+        },
+        {
+          "Name": "label",
+          "Value": "js/sharepost.js.gz"
+        }
+      ]
+    },
+    {
       "Route": "js/site.hxeoeop5y2.js",
       "AssetFile": "js/site.js.gz",
       "Selectors": [

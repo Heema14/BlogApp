@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "luZVtnY+zeaOZ8SrdFkQCHmufPnP1V0ZnUD7Bj2GEuk=",
+  "Hash": "HcO0jXeYA1wOZrJChZpStVh9rGUSzaf97qUXI9Mm0eQ=",
   "Source": "SyncSyntax",
   "BasePath": "_content/SyncSyntax",
   "Mode": "Default",
@@ -1212,6 +1212,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\assets\\css\\main.css"
+    },
+    {
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\l097txt8km-njrc8r0ke6.gz",
+      "SourceId": "SyncSyntax",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\",
+      "BasePath": "_content/SyncSyntax",
+      "RelativePath": "js/sharepost#[.{fingerprint=njrc8r0ke6}]?.js.gz",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Alternative",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\sharepost.js",
+      "AssetTraitName": "Content-Encoding",
+      "AssetTraitValue": "gzip",
+      "Fingerprint": "e1r4s222w1",
+      "Integrity": "HhorZ/Iw+vDW6kPwgy4kcm4sdqe3XS8f7RHztYzlQT4=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\sharepost.js"
     },
     {
       "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\lma15o8yxg-y7v9cxd14o.gz",
@@ -4488,6 +4509,27 @@
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\Search.js"
+    },
+    {
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\sharepost.js",
+      "SourceId": "SyncSyntax",
+      "SourceType": "Discovered",
+      "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\",
+      "BasePath": "_content/SyncSyntax",
+      "RelativePath": "js/sharepost#[.{fingerprint}]?.js",
+      "AssetKind": "All",
+      "AssetMode": "All",
+      "AssetRole": "Primary",
+      "AssetMergeBehavior": "",
+      "AssetMergeSource": "",
+      "RelatedAsset": "",
+      "AssetTraitName": "",
+      "AssetTraitValue": "",
+      "Fingerprint": "njrc8r0ke6",
+      "Integrity": "c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU=",
+      "CopyToOutputDirectory": "Never",
+      "CopyToPublishDirectory": "PreserveNewest",
+      "OriginalItemSpec": "wwwroot\\js\\sharepost.js"
     },
     {
       "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\site.js",
@@ -20264,6 +20306,304 @@
         {
           "Name": "integrity",
           "Value": "sha256-yQ8lHl6bFpSMEqJtkH7ySUF9ZeFsf5SOp/t3WLse8oY="
+        }
+      ]
+    },
+    {
+      "Route": "js/sharepost.js",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\l097txt8km-njrc8r0ke6.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.002352941176"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "424"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"HhorZ/Iw+vDW6kPwgy4kcm4sdqe3XS8f7RHztYzlQT4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Feb 2026 11:32:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU="
+        }
+      ]
+    },
+    {
+      "Route": "js/sharepost.js",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\sharepost.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "783"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Feb 2026 11:32:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU="
+        }
+      ]
+    },
+    {
+      "Route": "js/sharepost.js.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\l097txt8km-njrc8r0ke6.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "424"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"HhorZ/Iw+vDW6kPwgy4kcm4sdqe3XS8f7RHztYzlQT4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Feb 2026 11:32:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "no-cache"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "integrity",
+          "Value": "sha256-HhorZ/Iw+vDW6kPwgy4kcm4sdqe3XS8f7RHztYzlQT4="
+        }
+      ]
+    },
+    {
+      "Route": "js/sharepost.njrc8r0ke6.js",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\l097txt8km-njrc8r0ke6.gz",
+      "Selectors": [
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip",
+          "Quality": "0.002352941176"
+        }
+      ],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "424"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"HhorZ/Iw+vDW6kPwgy4kcm4sdqe3XS8f7RHztYzlQT4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Feb 2026 11:32:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "W/\"c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU=\""
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "njrc8r0ke6"
+        },
+        {
+          "Name": "label",
+          "Value": "js/sharepost.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU="
+        }
+      ]
+    },
+    {
+      "Route": "js/sharepost.njrc8r0ke6.js",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\sharepost.js",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "783"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Feb 2026 11:32:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "njrc8r0ke6"
+        },
+        {
+          "Name": "label",
+          "Value": "js/sharepost.js"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-c2oI/pnPLks3vwhAIJs2vrs4+3CMQzHQCNwIl5SSVGU="
+        }
+      ]
+    },
+    {
+      "Route": "js/sharepost.njrc8r0ke6.js.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\l097txt8km-njrc8r0ke6.gz",
+      "Selectors": [],
+      "ResponseHeaders": [
+        {
+          "Name": "Accept-Ranges",
+          "Value": "bytes"
+        },
+        {
+          "Name": "Content-Length",
+          "Value": "424"
+        },
+        {
+          "Name": "Content-Type",
+          "Value": "text/javascript"
+        },
+        {
+          "Name": "ETag",
+          "Value": "\"HhorZ/Iw+vDW6kPwgy4kcm4sdqe3XS8f7RHztYzlQT4=\""
+        },
+        {
+          "Name": "Last-Modified",
+          "Value": "Tue, 03 Feb 2026 11:32:09 GMT"
+        },
+        {
+          "Name": "Cache-Control",
+          "Value": "max-age=31536000, immutable"
+        },
+        {
+          "Name": "Content-Encoding",
+          "Value": "gzip"
+        },
+        {
+          "Name": "Vary",
+          "Value": "Content-Encoding"
+        }
+      ],
+      "EndpointProperties": [
+        {
+          "Name": "fingerprint",
+          "Value": "njrc8r0ke6"
+        },
+        {
+          "Name": "label",
+          "Value": "js/sharepost.js.gz"
+        },
+        {
+          "Name": "integrity",
+          "Value": "sha256-HhorZ/Iw+vDW6kPwgy4kcm4sdqe3XS8f7RHztYzlQT4="
         }
       ]
     },
