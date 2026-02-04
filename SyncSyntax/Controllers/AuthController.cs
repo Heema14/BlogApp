@@ -7,6 +7,7 @@ using SyncSyntax.Models.IServices;
 using SyncSyntax.Models.ViewModels;
 using SyncSyntax.Models;
 using System.Linq;
+using Microsoft.AspNetCore.Identity.UI.Services;
 
 namespace SyncSyntax.Controllers
 {
@@ -20,6 +21,7 @@ namespace SyncSyntax.Controllers
         private readonly IUploadFileService _uploadFile;
         private readonly ILogger<AuthController> _logger;
         private readonly AppDbContext _context;
+        private readonly EmailSender _emailSender;
 
         public AuthController(SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager,
@@ -28,7 +30,8 @@ namespace SyncSyntax.Controllers
             IWebHostEnvironment webHostEnvironment,
             IConfiguration config,
             IUploadFileService uploadFile,
-            AppDbContext context)
+            AppDbContext context,
+            EmailSender emailSender)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -38,6 +41,8 @@ namespace SyncSyntax.Controllers
             _config = config;
             _uploadFile = uploadFile;
             _context = context;
+            _emailSender = emailSender;
+
         }
 
         [AcceptVerbs("Get", "Post")]
@@ -68,121 +73,171 @@ namespace SyncSyntax.Controllers
                 ? true
                 : $"Email '{email}' is already registered.");
         }
+        [HttpGet]
+        public async Task<IActionResult> ConfirmEmail(string userId, string token)
+        {
+            if (userId == null || token == null)
+                return RedirectToAction("Index", "Home");
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+                return RedirectToAction("Index", "Home");
+
+            var result = await _userManager.ConfirmEmailAsync(user, token);
+            if (result.Succeeded)
+            {
+                TempData["Success"] = "Your email has been confirmed successfully!";
+                return RedirectToAction("SignIn", "Auth"); 
+            }
+
+            TempData["Error"] = "There was an issue confirming your email.";
+            return RedirectToAction("Index", "Home");
+        }
+    
 
         [HttpGet]
         public IActionResult SignUp() => View();
 
-  
+        [HttpGet]
+        public IActionResult EmailConfirmation()
+        {
+            return View();  
+        }
+
         [HttpPost]
         public async Task<IActionResult> SignUp(SignUpViewModel model)
         {
             if (!ModelState.IsValid)
                 return View(model);
-            //if (ModelState.IsValid)
-            //{
+             
             string baseUsername = $"{model.FirstName}_{model.LastName}"
-                    .Trim()
-                    .ToLowerInvariant();
+                .Trim()
+                .ToLowerInvariant();
 
-                // optional: normalize spaces & remove multiple underscores
-                baseUsername = baseUsername.Replace(" ", "_");
-                while (baseUsername.Contains("__"))
-                    baseUsername = baseUsername.Replace("__", "_");
-
-                // optional: keep only allowed chars (letters, numbers, underscore)
-                baseUsername = System.Text.RegularExpressions.Regex.Replace(baseUsername, @"[^a-z0-9_]", "");
-
-                // make it unique
-                string username = baseUsername;
-                int counter = 1;
-
-                while (await _userManager.FindByNameAsync(username) != null)
-                {
-                    username = $"{baseUsername}{counter}";
-                    counter++;
-                }
-                var user = new AppUser
-                {
-                    Email = model.Email,
-                    UserName = username,
-                    MajorName = model.MajorName,
-                    FirstName = model.FirstName,
-                    LastName = model.LastName,
-                    PhoneNumber = model.PhoneNumber,
-                    Gender = model.Gender,
-                    DateOfBirth = model.DateOfBirth,
-                };
+           
+            baseUsername = baseUsername.Replace(" ", "_");
+            while (baseUsername.Contains("__"))
+                baseUsername = baseUsername.Replace("__", "_");
+            baseUsername = System.Text.RegularExpressions.Regex.Replace(baseUsername, @"[^a-z0-9_]", "");
 
             
-                if (model.ProfilePicture != null && model.ProfilePicture.Length > 0)
+            string username = baseUsername;
+            int counter = 1;
+            while (await _userManager.FindByNameAsync(username) != null)
+            {
+                username = $"{baseUsername}{counter}";
+                counter++;
+            }
+
+            
+            var user = new AppUser
+            {
+                Email = model.Email,
+                UserName = username,
+                MajorName = model.MajorName,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                PhoneNumber = model.PhoneNumber,
+                Gender = model.Gender,
+                DateOfBirth = model.DateOfBirth,
+            };
+
+          
+            if (model.ProfilePicture != null && model.ProfilePicture.Length > 0)
+            {
+                var allowedExtensions = _config.GetSection("uploading:allowedFileExtension").Get<List<string>>();
+                var maxSizeMb = _config.GetValue<int>("uploading:allowedFileSize");
+                var maxSizeBytes = maxSizeMb * 1024 * 1024;
+
+                if (model.ProfilePicture.Length > maxSizeBytes)
                 {
-                    var allowedExtensions = _config.GetSection("uploading:allowedFileExtension").Get<List<string>>();
-                    var maxSizeMb = _config.GetValue<int>("uploading:allowedFileSize");
-                    var maxSizeBytes = maxSizeMb * 1024 * 1024;
-
-                    if (model.ProfilePicture.Length > maxSizeBytes)
-                    {
-                        _logger.LogWarning("Large profile picture");
-                        ModelState.AddModelError("ProfilePicture", $"File size must be less than {maxSizeMb}MB.");
-                        return View(model);
-                    }
-
-                    var ext = Path.GetExtension(model.ProfilePicture.FileName).ToLower();
-
-                    if (!allowedExtensions.Contains(ext))
-                    {
-                        _logger.LogWarning("Invalid profile picture extension");
-                        ModelState.AddModelError("ProfilePicture", $"Only these formats are allowed: {string.Join(", ", allowedExtensions)}");
-                        return View(model);
-                    }
-
-                    user.ProfilePicture = await _uploadFile.UploadFileToFolderAsync(model.ProfilePicture);
+                    _logger.LogWarning("Large profile picture");
+                    ModelState.AddModelError("ProfilePicture", $"File size must be less than {maxSizeMb}MB.");
+                    return View(model);
                 }
 
-                var result = await _userManager.CreateAsync(user, model.Password);
-
-                if (result.Succeeded)
+                var ext = Path.GetExtension(model.ProfilePicture.FileName).ToLower();
+                if (!allowedExtensions.Contains(ext))
                 {
-                    
-                    if (!await _roleManager.RoleExistsAsync("ContentCreator"))
-                        await _roleManager.CreateAsync(new IdentityRole("ContentCreator"));
-
-                    await _userManager.AddToRoleAsync(user, "ContentCreator");
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-
-                    _context.Notifications.Add(new Notification
-                    {
-                        UserId = user.Id,
-                        Message = $"Welcome {user.UserName}! Your account has been successfully created.",
-                        IsRead = false,
-                        CreatedAt = DateTime.Now
-                    });
-                    await _context.SaveChangesAsync();
-
-                    TempData["Success"] = "Account created successfully! Welcome 🎉";
-                     
-                    if (await _userManager.IsInRoleAsync(user, "Admin"))
-                    {
-                        return RedirectToAction("Index", "Home", new { area = "Admin" });
-                    }
-                    else if (await _userManager.IsInRoleAsync(user, "ContentCreator"))
-                    {
-                        return RedirectToAction("FollowingPosts", "Following", new { area = "ContentCreator" });
-                    }
-
-                   
-                    return RedirectToAction("Index", "Home");
+                    _logger.LogWarning("Invalid profile picture extension");
+                    ModelState.AddModelError("ProfilePicture", $"Only these formats are allowed: {string.Join(", ", allowedExtensions)}");
+                    return View(model);
                 }
 
-                foreach (var error in result.Errors)
-                {
-                    _logger.LogWarning("Error creating user: " + error.Description);
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                user.ProfilePicture = await _uploadFile.UploadFileToFolderAsync(model.ProfilePicture);
+            }
 
-            //}
+  
+            var result = await _userManager.CreateAsync(user, model.Password);
+            if (result.Succeeded)
+            {
+          
+                if (!await _roleManager.RoleExistsAsync("ContentCreator"))
+                    await _roleManager.CreateAsync(new IdentityRole("ContentCreator"));
+
+            
+                await _userManager.AddToRoleAsync(user, "ContentCreator");
+
+            
+                await _signInManager.SignInAsync(user, isPersistent: false);
+
+                 _context.Notifications.Add(new Notification
+                {
+                    UserId = user.Id,
+                    Message = $"Welcome {user.UserName}! Your account has been successfully created.",
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                });
+                await _context.SaveChangesAsync();
+
+                var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                var confirmationLink = Url.Action(
+                    "ConfirmEmail",
+                    "Auth",  
+                    new { userId = user.Id, token },
+                    Request.Scheme
+                );
+
+                var emailBody = $"Please confirm your email by clicking this link: {confirmationLink}";
+
+                 
+                await _emailSender.SendEmailAsync(user.Email, "Confirm your email", emailBody);
+
+                 
+                TempData["Success"] = "Account created successfully! Please check your email to confirm your account 🎉";
+
+               
+                return RedirectToAction("EmailConfirmation", "Auth");  
+            }
+
+            
+            foreach (var error in result.Errors)
+            {
+                _logger.LogWarning("Error creating user: " + error.Description);
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
 
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResendConfirmationEmail(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null || await _userManager.IsEmailConfirmedAsync(user))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            // توليد رابط التفعيل الجديد
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            var confirmationLink = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, token }, Request.Scheme);
+
+            var emailBody = $"Please confirm your email by clicking this link: {confirmationLink}";
+            await _emailSender.SendEmailAsync(user.Email, "Confirm your email", emailBody);
+
+            TempData["ResendEmailMessage"] = "تم إرسال رابط التفعيل مرة أخرى إلى بريدك الإلكتروني.";
+            return RedirectToAction("EmailConfirmed", "Account");
         }
 
         [HttpGet]

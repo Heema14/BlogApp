@@ -1,0 +1,20 @@
+﻿@{
+    ViewData["Title"] = "تم إرسال بريد التفعيل";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-lg border-0 text-center">
+                <div class="card-body px-4 py-5">
+                    <img src="https://cdn-icons-png.flaticon.com/512/561/561127.png" alt="Activation Email Sent" style="width: 100px;" class="mb-4" />
+                    <h3 class="text-success mb-3">تم إرسال بريد التفعيل</h3>
+                    <p>يرجى التحقق من بريدك الإلكتروني والضغط على رابط التفعيل لتفعيل حسابك.</p>
+                    <p class="text-muted">إذا لم تجد البريد، تحقق من مجلد الرسائل غير المرغوب فيها (Spam أو Junk).</p>
+                    <a class="btn btn-primary mt-3" href="@Url.Action("SignIn", "Auth")">العودة إلى تسجيل الدخول</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

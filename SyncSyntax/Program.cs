@@ -1,6 +1,7 @@
 ﻿using Hangfire;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -9,6 +10,7 @@ using SyncSyntax.Data;
 using SyncSyntax.Models;
 using SyncSyntax.Models.Hubs;
 using SyncSyntax.Models.IServices;
+using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 //builder.Services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
@@ -73,8 +75,10 @@ builder.Services.AddScoped<ArchiveService>();
 builder.Services.AddMemoryCache();
 
 builder.Services.AddScoped<InMemoryChatCacheService>();
-
-
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddSingleton<EmailSender>();
+// إضافة خدمة EmailSender
+ 
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
