@@ -26,7 +26,6 @@ function shareOnTelegram() {
     window.open(telegramUrl, '_blank');
 }
 // Share on Gmail
- 
 function shareOnGmail() {
     const gmailUrl = `mailto:?subject=Check out this post&body=${encodeURIComponent(postUrl)}`;
     window.location.href = gmailUrl;
