@@ -401,5 +401,89 @@ namespace SyncSyntax.Controllers
             TempData["Info"] = $"Goodbye {user?.UserName ?? "user"}!";
             return RedirectToAction("Index", "Home");
         }
+        [HttpGet]
+        public IActionResult ForgotPassword()
+        {
+            return View();  
+        }
+        [HttpGet]
+        public IActionResult ForgotPasswordConfirmation()
+        {
+            return View();
+        }
+        [HttpGet]
+        public IActionResult ResetPasswordConfirmation()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                
+                return RedirectToAction("ForgotPasswordConfirmation");
+            }
+ 
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var resetLink = Url.Action(
+                "ResetPassword",
+                "Auth",
+                new { token, email = user.Email },
+                Request.Scheme
+            );
+
+            var emailBody = $"Please use the following link to reset your password: {resetLink}";
+
+           
+            await _emailSender.SendEmailAsync(user.Email, "Password Reset Request", emailBody);
+
+            return RedirectToAction("ForgotPasswordConfirmation");
+        }
+        [HttpGet]
+        public IActionResult ResetPassword(string token, string email)
+        {
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
+            var model = new ResetPasswordViewModel
+            {
+                Token = token,
+                Email = email
+            };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                if (user == null)
+                {
+                    return RedirectToAction("ResetPasswordConfirmation");
+                }
+
+                var result = await _userManager.ResetPasswordAsync(user, model.Token, model.Password);
+                if (result.Succeeded)
+                {
+                    return RedirectToAction("ResetPasswordConfirmation");
+                }
+
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+            }
+
+            return View(model);
+        }
+
+
     }
 }
