@@ -25,3 +25,9 @@ function shareOnTelegram() {
     const telegramUrl = `https://t.me/share/url?url=${encodeURIComponent(postUrl)}`;
     window.open(telegramUrl, '_blank');
 }
+// Share on Gmail
+ 
+function shareOnGmail() {
+    const gmailUrl = `mailto:?subject=Check out this post&body=${encodeURIComponent(postUrl)}`;
+    window.location.href = gmailUrl;
+}
