@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "x0tD6usHjgN/q3DTZHK4H27GOiZbG2edCzd530k4P0k=",
+  "Hash": "1ygKkaTGP1bL0oydcnFduURDoeshIAYw63e5D/0ugSE=",
   "Source": "SyncSyntax",
   "BasePath": "_content/SyncSyntax",
   "Mode": "Default",
@@ -1214,12 +1214,12 @@
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\assets\\css\\main.css"
     },
     {
-      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\l097txt8km-1k8upggtj6.gz",
+      "Identity": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\l097txt8km-ez3d1uu7sa.gz",
       "SourceId": "SyncSyntax",
       "SourceType": "Discovered",
       "ContentRoot": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\",
       "BasePath": "_content/SyncSyntax",
-      "RelativePath": "js/sharepost#[.{fingerprint=1k8upggtj6}]?.js.gz",
+      "RelativePath": "js/sharepost#[.{fingerprint=ez3d1uu7sa}]?.js.gz",
       "AssetKind": "All",
       "AssetMode": "All",
       "AssetRole": "Alternative",
@@ -1228,8 +1228,8 @@
       "RelatedAsset": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\sharepost.js",
       "AssetTraitName": "Content-Encoding",
       "AssetTraitValue": "gzip",
-      "Fingerprint": "wafm96vdve",
-      "Integrity": "+KeZs+p3T90wGY6xo2bt5gZsIboAB189ZMfguL5LGIk=",
+      "Fingerprint": "p20qq5wllg",
+      "Integrity": "H6+7YPLszOuaLM85b09W9JylBf2/OpL/ERvKMLB0YkI=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\sharepost.js"
@@ -4525,8 +4525,8 @@
       "RelatedAsset": "",
       "AssetTraitName": "",
       "AssetTraitValue": "",
-      "Fingerprint": "1k8upggtj6",
-      "Integrity": "0b9JscjI+x567XP27sB6cDIRxb2Dxfi35h8mrlBNL74=",
+      "Fingerprint": "ez3d1uu7sa",
+      "Integrity": "as5Nq0SV+MpxCiokIt7uM47FOuQNFRafaxXgYUnF1sI=",
       "CopyToOutputDirectory": "Never",
       "CopyToPublishDirectory": "PreserveNewest",
       "OriginalItemSpec": "wwwroot\\js\\sharepost.js"
@@ -20310,13 +20310,13 @@
       ]
     },
     {
-      "Route": "js/sharepost.1k8upggtj6.js",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\l097txt8km-1k8upggtj6.gz",
+      "Route": "js/sharepost.ez3d1uu7sa.js",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\l097txt8km-ez3d1uu7sa.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.002173913043"
+          "Quality": "0.002178649237"
         }
       ],
       "ResponseHeaders": [
@@ -20326,15 +20326,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "459"
+          "Value": "458"
         },
         {
           "Name": "ETag",
-          "Value": "\"+KeZs+p3T90wGY6xo2bt5gZsIboAB189ZMfguL5LGIk=\""
+          "Value": "\"H6+7YPLszOuaLM85b09W9JylBf2/OpL/ERvKMLB0YkI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 05 Feb 2026 09:39:18 GMT"
+          "Value": "Sat, 07 Feb 2026 10:13:52 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -20354,13 +20354,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"0b9JscjI+x567XP27sB6cDIRxb2Dxfi35h8mrlBNL74=\""
+          "Value": "W/\"as5Nq0SV+MpxCiokIt7uM47FOuQNFRafaxXgYUnF1sI=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "1k8upggtj6"
+          "Value": "ez3d1uu7sa"
         },
         {
           "Name": "label",
@@ -20368,12 +20368,12 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-0b9JscjI+x567XP27sB6cDIRxb2Dxfi35h8mrlBNL74="
+          "Value": "sha256-as5Nq0SV+MpxCiokIt7uM47FOuQNFRafaxXgYUnF1sI="
         }
       ]
     },
     {
-      "Route": "js/sharepost.1k8upggtj6.js",
+      "Route": "js/sharepost.ez3d1uu7sa.js",
       "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\wwwroot\\js\\sharepost.js",
       "Selectors": [],
       "ResponseHeaders": [
@@ -20383,7 +20383,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "957"
+          "Value": "954"
         },
         {
           "Name": "Content-Type",
@@ -20391,11 +20391,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"0b9JscjI+x567XP27sB6cDIRxb2Dxfi35h8mrlBNL74=\""
+          "Value": "\"as5Nq0SV+MpxCiokIt7uM47FOuQNFRafaxXgYUnF1sI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 05 Feb 2026 09:39:18 GMT"
+          "Value": "Sat, 07 Feb 2026 10:13:52 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -20405,7 +20405,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "1k8upggtj6"
+          "Value": "ez3d1uu7sa"
         },
         {
           "Name": "label",
@@ -20413,13 +20413,13 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-0b9JscjI+x567XP27sB6cDIRxb2Dxfi35h8mrlBNL74="
+          "Value": "sha256-as5Nq0SV+MpxCiokIt7uM47FOuQNFRafaxXgYUnF1sI="
         }
       ]
     },
     {
-      "Route": "js/sharepost.1k8upggtj6.js.gz",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\l097txt8km-1k8upggtj6.gz",
+      "Route": "js/sharepost.ez3d1uu7sa.js.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\l097txt8km-ez3d1uu7sa.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -20428,7 +20428,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "459"
+          "Value": "458"
         },
         {
           "Name": "Content-Type",
@@ -20436,11 +20436,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"+KeZs+p3T90wGY6xo2bt5gZsIboAB189ZMfguL5LGIk=\""
+          "Value": "\"H6+7YPLszOuaLM85b09W9JylBf2/OpL/ERvKMLB0YkI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 05 Feb 2026 09:39:18 GMT"
+          "Value": "Sat, 07 Feb 2026 10:13:52 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -20458,7 +20458,7 @@
       "EndpointProperties": [
         {
           "Name": "fingerprint",
-          "Value": "1k8upggtj6"
+          "Value": "ez3d1uu7sa"
         },
         {
           "Name": "label",
@@ -20466,18 +20466,18 @@
         },
         {
           "Name": "integrity",
-          "Value": "sha256-+KeZs+p3T90wGY6xo2bt5gZsIboAB189ZMfguL5LGIk="
+          "Value": "sha256-H6+7YPLszOuaLM85b09W9JylBf2/OpL/ERvKMLB0YkI="
         }
       ]
     },
     {
       "Route": "js/sharepost.js",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\l097txt8km-1k8upggtj6.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\l097txt8km-ez3d1uu7sa.gz",
       "Selectors": [
         {
           "Name": "Content-Encoding",
           "Value": "gzip",
-          "Quality": "0.002173913043"
+          "Quality": "0.002178649237"
         }
       ],
       "ResponseHeaders": [
@@ -20487,15 +20487,15 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "459"
+          "Value": "458"
         },
         {
           "Name": "ETag",
-          "Value": "\"+KeZs+p3T90wGY6xo2bt5gZsIboAB189ZMfguL5LGIk=\""
+          "Value": "\"H6+7YPLszOuaLM85b09W9JylBf2/OpL/ERvKMLB0YkI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 05 Feb 2026 09:39:18 GMT"
+          "Value": "Sat, 07 Feb 2026 10:13:52 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -20515,13 +20515,13 @@
         },
         {
           "Name": "ETag",
-          "Value": "W/\"0b9JscjI+x567XP27sB6cDIRxb2Dxfi35h8mrlBNL74=\""
+          "Value": "W/\"as5Nq0SV+MpxCiokIt7uM47FOuQNFRafaxXgYUnF1sI=\""
         }
       ],
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-0b9JscjI+x567XP27sB6cDIRxb2Dxfi35h8mrlBNL74="
+          "Value": "sha256-as5Nq0SV+MpxCiokIt7uM47FOuQNFRafaxXgYUnF1sI="
         }
       ]
     },
@@ -20536,7 +20536,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "957"
+          "Value": "954"
         },
         {
           "Name": "Content-Type",
@@ -20544,11 +20544,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"0b9JscjI+x567XP27sB6cDIRxb2Dxfi35h8mrlBNL74=\""
+          "Value": "\"as5Nq0SV+MpxCiokIt7uM47FOuQNFRafaxXgYUnF1sI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 05 Feb 2026 09:39:18 GMT"
+          "Value": "Sat, 07 Feb 2026 10:13:52 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -20558,13 +20558,13 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-0b9JscjI+x567XP27sB6cDIRxb2Dxfi35h8mrlBNL74="
+          "Value": "sha256-as5Nq0SV+MpxCiokIt7uM47FOuQNFRafaxXgYUnF1sI="
         }
       ]
     },
     {
       "Route": "js/sharepost.js.gz",
-      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\l097txt8km-1k8upggtj6.gz",
+      "AssetFile": "C:\\Users\\awadallah\\Desktop\\BlogApp\\SyncSyntax\\obj\\Debug\\net9.0\\compressed\\l097txt8km-ez3d1uu7sa.gz",
       "Selectors": [],
       "ResponseHeaders": [
         {
@@ -20573,7 +20573,7 @@
         },
         {
           "Name": "Content-Length",
-          "Value": "459"
+          "Value": "458"
         },
         {
           "Name": "Content-Type",
@@ -20581,11 +20581,11 @@
         },
         {
           "Name": "ETag",
-          "Value": "\"+KeZs+p3T90wGY6xo2bt5gZsIboAB189ZMfguL5LGIk=\""
+          "Value": "\"H6+7YPLszOuaLM85b09W9JylBf2/OpL/ERvKMLB0YkI=\""
         },
         {
           "Name": "Last-Modified",
-          "Value": "Thu, 05 Feb 2026 09:39:18 GMT"
+          "Value": "Sat, 07 Feb 2026 10:13:52 GMT"
         },
         {
           "Name": "Cache-Control",
@@ -20603,7 +20603,7 @@
       "EndpointProperties": [
         {
           "Name": "integrity",
-          "Value": "sha256-+KeZs+p3T90wGY6xo2bt5gZsIboAB189ZMfguL5LGIk="
+          "Value": "sha256-H6+7YPLszOuaLM85b09W9JylBf2/OpL/ERvKMLB0YkI="
         }
       ]
     },

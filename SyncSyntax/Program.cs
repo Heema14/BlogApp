@@ -73,7 +73,7 @@ builder.Services.AddHangfire(config =>
 builder.Services.AddHangfireServer();
 builder.Services.AddScoped<ArchiveService>();
 builder.Services.AddMemoryCache();
-
+builder.Services.AddHostedService<PostSchedulerService>();
 builder.Services.AddScoped<InMemoryChatCacheService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddSingleton<EmailSender>();

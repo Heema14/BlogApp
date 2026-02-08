@@ -352,6 +352,9 @@ namespace SyncSyntax.Migrations
                     b.Property<int>("LikesCount")
                         .HasColumnType("int");
 
+                    b.Property<DateTime?>("PublishDate")
+                        .HasColumnType("datetime2");
+
                     b.Property<DateTime>("PublishedDate")
                         .HasColumnType("datetime2");
 
