@@ -94,11 +94,12 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         {
             var categories = _context.Categories.ToList();
             ViewBag.Categories = categories;
+
             var currentUserId = _userManager.GetUserId(User);
 
             var unreadNotificationsCount = _context.Notifications
-           .Where(n => n.UserId == currentUserId && !n.IsRead)
-           .Count();
+                .Where(n => n.UserId == currentUserId && !n.IsRead)
+                .Count();
 
             ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
             ViewBag.UnreadCount = _context.Messages
@@ -106,7 +107,39 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             return View(new Post());
         }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(Post post)
+        {
+            if (ModelState.IsValid)
+            {
+                var currentUserId = _userManager.GetUserId(User);
+                post.UserId = currentUserId;
+                post.CreatedAt = DateTime.Now;
 
+               
+                if (post.PublishDate.HasValue && post.PublishDate <= DateTime.Now)
+                {
+                    post.IsPublished = true;  
+                }
+                else
+                {
+                    post.IsPublished = false; 
+                }
+
+                _context.Posts.Add(post);
+                await _context.SaveChangesAsync();
+
+             
+
+                return RedirectToAction(nameof(Index));
+            }
+
+        
+            var categories = _context.Categories.ToList();
+            ViewBag.Categories = categories;
+            return View(post);
+        }
 
         public async Task<IActionResult> Edit(int id)
         {

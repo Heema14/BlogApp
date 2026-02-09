@@ -15,6 +15,10 @@
         .container {
             margin-top: 50px;
         }
+
+        #publishDateContainer {
+            display: none; /* إخفاء حقل PublishDate بشكل افتراضي */
+        }
     </style>
 </head>
 <body>
@@ -52,7 +56,7 @@
                 </div>
             </div>
 
-            @*            <form asp-action="Create" method="post"> *@
+            <!-- Title -->
             <div class="form-field">
                 <div class="custom-floating-label mb-3">
                     <label asp-for="Title"></label>
@@ -70,12 +74,20 @@
                 <span asp-validation-for="Content" class="text-danger"></span>
             </div>
 
+            <!-- Schedule Option -->
             <div class="form-group">
+                <label>
+                    <input type="checkbox" id="isScheduled" name="IsScheduled" onchange="togglePublishDateField()" @(Model.PublishDate.HasValue ? "checked" : "") />
+                    Schedule Publication
+                </label>
+            </div>
+
+            <!-- Publish Date (conditionally visible) -->
+            <div id="publishDateContainer" class="form-group">
                 <label asp-for="PublishDate" class="control-label"></label>
                 <input asp-for="PublishDate" class="form-control" type="datetime-local" />
                 <span asp-validation-for="PublishDate" class="text-danger"></span>
             </div>
-
 
             <!-- Category Dropdown -->
             <div class="form-group">
@@ -100,7 +112,6 @@
         </form>
     </div>
 
-
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             ClassicEditor
@@ -119,15 +130,13 @@
                 });
         });
 
-        //previewImage
+        // Preview image
         function previewImage(event) {
             var reader = new FileReader();
             var file = event.target.files[0];
             reader.onload = function () {
                 var finalImage = document.getElementById('finalImage');
                 var svgIcon = document.getElementById('svgIcon');
-
-
                 svgIcon.style.display = 'none';
                 finalImage.style.display = 'block';
                 finalImage.src = reader.result;
@@ -135,8 +144,20 @@
             reader.readAsDataURL(file);
         }
 
+        // Toggle the visibility of Publish Date based on Schedule checkbox
+        function togglePublishDateField() {
+            var isScheduled = document.getElementById('isScheduled').checked;
+            var publishDateContainer = document.getElementById('publishDateContainer');
+            if (isScheduled) {
+                publishDateContainer.style.display = 'block';  // Show Publish Date field
+            } else {
+                publishDateContainer.style.display = 'none';   // Hide Publish Date field
+            }
+        }
+
+        // Initialize the visibility of Publish Date based on the initial value of IsScheduled
+        window.onload = function() {
+            togglePublishDateField();
+        };
     </script>
-
 </body>
-
-
