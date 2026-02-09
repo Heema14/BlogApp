@@ -13,7 +13,7 @@ using SyncSyntax.Models.IServices;
 using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
-//builder.Services.AddSingleton<IUserIdProvider, NameUserIdProvider>();
+
 
 builder.Services.Configure<FormOptions>(options =>
 {
@@ -77,7 +77,7 @@ builder.Services.AddHostedService<PostSchedulerService>();
 builder.Services.AddScoped<InMemoryChatCacheService>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 builder.Services.AddSingleton<EmailSender>();
-// إضافة خدمة EmailSender
+
  
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())

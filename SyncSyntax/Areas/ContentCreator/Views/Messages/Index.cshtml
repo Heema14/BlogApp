@@ -11,17 +11,14 @@
         <p class="no-messages">@ViewData["Message"]</p>
     }
 
-
-
     @{
         var previousUserIds = new List<string>();
     }
 
+   
     @if (Model.Conversations != null && Model.Conversations.Any())
     {
         <h5 class="section-title">Latest Conversations</h5>
-
-    
         <div id="conversationsList">
             @foreach (var conversation in Model.Conversations)
             {
@@ -47,65 +44,42 @@
             }
         </div>
     }
+    else
+    {
+        <p>No conversations</p>
+    }
 
- 
+    @if (ViewBag.AdminUser != null)
+    {
+        <div id="adminChat">
+            <div class="chat-preview" data-username="@ViewBag.AdminUser.FirstName @ViewBag.AdminUser.LastName">
+                <a href="@Url.Action("Chat", "Messages", new { userId = ViewBag.AdminUser.Id })">
+                    <div class="chat-user">
+                        <img src="@ViewBag.AdminUser.ProfilePicture" class="profile-img" />
+                        <div class="chat-info">
+                            <span class="username">@ViewBag.AdminUser.FirstName @ViewBag.AdminUser.LastName</span>
+                            <small>If you have any complaints or suggestions for the platform, feel free to share them with us!</small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    }
+
     <hr class="divider" />
 
-
-    @if (Model.AvailableUsers != null)
+    
+    @if (ViewBag.FollowedUserIds != null && ViewBag.FollowedUserIds.Count == 0)
     {
-        var newUsers = Model.AvailableUsers
-        .Where(u => !previousUserIds.Contains(u.Id))
-        .ToList();
-
-        @if (newUsers.Any())
-        {
-            @if (newUsers.Any(u => u.FirstName.Equals("Admin", StringComparison.OrdinalIgnoreCase)))
-            {
-                <div class="start-new-chat">
-                    <h4>Start New Conversations</h4>
-                    @foreach (var user in newUsers)
-                    {
-                        <div class="chat-preview new-chat">
-                            <a href="@Url.Action("Chat", "Messages", new { userId = user.Id })">
-                                <div class="chat-user">
-                                    <img src="@user.ProfilePicture" class="profile-img" />
-                                    <div class="chat-info">
-                                        <span class="username">@user.FirstName @user.LastName</span>
-                                        <small>    💡 If you want to improve the site, add new features, or suggest enhancements, feel free to send us your ideas!</small>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    }
-                </div>
-
-
-            }
-         else{
-                <div class="start-new-chat">
-                    <h4>Start New Conversations</h4>
-                    @foreach (var user in newUsers)
-                    {
-                        <div class="chat-preview new-chat">
-                            <a href="@Url.Action("Chat", "Messages", new { userId = user.Id })">
-                                <div class="chat-user">
-                                    <img src="@user.ProfilePicture" class="profile-img" />
-                                    <div class="chat-info">
-                                        <span class="username">@user.FirstName @user.LastName</span>
-                                        <small>Start new conversation</small>
-                                    </div>
-                                </div>
-                            </a>
-                        </div>
-                    }
-                </div>
-         }
-        }
+        <div class="follow-section">
+            <h4>You are not following anyone yet.</h4>
+            <button type="submit" class="icon-expand-btn" data-hover-text="Follow new user">
+                <i class="bi bi-person-plus me-1 svgIcon"></i>
+            </button>
+        </div>
     }
 
 </div>
-
 
 <style>
     .chat-list {
