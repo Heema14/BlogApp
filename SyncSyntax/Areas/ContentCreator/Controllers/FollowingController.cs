@@ -207,8 +207,8 @@ public class FollowingController : Controller
             return NotFound("User not found");
         }
 
-        var currentUser = _userManager.GetUserAsync(User).Result; // جلب المستخدم الحالي
-        var currentUserId = currentUser?.Id; // المستخدم الحالي
+        var currentUser = _userManager.GetUserAsync(User).Result; 
+        var currentUserId = currentUser?.Id; 
 
         var followersCount = _context.Followings
             .Count(f => f.FollowingId == userId);
@@ -260,10 +260,10 @@ public class FollowingController : Controller
 
         var users = await _context.Users
             .Where(u => u.Id != currentUser.Id)
-            .ToListAsync(); // نجلب كل المستخدمين باستثناء currentUser
+            .ToListAsync();  
 
         users = users.Where(u => !adminUsers.Any(a => a.Id == u.Id))
-                     .ToList(); // استبعاد الأدمين في الذاكرة
+                     .ToList();  
 
         return View(users);
     }
@@ -290,7 +290,7 @@ public class FollowingController : Controller
 
             if (existingLike == null)
             {
-                // Add like
+             
                 var like = new PostLike
                 {
                     PostId = postId,
@@ -306,7 +306,7 @@ public class FollowingController : Controller
             {
                 try
                 {
-                    // Remove like
+                    
                     _context.PostLikes.Remove(existingLike);
                     post.LikesCount--;
                     userLiked = false;
@@ -318,7 +318,7 @@ public class FollowingController : Controller
             }
             await _context.SaveChangesAsync();
 
-            // بث تحديث اللايك بالـ SignalR
+           
             await _postlikeHub.Clients.Group(postId.ToString())
                 .SendAsync("ReceiveLike", postId, post.LikesCount);
 

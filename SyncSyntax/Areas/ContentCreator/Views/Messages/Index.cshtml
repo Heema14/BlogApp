@@ -2,44 +2,50 @@
 @model ChatViewModel
 
 <div class="chat-list">
+    <div class="search-bar">
+        <input type="text" id="searchInput" class="form-control" placeholder="Search for a conversation..." onkeyup="filterConversations()" />
+    </div>
 
     @if (ViewData["Message"] != null)
     {
         <p class="no-messages">@ViewData["Message"]</p>
     }
 
- 
+
+
     @{
- 
         var previousUserIds = new List<string>();
     }
 
     @if (Model.Conversations != null && Model.Conversations.Any())
     {
-        <h5 class="section-title"> Latest Conversations</h5>
+        <h5 class="section-title">Latest Conversations</h5>
 
-        @foreach (var conversation in Model.Conversations)
-        {
-            var otherUserId = conversation.SenderId == Model.CurrentUserId ? conversation.ReceiverId : conversation.SenderId;
-            previousUserIds.Add(otherUserId); 
-
-            var otherUser = Model.OtherUsers.FirstOrDefault(u => u.Id == otherUserId);
-
-            if (otherUser != null)
+    
+        <div id="conversationsList">
+            @foreach (var conversation in Model.Conversations)
             {
-                <div class="chat-preview">
-                    <a href="@Url.Action("Chat", "Messages", new { userId = otherUser.Id })">
-                        <div class="chat-user">
-                            <img src="@otherUser.ProfilePicture" class="profile-img" />
-                            <div class="chat-info">
-                                <span class="username">@otherUser.FirstName @otherUser.LastName</span>
-                                <small>@conversation.Content</small>
+                var otherUserId = conversation.SenderId == Model.CurrentUserId ? conversation.ReceiverId : conversation.SenderId;
+                previousUserIds.Add(otherUserId);
+
+                var otherUser = Model.OtherUsers.FirstOrDefault(u => u.Id == otherUserId);
+
+                if (otherUser != null)
+                {
+                    <div class="chat-preview" data-username="@otherUser.FirstName @otherUser.LastName">
+                        <a href="@Url.Action("Chat", "Messages", new { userId = otherUser.Id })">
+                            <div class="chat-user">
+                                <img src="@otherUser.ProfilePicture" class="profile-img" />
+                                <div class="chat-info">
+                                    <span class="username">@otherUser.FirstName @otherUser.LastName</span>
+                                    <small>@conversation.Content</small>
+                                </div>
                             </div>
-                        </div>
-                    </a>
-                </div>
+                        </a>
+                    </div>
+                }
             }
-        }
+        </div>
     }
 
  
@@ -218,4 +224,29 @@
             font-size: 12px;
         }
 </style>
+<script>
+function filterConversations() {
+    var input = document.getElementById('searchInput');
+    var filter = input.value.toLowerCase();
+    var conversations = document.querySelectorAll('.chat-preview');
+
+  
+    if (filter === "") {
+        conversations.forEach(function(conversation) {
+            conversation.style.display = '';
+        });
+    } else {
+        conversations.forEach(function(conversation) {
+            var username = conversation.getAttribute('data-username');
+
+       
+            if (username && username.toLowerCase().indexOf(filter) > -1) {
+                conversation.style.display = '';
+            } else {
+                conversation.style.display = 'none';
+            }
+        });
+    }
+}
+</script>
 

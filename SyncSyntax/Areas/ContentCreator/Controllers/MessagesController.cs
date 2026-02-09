@@ -31,6 +31,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
         {
             var user = await _userManager.GetUserAsync(User);
 
+          
             var conversations = await _context.Messages
                 .Where(m => (m.SenderId == user.Id || m.ReceiverId == user.Id)
                             && !_context.MessageDeletions.Any(d => d.UserId == user.Id && d.MessageId == m.Id))
@@ -38,14 +39,15 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 .Select(g => g.OrderByDescending(m => m.SentAt).FirstOrDefault())
                 .ToListAsync();
 
+            
             var availableUsers = await _context.Users
-                .Where(u => u.Id != user.Id)
+                .Where(u => u.Id != user.Id)  
                 .ToListAsync();
 
-            if (conversations == null || !conversations.Any())
-            {
-                ViewData["Message"] = "That not found any chats yet!!";
-            }
+            var followedUserIds = await _context.Followings
+                .Where(f => f.FollowerId == user.Id)
+                .Select(f => f.FollowingId)
+                .ToListAsync();
 
             var otherUserIds = conversations
                 .Select(c => c.SenderId == user.Id ? c.ReceiverId : c.SenderId)
@@ -56,13 +58,24 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 .Where(u => otherUserIds.Contains(u.Id))
                 .ToListAsync();
 
+         
+            var adminUser = availableUsers.FirstOrDefault(u => u.UserName.Equals("Admin", StringComparison.OrdinalIgnoreCase));
+
+        
+            var newUsers = availableUsers
+                .Where(u => !followedUserIds.Contains(u.Id))  
+                .ToList();
+
             var model = new ChatViewModel
             {
                 CurrentUserId = user.Id,
                 Conversations = conversations,
                 OtherUsers = otherUsers,
-                AvailableUsers = availableUsers
+                AvailableUsers = newUsers 
             };
+
+ 
+            ViewBag.AdminUser = adminUser;
 
             return View(model);
         }
@@ -148,12 +161,12 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
                 }
                 else
                 {
-                    return Forbid(); // المستقبل لا يمكنه حذف الرسالة للجميع
+                    return Forbid(); 
                 }
             }
             else if (scope == "me")
             {
-                // تحقق إذا تم حذفها مسبقًا
+             
                 var alreadyDeleted = await _context.MessageDeletions
                     .AnyAsync(d => d.UserId == currentUserId && d.MessageId == message.Id);
 
@@ -344,7 +357,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             if (existing != null)
             {
-                existing.Reaction = request.Reaction; // Update reaction
+                existing.Reaction = request.Reaction; 
             }
             else
             {

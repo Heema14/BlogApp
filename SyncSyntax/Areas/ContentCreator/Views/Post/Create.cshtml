@@ -144,18 +144,18 @@
             reader.readAsDataURL(file);
         }
 
-        // Toggle the visibility of Publish Date based on Schedule checkbox
+       
         function togglePublishDateField() {
             var isScheduled = document.getElementById('isScheduled').checked;
             var publishDateContainer = document.getElementById('publishDateContainer');
             if (isScheduled) {
-                publishDateContainer.style.display = 'block';  // Show Publish Date field
+                publishDateContainer.style.display = 'block';
             } else {
-                publishDateContainer.style.display = 'none';   // Hide Publish Date field
+                publishDateContainer.style.display = 'none';   
             }
         }
 
-        // Initialize the visibility of Publish Date based on the initial value of IsScheduled
+      
         window.onload = function() {
             togglePublishDateField();
         };
