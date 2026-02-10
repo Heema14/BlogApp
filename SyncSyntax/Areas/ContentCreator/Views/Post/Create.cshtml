@@ -113,22 +113,6 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            ClassicEditor
-                .create(document.querySelector('#editor'))
-                .then(editor => {
-                    editor.model.document.on('change:data', () => {
-
-                        const contentField = document.getElementById('content');
-                        if (contentField) {
-                            contentField.value = editor.getData();
-                        }
-                    });
-                })
-                .catch(error => {
-                    console.error("Error initializing CKEditor:", error);
-                });
-        });
 
         // Preview image
         function previewImage(event) {
@@ -160,4 +144,5 @@
             togglePublishDateField();
         };
     </script>
+    <script src="~/js/mention.js"></script>
 </body>
