@@ -352,10 +352,10 @@ namespace SyncSyntax.Migrations
                     b.Property<int>("LikesCount")
                         .HasColumnType("int");
 
-                    b.Property<DateTime?>("PublishDate")
+                    b.Property<DateTime>("PublishedDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("PublishedDate")
+                    b.Property<DateTime?>("SchedualPublishDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Tags")

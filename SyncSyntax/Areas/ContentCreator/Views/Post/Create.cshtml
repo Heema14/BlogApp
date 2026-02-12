@@ -77,16 +77,28 @@
             <!-- Schedule Option -->
             <div class="form-group">
                 <label>
-                    <input type="checkbox" id="isScheduled" name="IsScheduled" onchange="togglePublishDateField()" @(Model.PublishDate.HasValue ? "checked" : "") />
+                    <input type="checkbox" id="isScheduled" name="IsScheduled" onchange="togglePublishDateField()"
+                    @(Model.SchedualPublishDate.HasValue ? "checked" : "")
+                    @(Model.IsPublished ? "disabled" : "") />
                     Schedule Publication
                 </label>
             </div>
 
             <!-- Publish Date (conditionally visible) -->
             <div id="publishDateContainer" class="form-group">
-                <label asp-for="PublishDate" class="control-label"></label>
-                <input asp-for="PublishDate" class="form-control" type="datetime-local" />
-                <span asp-validation-for="PublishDate" class="text-danger"></span>
+                <label asp-for="SchedualPublishDate" class="control-label"></label>
+                <input asp-for="SchedualPublishDate" class="form-control" type="datetime-local"
+                @* Add the disabled attribute here based on IsPublished *@
+                @if (Model.IsPublished) {
+                <text>disabled</text>
+                } />
+                <span asp-validation-for="SchedualPublishDate" class="text-danger"></span>
+            </div>
+
+            <div id="publishDateContainer" class="form-group">
+                <label asp-for="SchedualPublishDate" class="control-label"></label>
+                <input asp-for="SchedualPublishDate" class="form-control" type="datetime-local" />
+                <span asp-validation-for="SchedualPublishDate" class="text-danger"></span>
             </div>
 
             <!-- Category Dropdown -->
@@ -113,7 +125,38 @@
     </div>
 
     <script>
+                function togglePublishDateField() {
+            var isScheduled = document.getElementById('isScheduled').checked;
+            var publishDateContainer = document.getElementById('publishDateContainer');
+            var isPublished = @Model.IsPublished ? true : false; // التعامل مع حالة النشر
 
+            if (isPublished) {
+                publishDateContainer.style.display = 'none'; // إخفاء الحقل إذا كان المقال منشورًا
+            } else {
+                if (isScheduled) {
+                    publishDateContainer.style.display = 'block'; // عرض الحقل إذا كان تم تحديد Schedule Publication
+                } else {
+                    publishDateContainer.style.display = 'none'; // إخفاء الحقل إذا لم يتم تحديد Schedule Publication
+                }
+            }
+        }
+
+               document.addEventListener('DOMContentLoaded', function () {
+            ClassicEditor
+                .create(document.querySelector('#editor'))
+                .then(editor => {
+                    editor.model.document.on('change:data', () => {
+
+                        const contentField = document.getElementById('content');
+                        if (contentField) {
+                            contentField.value = editor.getData();
+                        }
+                    });
+                })
+                .catch(error => {
+                    console.error("Error initializing CKEditor:", error);
+                });
+        });
         // Preview image
         function previewImage(event) {
             var reader = new FileReader();
@@ -144,5 +187,5 @@
             togglePublishDateField();
         };
     </script>
-    <script src="~/js/mention.js"></script>
+ 
 </body>

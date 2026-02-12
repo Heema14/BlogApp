@@ -255,9 +255,9 @@
                                 <i class="bi bi-tag me-1"></i> @post.Category.Name
                             </span>
                         }
-                        @if (post.PublishDate.HasValue)
+                        @if (post.SchedualPublishDate.HasValue && post.SchedualPublishDate.Value > DateTime.Now)
                         {
-                            <p>Scheduled to be published on: @post.PublishDate.Value.ToString("dd/MM/yyyy HH:mm")</p>
+                            <p>Scheduled to be published on: @post.SchedualPublishDate.Value.ToString("dd/MM/yyyy HH:mm")</p>
                         }
                         else
                         {

@@ -55,7 +55,7 @@ public class Post
     public ICollection<SavedPost> SavedByUsers { get; set; }
     [DataType(DataType.DateTime)]
     [Display(Name = "Publish Date")]
-    public DateTime? PublishDate { get; set; }
+    public DateTime? SchedualPublishDate { get; set; }
 
 
 }

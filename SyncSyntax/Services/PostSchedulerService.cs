@@ -22,7 +22,7 @@ public class PostSchedulerService : BackgroundService
             {
                 var _context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
                 var postsToPublish = await _context.Posts
-                    .Where(p => p.PublishDate.HasValue && p.PublishDate <= DateTime.Now && !p.IsPublished)
+                    .Where(p => p.SchedualPublishDate.HasValue && p.SchedualPublishDate <= DateTime.Now && !p.IsPublished)
                     .ToListAsync(stoppingToken);  
 
                 foreach (var post in postsToPublish)

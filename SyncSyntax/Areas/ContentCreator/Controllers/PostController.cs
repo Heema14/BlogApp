@@ -88,54 +88,19 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             return Json(new { success = true, isPublished = post.IsPublished });
         }
-         
-        [HttpGet("search")]
-        public IActionResult SearchUsers(string query)
-        {
-            var users = _context.Users
-                                .Where(u => u.UserName.Contains(query))  // البحث جزئيًا في أسماء المستخدمين
-                                .Select(u => new { u.Id, u.UserName })   // إرجاع الـ Id و Username فقط
-                                .ToList();
 
-            return Json(users);   // إعادة البيانات في صيغة JSON
-        }
-        private List<string> ExtractMentionedUserIds(string content)
-        {
-            var mentionedUserIds = new List<string>();
 
-      
-            var regex = new System.Text.RegularExpressions.Regex(@"@\w+");
-            var mentions = regex.Matches(content);  // هذه ستكون من نوع MatchCollection
-
-            foreach (Match mention in mentions)  // يجب استخدام Match هنا بدلاً من object
-            {
-                var query = mention.Value.Substring(1);  // إزالة '@' من النص
-
-                // البحث الجزئي في قاعدة البيانات عن اسم المستخدم الذي يحتوي على `query`
-                var users = _context.Users
-                                    .Where(u => u.UserName.Contains(query))
-                                    .ToList();
-
-                foreach (var user in users)
-                {
-                    mentionedUserIds.Add(user.Id);  // إضافة كل مستخدم مطابق
-                }
-            }
-
-            return mentionedUserIds;
-        }
 
 
         public IActionResult Create()
         {
             var categories = _context.Categories.ToList();
             ViewBag.Categories = categories;
-
             var currentUserId = _userManager.GetUserId(User);
 
             var unreadNotificationsCount = _context.Notifications
-                .Where(n => n.UserId == currentUserId && !n.IsRead)
-                .Count();
+           .Where(n => n.UserId == currentUserId && !n.IsRead)
+           .Count();
 
             ViewBag.UnreadNotificationsCount = unreadNotificationsCount;
             ViewBag.UnreadCount = _context.Messages
@@ -143,57 +108,7 @@ namespace SyncSyntax.Areas.ContentCreator.Controllers
 
             return View(new Post());
         }
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Post post)
-        {
-            if (ModelState.IsValid)
-            {
-                var currentUserId = _userManager.GetUserId(User);
-                post.UserId = currentUserId;
-                post.CreatedAt = DateTime.Now;
 
-                // تحديد إذا كان سيتم نشر المنشور أم لا
-                if (post.PublishDate.HasValue && post.PublishDate <= DateTime.Now)
-                {
-                    post.IsPublished = true;
-                }
-                else
-                {
-                    post.IsPublished = false;
-                }
-
-                // إضافة المنشور إلى قاعدة البيانات
-                _context.Posts.Add(post);
-                await _context.SaveChangesAsync();
-
-                // استخراج مستخدمي الإشارات (Mentions) من المحتوى
-                var mentionedUserIds = ExtractMentionedUserIds(post.Content);
-
-                // إضافة إشعارات للمستخدمين الذين تم الإشارة إليهم
-                foreach (var userId in mentionedUserIds)
-                {
-                    var notification = new Notification
-                    {
-                        UserId = userId,
-                        Message = $"{currentUserId} mentioned you in a post.",
-                        PostId = post.Id,
-                        CreatedAt = DateTime.Now
-                    };
-                    _context.Notifications.Add(notification);
-                }
-
-                // حفظ الإشعارات في قاعدة البيانات
-                await _context.SaveChangesAsync();
-
-                // إعادة التوجيه إلى الصفحة الرئيسية للمشاركات
-                return RedirectToAction(nameof(Index));
-            }
-
-            var categories = _context.Categories.ToList();
-            ViewBag.Categories = categories;
-            return View(post);
-        }
 
         public async Task<IActionResult> Edit(int id)
         {
